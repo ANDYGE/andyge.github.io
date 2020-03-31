@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"swiftist.cn","root":"/","scheme":"Pisces","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"EVBR3H53HW","apiKey":"2abd573a01143a0cc4108fa4d21ae67c","indexName":"swiftist","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="一、什么情况下使用枚举类？ 有的时候一个类的对象是有限且固定的，这种情况下我们使用枚举类就比较方便？ 二、为什么不用静态常量来替代枚举类呢？ 1234public static final int SEASON_SPRING &#x3D; 1;public static final int SEASON_SUMMER &#x3D; 2;public static final int SEASON_FALL &#x3D; 3;p">
+<meta property="og:type" content="article">
+<meta property="og:title" content="浅谈java枚举类">
+<meta property="og:url" content="https://swiftist.cn/2019/02/21/java/%E6%B5%85%E8%B0%88java%E6%9E%9A%E4%B8%BE%E7%B1%BB/index.html">
+<meta property="og:site_name" content="飞雪轩辕">
+<meta property="og:description" content="一、什么情况下使用枚举类？ 有的时候一个类的对象是有限且固定的，这种情况下我们使用枚举类就比较方便？ 二、为什么不用静态常量来替代枚举类呢？ 1234public static final int SEASON_SPRING &#x3D; 1;public static final int SEASON_SUMMER &#x3D; 2;public static final int SEASON_FALL &#x3D; 3;p">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="data:image/png;base64,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">
+<meta property="article:published_time" content="2019-02-20T23:57:30.000Z">
+<meta property="article:modified_time" content="2020-03-31T15:07:39.369Z">
+<meta property="article:author" content="Andy Ge">
+<meta property="article:tag" content="java">
+<meta property="article:tag" content="owl">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgwAAABqCAIAAABf1p42AAAgAElEQVR4nO1dS3PbRrbuZbLIz4lL/AdJKv8gVXdspbDELg//AIuYOC5KqVuzuQktrmeoxAxMC2QkOXehSSKPxZo8FF3FFUl2ZKnmznVoiQQfaJB30USjH6fBt0Qp56uzIA66Dw5g1/nQ3VB/5D//8pd//etflNKdozpFIBAIBEIAQZJAIBAIhAmjk0Q7oD8fB//9S+DtoKGhoaFdTRudJL7/Ldg5pmfNkIYdNDQ0NLQraaOTxFe7QSvotIOQ29dmbGxslMpfiY3R0NDQ0GbfRicJbyegYacVhNy+/vprGgSUBmFIw5B2OmGnE1IadDrh1taW53le+SuxPRoaGhrajNtYJBFQiSQePnwYBG2dJzqdcHNz0/f91dXV8lfrF37PaGhoaGgD2lgk0aadZjvktr6+3m63QJ4ol8ue53meVy6XxS4XbDuLcyR1Z2e07nt3UlZh9KsX3yXjdEdDQ7twO36Qtu9uG85u59Krx+Khfbdy0QmPYuOSRKMdcltbW2u3mu12K2i3adBWeOL50dHB/n65XBa7xLazOEc4Uh/vQG0mbjuLcyNeq/gumOqXFiHk3S8HjGDdO4d7RDt/+62UtnvIbnN/JdvzOcXfhMbbOblZ+OiuHSNdOlQj5x4ZLyG3ia/IDgfLMyFyQsztnJ18rWkZz8e271Ya7bDRPi6mwcyPi2neBugO/UuBcfQE5H/Q+N+x5+/92M5pV78cNi5J+K2QW7lcbjUbnCfe//C9t95+k/EEpwrP88QuPStYhKRu70SHO4tzhMwXtGaTsb3bc2MGZxH2bs9Z91p7t+8UuZPMWfODBi/OE+veVG4Q7WKtkk2XDtnvZ6UFO7fVCv3W8f20vfDg2G+F/uOcLTjtdC6btrOP4whbd6OWmh0+cBYeHPutStaOujwrLdjO/Wd6m+P7aXaVcOuubd+tDJYn6ORmiPk4Z/Ne52mPc7YtPLrHuejGpefp89tJO/IdCY8xvjXQKT4Buw/Yo3hWWug9k+iRPs5B/wqXwMYiiVbQqbdCbp7nNRt+q9lotZrV7ZvOB+8QQigNQiqRhNil3grrreI8IfMF2VmwCLG+UFtOxHokMUaE4jxJ3d7Zuz2nZzh48OL8tG4QbXbs+H7auf8srEcFN3La2cdiG/GwRxJQtErWdu4/E38ov/XDsN4K649zdrp0MEie/Z16zMRmU7ReNYfuBfAfPHAWHhxv3RVOPSst6I8FdGp28MBRL/E4J/6rHTxw7LuV3oPSYPj3nVEbiySaQafWDLkVi8WG7zcb/vM7dvWT156+QX569ZXqgUsI4TxRLBbFLrVmWCtYZG7xe8XZLM6T1Ec/hbXm3kdzZL5QnI+mouYLYpsert3ZqzXlxizmT4vXpI5xFzK3+P1Pi9eI9bkWjUjO1Ed3LPkq4efvskEDb8aNJRCq9whkW5znV1GTDGvN8Ps7KSUZ3YM281bJ2rnvmmHtHzn7boX7v7trLzw4jg6P3bSd/UconuVTN9+J0f6Rs9Ol/WZYa4b7Dxw7XdpvHrtpMZTUxnC5xDxB59PSgu24Tw0xn5YW0iX3blz+zunZQncKPs/I6bhPlV6VrK23BJ2aPS0tCP+gtWb43V3xEVWytm3frcTX1f4PXCIbiyQa7c5ZI+Tmuq5frzf8ejc86IYvup16t3tysrP68olHCAlpEIbUdV2xy1kjPLtnkbnFfyrOxt5Hc+TGvd4PQqzPeePe7+INkvrox8TGjb2P3o0ixx154/Dsx8VrcTRy7eO9M+AqhLxbjBrzK4afs0UJdgpIWzE5fs8T5aMnGScWme5Bm3n7NmsvFI/PGuGvRcfOVnT/WSM8axy7aTv7COj+a9Gx06VfhV5Cs2O3N++R+1a+YtzmsLTAJtah4GCesPOwtGA77qEh5qNcfCi2nLY9yokPRzDoecaNK1kxw0c5/RnCTuAqQpzD0oKQzK9FZyGbW8hWzg5LC/zf/VFO/D9wiWxckjhthNwKhYJfq/n1erdz2O3UGUk8+3mVvf1SGlAaFAoFsctpIzy9Z5G5xYribOz9eS715x/ZD3LjnugnN+6Fp/csIuPax3ta4/C0EVY+jl/A8w054I+L15hTzYG3Kd4gLA0xJX5o3XiXGDr2vcfijV4+YJLFG4QQIl5O96DNtH2bte1spXf4KBf/jupvdHj8Zdr+7BEYpPKZ7Xx5GJ42wtPD0oKd+xb2g23kTNKlJ4PkmeiEYz7KicHlW5umydcVDHieYlZ6hk+Kjm2r9ws6JTssLfQSEP452CWKpSeHpQWlr/x/4BLZWCThtzsv/ZDbyspK/eysXqt16H63exJ0X3S7J093HhBCgujT2JWVFbHLSz986RevE3L9nuy8ZxFi5f3wpb/nzIlno0NWdtVQcuMfFq8Rcu32XvRbC8idarQ9Zy7l/MByYz9EJz+08oBTuxcgPots5Y1JxtEIUePLHrRZtG+ytp2txJ6tnL1QetI7PC4s2J9t8cbKoWiVz2yncBi+9MMn9504oBQt/CZr37p/rLYxxOmTp9lpjHlYugUlM30z3ZT+PCufqYsCuW+AaPq/AugUbIuNOaA0Dku3spWogb4oET+x2bexSKLe6lT9kFs+n6+dntbPzoiG3idPQTufz4tdmG3fTrHC1/P8sHiNkOv32OGeM0fIfFFoaf3ND6sRtTD/3+aZs1eje3HuWWRucVvtKLT5YfGaEO3a7T2tY48kokzY7+L1ucVtf8+Zs/72w+I1MXMlgfismG3Rub1X9YvX2aXBJH9YdO7JAXWP9hjRZsOOCwv2rfvHuvPTrbDqh9WtnL1Q+gU85YdVv/JptsJ+f5O1o5Zym8PSLdspHEbtbXZKaxPF+eW+I1+xT56qk18Ojil0kRKbuv1y37HFy23lbt0/1p5nWN3KMVaInzB7YsLtVP3Kp9o9xk5TDhEHSJfTnn/cWPFcEhuXJH6vh9yy2ezZ6SnjiXqt5tdrjXq94fvNRqPVbDKeyGazYpfYvl98PeaUVPp7fmovPUeuz/PJJeuvUJfrXwiNv5D6Mrw+b70e9d2+nWIL19vfL74eByxeFxauBSdPZi89F/2OLy2elXjx+hesmd6FBS9e7/2Ak/xrvFJf/N3gQZtFU18encJB+Hs9/P2gdCt6jf17r/FxYUFq+umWHGGh9Es96st/18Pf66w+yr2S2vAr9ssTdB6UbkV3YYhZ+VRJ5kKedrYCPNWFUiHLT/Xs75EHeIwGp2J/z4pX7B3eun8ctzko3ZIv+vtWTknjsthYJFFrdl7UQ25LS0tnL1+enb6MeOJM5olGu9VcWloSuwxge+k58qcvhupyPraXnrP+evFpoF1928zat+4fj98GbWzrMdCnW8DZPcYuC6W9evjioHQrW5EabOVsxXNJbFyS+L9ayC2dTp9Wq5wnahBPpNNpscsAtrdwjfzp86G6oKFdJav8l+3c2x+/DRraKDYWSZw1O/+uhdxuDgaxywC2d+sa+Y/Ph+qChoaGhjYZG4skTpud/z0L0dDQ0NCuqo1OEhv/E7yod/5du/h7QENDQ0Obko1OEj8eBT8+p9VG5xQNDQ0N7Yra6CTRatN//hZ8tXvxOt1oaGhoaFOy0UkCgUAgEFcekySJr83Y2Ngol8uTSBiBQCAQ54cJk4QuXEpp0OmEW1tbTLt0EjkjEAgE4pwwSZJ4+PAhKHDd6YSbm5u+76+urq6trU0gawQCgUCcCyZJEuvr6+1ot1eFJ8rlsud5MzeY2M2kSCqzO3Jnyx392q5FxumOQCAuHEeeYy9XDCcry453JB6am840JkkSa2trXOCaBm2FJ54fHR3s7xtJYjeTijfHG7lwD4nRScK19FSFWxig/CNJXF0ceXyLOKEsVJajXfPE0sHcYvXg7fS2cVGCLyG3iSMZihMYJCFyQsw46XMuhMLT6l3ZVLiPPEfPDsx7qJupLKv/SPxEz9/7gSRBKS2Xy2wXP8YT73/43ltvv8l4QtS4Bnq6ll5tp1ZBdzOpMYOzCGwksZvJsFiuxe9goCsgSVxVCC+Qcb068hyb1wxbcNrO8rKjkgRcdSg98pyo3oglUWoetTnynF4ToXXfPEGnGBuKmZDxVKHway93A0kceY7jaE+aH/NbA51iFLsP2KOI/hniR4okQSn1PK/Z8FvNRqvVrG7fdD54hxBCacAFrg0k4Vo6JUC+CWF8knAtksrsJkw37WZSfQcoSBJ/BAgVO64QShVTi5q55PIzYhOlOdS7fxGPS1o/px4zsdkUYeA+A0mwLKVCPfxNi630MYnYDxjOmceHM45JkkSxWGz4frPhP79jVz957ekb5KdXX6keuIQQzhPFYlHtxkqu0ctqumsBMzmxMwogNI57ix3jLr06H8cTTknOVCZjKVNLrkVIyrKMJAESgJKt0Aaap9J9w81mIWYCUVGS3yLlog2QBDzbIXSLxg/aOGI0joDfciOndhGqcYQHT6VNE8a7AklCGIPFvUCaMXGPFk/9x1GomkUROAdHEpRS13X9er3h17vhQTd8wTSuT3ZWXz7xCCEhDcKQui5UPAGS4PWb1caoLMYjDLGboTHdzVhiXWd+gRnin/KEl3QVsZ/cxFCuoRtSJtSoQBJQkvpoZ/zxD+LcwSuSUreSSYKKJ4R2cpHh8x5SV/VNebCJdbDeSjQgsZMcU5zzgehkWhiKJOLGcrceIYPrK8mPTR5x6EfLy85yReISJAlKaaFQ8Gs1v17vdg67nTojiWc/r7K3X0oDSoNCoaB2M5KEOJIQ/cRy5ff++PUcKKXaCzhEEmoO4AllEmk3k7IsqPbDowj1HqXRhpYkuz2xj+5BzDTUWfvhSUIbO0CLAGoFBxcfkt7wR3udjmNqVfecWGIYkkiYnqOc+OQ+oFO9Dkg8lFY870ifkEKSoJSurKww4dIO3e92T4Lui2735OnOA0JIEH0au7KyovVLXpMwk0TS+IMfRa3iMwOSBDvuQxKu7DSupCSQBJykcANEuShSxSWAWmSlMtJnTYJC3UwcIR6ZAyV8gTPyhEsUU36JPsc1bNOl9MegLwuAc2vDP4leYCgNRhLQgsSlW5SYJEnk83kmXEo09D55Ctr5fF7vKNZJfixN2AMHUkF2LYhRhNIsdBxsuql3AJIE+5BpN5Oy3HgOCvqcNvaJ2boZcU0CTJJ/M8VT1D2IGQU45yJULrW4aXNR0YEwApDbSFfghUxrI3yjA1UlY56qk/vgmPDPcwD7OEwkKPjrJoCxo/UCadZMvcf+lBdxAPwxFY4kdGSz2bPT00jguiYLlzYZT2SzWbiz8e8kdjMpYlnQujWwkgsMO3oRLUuihqEWrvWRhBC451Gnv/jsl96F01JMWnqS+ko9uHaPmDmoL4/qbL5QUtTvKYXPS+X3Te2TG7FnvB5gbJP4Bw/ixUCnwgJAzAv7KwkpYWFhRLwDTxsOSLyqZQ464cuKdG5r1I8koWNpaYkLXNchget2q7m0tDRk1Jl9cR7zL64RiEExyBzORf2twh8MSUsVvXN87g9JQkc6nT6tVjlP1CCeSKfTQ0adWZJAIM4HyBGIi8QkSeLmYBgyKpIEAoFAXBhQdAiBQCAQRiBJIBAIBMIIJAkEAoFAGIEkgUAgEAgjkCQQCAQCYcSENa5N2NjYmC1NOgQCgUAMgAmThC5cSmnQ6YRbW1szp12KQCAQiH6YJEk8fPgQFLjudMLNzU3f91dXV9fW1iaQNQKBQCDOBZMkifX19Xa026vCE+Vy2fO8mRtMjK5xTcfelgOV6RCIy46EHXxVHSLcloNSStfW1rjANQ3aCk88Pzo62N83koRxg79pYnSS4Lvt6ZIPA+7AhyRxdQFvg6fv2xe7Dcp02p7SvCgl7N4HKGcaihMYZNB9AU27cZ9zIdR1/EyF+8hz9OzAvIe6mYRt2GWRayQJSmm5XGa7+DGeeP/D9956+03GE4ka15pum7Q7+MQx/j4fLEKkJ5Hhe8sKG7j2vwCSxFWF8AIZ1ythJ9V452q21/Xy8qAa16IIp1EMTpDVFnaVBbWIgDxBpxgbinlRG0cp/GraKpzhyHMcRxeKFfY+j5lVc4pR7D7gG/zJHIEkQSmlnuc1G36r2Wi1mtXtm84H7xBCKA24wLWBJJJFhyaO8UmC7R9unm6CBZH0RkgSVx5CxZb3ok4QHTKXXH4mQWltNJFrbZ9xo1OPmdhsijApAsEkwbJU5V2HvGmxlT4mEfsBwznz+HDGMUmSKBaLDd9vNvznd+zqJ689fYP89Oor1QOXEMJ5olgsqt3gksq9rKaDYgqxUxRt6DWOe4sdBdmHwfUkMpYyteRaTPwBrvIGjlCyFUgCEMYAfFArxIwjKkrDyJfqEyh6t2j8oI0jRuMI+C03ckJSQgpHePBU2jQxlMa1OAaLe42hy6exhMwRfIwjcA6OJCilruv69XrDr3fDg274gmlcn+ysvnziEUJCGoQhdd1B9J+p8L7PaqOovMNFe0Q5IKgx3c1YYl0fRplO1JqO+8lNlHIdVXGohCsTalQSHdKT1Ec7uBnuJYRJWHRAjWulOMtFhs97qCJs+upC39IE1ltZOlWVTpLU28xzX1PEUCQRN9akX43rK8mPTR5x6EfLy85yReISJAlKaaFQ8Gs1v17vdg67nTojiWc/r7K3X0oDSoNCoaB2M5KEOJIQ/ZHGtQwuBaeUUu0FfECNa/0EoHFtabWfQoSQpHENJ8luT18VR3XrSwN11n54ktDGDtAigFrBwcWHpDf80V6n45gGwe2pYxiSSJieowYhoSR1Id4CJB5KK553hKJDIFZWVphwaYfud7snQfdFt3vydOcBISSIPo1dWVnR+iWvSZhJImn8wY+iVvGZAUmCa1MnkYSrOnn22rDBRBJwksINaGKuSBWzD0BWOS4jfdYkKNTNxBHikTlQwhc4I0+4CKLQF0ISxkvpj0FfFgDn1oZ/Er3AUBqMJKAFiUu3KDFJksjn80y4lGjoffIUtPP5vN5RrJP8WJqwBw4kanEtiFGE0ix0HGy6qXcAkoRrpTK7jCT4HJSwjB3PS8W/xGzdjLgmASbJv5niKeoexIwCnHMRKpda3LS5KFE5GeII+QqSYLPURvhGB6pKxjxVJ/fBMeGf5wD2cZhIUPDXTQBjR+sF0qyZeo/9KS/iAPhjKhxJ6Mhms2enp5HAdU0WLm0ynshms3Bn499J7GZSxLKgdWtgJRcYdvQiWpZEDUMtXOsjCSEwT9WQjt6F01JMWnqS+ko9uHaPmDmoL4/qbL5QUtTvKYXPS+X3Te2TG7FnvB5gbJP4Bw/ixUCnwgJAzAv7KwkpYWFhRLwDTxsOSLyqZQ464cuKdG5r1I8koWNpaYkLXNchget2q7m0tDRk1Jl9cR7zL64RiEGBItczg6Slit45PveHJKEjnU6fVqucJ2oQT6TT6SGjzixJIBDnA+QIxEVikiRxczAMGRVJAoFAIC4MKDqEQCAQCCOQJBAIBAJhBJIEAoFAIIxAkkAgEAiEEUgSCAQCgTBiwhrXJmxsbMyWJh0CgUAgBsCESUIXLqU06HTCra2tmdMuRSAQCEQ/TJIkHj58CApcdzrh5uam7/urq6tra2sTyBqBQCAQ54JJksT6+no72u1V4Ylyuex53swNJkbXuKZjb8uBynQIxGVHwg6+qg4RbstBKaVra2tc4JoGbYUnnh8dHezvG0nCuMHfNDE6SfDd9rTu6pa2CRGQJK4o4G3w9H37YrdBmU7bU5oXpYTd+wDlTENxAoMMui+gaTfucy6Euo6fqXAfeY6eHZj3UDeTsA27LHKNJEEpLZfLbBc/xhPvf/jeW2+/yXgiUeNak+mRdgefOMbf54NFiPQkMq58KpUaiHmQJK4qhBfIuF4JO6nGO1ezva6XlwfVuBZFOI1icIKstrCrLKhFBOQJOsXYUMyL2jhK4VfTVuEMR57jOLpQrLD3ecysmlOMYvcB3+BP5ggkCUop9Tyv2fBbzUar1axu33Q+eIcQQmnABa4NJJEsOjRxjE8SbP9wYLqJbSZu0LjWgyBJXHkIFVveizpBdMhccvmZBKW10USutX3GjU49ZmKzKcKkCASTBMtSlXcd8qbFVvqYROwHDOfM48MZxyRJolgsNny/2fCf37Grn7z29A3y06uvVA9cQgjniWKxqHaDayr3spoOiinETlG0odc47i12FEQjBteTyFjK1JJrMfEHTYY61ZMTgkhCyVYgCUCJAvBBrRAzjqgoDSNfqk+g6N2i8YM2jhiNI+C33MgJSQkpHOHBU2nTxFAa1+IYLO41hi6fxhIyR/AxjsA5OJKglLqu69frDb/eDQ+64QumcX2ys/ryiUcICWkQhtR1tfrWR4iU1UZReYeL9ohyQFBjupuxxLo+jDKdqDUd95ObSOVaijWA7rUgOqQnqY92cDPcSwiTsOiAGtdKcZaLDJ/3UEXY9NWFvqUJrLeydKoqnSSpt5nnvqaIoUgibqxJvxrXV5Ifmzzi0I+Wl53lisQlSBKU0kKh4Ndqfr3e7Rx2O3VGEs9+XmVvv5QGlAaFQkHtZiQJcSQh+iONaxmRiKhaSrUX8AE1rvUTgMa1ZQEXhgWtTRrXcJLs9sQ+ugcx01Bn7YcnCW3sAC0CqBUcXHxIesMf7XU6jmkQ3J46hiGJhOk5ahASSlIX4i1A4qG04nlHKDoEYmVlhQmXduh+t3sSdF90uydPdx4QQoLo09iVlRWtX/KahJkkksYf/ChqFZ8ZkCS4NnUSSbg9p/RtFjAnlEAScJLCDWhirkgVsw9AVjkuI33WJCjUzcQR4pE5UMIXOCNPuAii0BdCEsZL6Y9BXxYA59aGfxK9wFAajCSgBYlLtygxSZLI5/NMuFSrl6T3yVPQzufzekf1q1Hp6ybTgUQtrgUxilCahY6DTTf1DkCScK1UZpeRBPQRbdwnPitm62bENQkwyfibqShF3YOYUYBzLkLlUoubNhclKidDHCFfQRJsltoI3+hAVcmYp+rkPjgm/PMcwD4OEwkK/roJYOxovUCaNVPvsT/lRRwAf0yFIwkd2Wz27PQ0EriuycKlTcYT2WwW7mz8O4ndTIpYFrRuDazkAsOOXkTLkqiBDLNwrY8khMAJa+7SMkbchdNSTFp6kvpKPbh2j5g5qC+P6my+UFLU7ymFz0vl903tkxuxZ7weYGyT+AcP4sVAp8ICQMwL+ysJKWFhYUS8A08bDki8qmUOOuHLinRua9SPJKFjaWmJC1zXIYHrdqu5tLQ0ZNSZfXEe8y+uEYhBgSLXM4OkpYreOT73hyShI51On1arnCdqEE+k0+kho84sSSAQ5wPkCMRFYpIkcXMwDBkVSQKBQCAuDCg6hEAgEAgjkCQQCAQCYQSSBAKBQCCMQJJAIBAIhBFIEggEAoEwYsIa1yZsbGzMliYdAoFAIAbAhElCFy6lNOh0wq2trZnTLkUgEAhEP0ySJB4+fAgKXHc64ebmpu/7q6ura2trE8gagUAgEOeCSZLE+vp6O9rtVeGJcrnsed7MDSZG17g2AfXmEIg/DhJ28FV1iHBbDkopXVtb4wLXNGgrPPH86Ohgf99IEsYN/qYJJAnENABvg6fv2xe7Dcp02p7SvCgl7N4HKGcaihMYZNB9AU27cZ9zIdR1/EyF+8hz9OzAvIe6mYRt2GWRayQJSmm5XGa7+DGeeP/D9956+03GE4ka15pum7Q7+MQx1X0+kCQQwgtkXK+EnVTjnavZXtfLy4NqXIsinEYxOEFWW9hVFtQiAvIEnWJsKOZFbRyl8Ktpq3CGI89xHF0oVtj7PGZWzSlGsfuAb/AncwSSBKWUep7XbPitZqPVala3bzofvEMIoTTgAtcGkkgWHZo4kCQQ5wahYst7USeIDplLLj+ToLQ2msi1ts+40anHTGw2RZgUgWCSYFmq8q5D3rTYSh+TiP2A4Zx5fDjjmCRJFIvFhu83G/7zO3b1k9eevkF+evWV6oFLCOE8USwW1W6wxhz3spoOiinETlG0odc47i12FEQjBteTyFjmWTAlB4EkALkLwAe1QlwZREVpGPlSfQJF7xaNH7RxxGgcAb/lRk5ISkjhCA+eSpsmhtK4Fsdgca8xdPk0lpA5go9xBM7BkQSl1HVdv15v+PVueNANXzCN65Od1ZdPPEJISIMwpK6rVcI+QqSsiorKO1y0R5QDghrT3YwVNQH1UBOU6USt6bifkqgyTUYlKSH90voYBre4vdIwCYsOqHGtFGe5yPB5D1WETV9d6FuawHorS6eq0kmSept57muKGIok4saa9KtxfSX5sckjDv1oedlZrkhcgiRBKS0UCn6t5tfr3c5ht1NnJPHs51X2nkxpQGlQKBTUbkaSEEcSoj/SuJaRyuyCRVd7VR9Q41o/oWhcJypXw5dmSYt9dA/iikCdtR+eJLSxA7QIoFZwcPEh6Q1/tNfpOKZBcHvqGIYkEqbnqEFIKEldiLcAiYfSiucdoegQiJWVFSZc2qH73e5J0H3R7Z483XlACAmiT2NXVla0fslrEmaSSBp/8CNRSXQokuDa1CORBHxpIS1NohWp4ioBkFWOy0ifNQkKdTNxhHhkDpTwBc7IEy6CKPSFkITxUvpj0JcFwLm14Z9ELzCUBiMJaEHi0i1KTJIk8vk8Ey4lGnqfPAXtfD6vdxQrKj+WpvaBA4laXAtiFKGICx0Hm27qHUAkEc87iTm4GXFNArz0biajaHHrHsSlBzjnIlQutbhpc1GicjLEEfIVJMFmqY3wjQ5UlYx5qk7ug2PCP88B7OMwkaDgr5sAxo7WC6RZM/Ue+1NexAHwx1Q4ktCRzWbPTk8jgeuaLFzaZDyRzWbhzsa/k9jNpIhlQevWwJovMOzoRbQsiRqGWrg2koR4BU42MRXpl9bX38EVecQlhvryqM7mCyVF/Z5S+LxUft/UPrkRe8brAcY2iX/wIF4MdCosAMS8sL+SkBIWFkbEO/C04YDEq1rmoHL3SYUAAABwSURBVBO+rEjntkb9SBI6lpaWuMB1HRK4breaS0tLQ0bFV2zEHx0ocj0zSFqq6J3jc39IEjrS6fRptcp5ogbxRDqdHjIqkgTiDw7kCMRFYpIkcXMwDBkVSQKBQCAuDCg6hEAgEAgjkCQQCAQCYcT/A/wDd+mMkAS3AAAAAElFTkSuQmCC">
+
+<link rel="canonical" href="https://swiftist.cn/2019/02/21/java/%E6%B5%85%E8%B0%88java%E6%9E%9A%E4%B8%BE%E7%B1%BB/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>浅谈java枚举类 | 飞雪轩辕</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="飞雪轩辕" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">飞雪轩辕</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">人生的乐趣在于把梦想变成现实</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-java">
+
+    <a href="/categories/java/" rel="section"><i class="fa fa-fw fa-th-large"></i>java</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://swiftist.cn/2019/02/21/java/%E6%B5%85%E8%B0%88java%E6%9E%9A%E4%B8%BE%E7%B1%BB/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Andy Ge">
+      <meta itemprop="description" content="勇于积极进取，步入人生的世外桃源">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="飞雪轩辕">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          浅谈java枚举类
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-02-21 07:57:30" itemprop="dateCreated datePublished" datetime="2019-02-21T07:57:30+08:00">2019-02-21</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-31 23:07:39" itemprop="dateModified" datetime="2020-03-31T23:07:39+08:00">2020-03-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/java/" itemprop="url" rel="index">
+                    <span itemprop="name">java</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span id="/2019/02/21/java/%E6%B5%85%E8%B0%88java%E6%9E%9A%E4%B8%BE%E7%B1%BB/" class="post-meta-item leancloud_visitors" data-flag-title="浅谈java枚举类" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>一、什么情况下使用枚举类？</p>
+<p>有的时候一个类的对象是有限且固定的，这种情况下我们使用枚举类就比较方便？</p>
+<p>二、为什么不用静态常量来替代枚举类呢？</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> SEASON_SPRING = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> SEASON_SUMMER = <span class="number">2</span>;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> SEASON_FALL = <span class="number">3</span>;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> SEASON_WINTER = <span class="number">4</span>;</span><br></pre></td></tr></table></figure>
+
+<p>枚举类更加直观，类型安全。使用常量会有以下几个缺陷：</p>
+<ol>
+<li><p>类型不安全。若一个方法中要求传入季节这个参数，用常量的话，形参就是 int 类型，开发者传入任意类型的 int 类型值就行，但是如果是枚举类型的话，就只能传入枚举类中包含的对象。</p>
+</li>
+<li><p>没有命名空间。开发者要在命名的时候以 SEASON_开头，这样另外一个开发者再看这段代码的时候，才知道这四个常量分别代表季节。</p>
+</li>
+</ol>
+<p>三、枚举类入门</p>
+<p>先看一个简单的枚举类。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> enumcase;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">enum</span> SeasonEnum &#123;</span><br><span class="line">    SPRING,SUMMER,FALL,WINTER;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>enum 和 class、interface 的地位一样</li>
+<li>使用 enum 定义的枚举类默认继承了 java.lang.Enum，而不是继承 Object 类。枚举类可以实现一个或多个接口。</li>
+<li>枚举类的所有实例都必须放在第一行展示，不需使用 new 关键字，不需显式调用构造器。自动添加 public static final 修饰。</li>
+<li>使用 enum 定义、非抽象的枚举类默认使用 final 修饰，不可以被继承。</li>
+<li>枚举类的构造器只能是私有的。</li>
+</ol>
+<p>四、枚举类介绍</p>
+<p>枚举类内也可以定义属性和方法，可是是静态的和非静态的。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> enumcase;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">enum</span> SeasonEnum &#123;</span><br><span class="line">    SPRING(<span class="string">"春天"</span>),SUMMER(<span class="string">"夏天"</span>),FALL(<span class="string">"秋天"</span>),WINTER(<span class="string">"冬天"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> String name;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">SeasonEnum</span><span class="params">(String name)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> name;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>实际上在第一行写枚举类实例的时候，默认是调用了构造器的，所以此处需要传入参数，因为没有显式申明无参构造器，只能调用有参数的构造器。</p>
+<p>构造器需定义成私有的，这样就不能在别处申明此类的对象了。枚举类通常应该设计成不可变类，它的 Field 不应该被改变，这样会更安全，而且代码更加简洁。所以我们将 Field 用 private final 修饰。</p>
+<p>五、枚举类实现接口</p>
+<p>枚举类可以实现一个或多个接口。与普通类一样，实现接口的时候需要实现接口中定义的所有方法，若没有完全实现，那这个枚举类就是抽象的，只是不需显式加上 abstract 修饰，系统化会默认加上。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> enumcase;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">enum</span> Operation &#123;</span><br><span class="line">    PLUS&#123;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">double</span> <span class="title">eval</span><span class="params">(<span class="keyword">double</span> x, <span class="keyword">double</span> y)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> x + y;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;,</span><br><span class="line">    MINUS&#123;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">double</span> <span class="title">eval</span><span class="params">(<span class="keyword">double</span> x, <span class="keyword">double</span> y)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> x - y;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;,</span><br><span class="line">    TIMES&#123;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">double</span> <span class="title">eval</span><span class="params">(<span class="keyword">double</span> x, <span class="keyword">double</span> y)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> x * y;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;,</span><br><span class="line">    DIVIDE&#123;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">double</span> <span class="title">eval</span><span class="params">(<span class="keyword">double</span> x, <span class="keyword">double</span> y)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> x / y;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 抽象方法，由不同的枚举值提供不同的实现。</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> x</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> y</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">double</span> <span class="title">eval</span><span class="params">(<span class="keyword">double</span> x, <span class="keyword">double</span> y)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        System.out.println(Operation.PLUS.eval(<span class="number">10</span>, <span class="number">2</span>));</span><br><span class="line">        System.out.println(Operation.MINUS.eval(<span class="number">10</span>, <span class="number">2</span>));</span><br><span class="line">        System.out.println(Operation.TIMES.eval(<span class="number">10</span>, <span class="number">2</span>));</span><br><span class="line">        System.out.println(Operation.DIVIDE.eval(<span class="number">10</span>, <span class="number">2</span>));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Operatio 类实际上是抽象的，不可以创建枚举值，所以此处在申明枚举值的时候，都实现了抽象方法，这其实是匿名内部类的实现，花括号部分是一个类体。我们可以看下编译以后的文件。</p>
+<p><img src="data:image/png;base64,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" alt="img"></p>
+<p>共生成了五个 class 文件，这样就证明了 PLUS,MINUS,TIMES,DIVIDE 是 Operation 的匿名内部类的实例。</p>
+<p>六、switch 语句里的表达式可以是枚举值</p>
+<p>Java5 新增了 enum 关键字，同时扩展了 switch。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> enumcase;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SeasonTest</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">judge</span><span class="params">(SeasonEnum s)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">switch</span>(s)</span><br><span class="line">        &#123;</span><br><span class="line">        <span class="keyword">case</span> SPRING:</span><br><span class="line">            System.out.println(<span class="string">"春天适合踏青。"</span>);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> SUMMER:</span><br><span class="line">            System.out.println(<span class="string">"夏天要去游泳啦。"</span>);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> FALL:</span><br><span class="line">            System.out.println(<span class="string">"秋天一定要去旅游哦。"</span>);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> WINTER:</span><br><span class="line">            System.out.println(<span class="string">"冬天要是下雪就好啦。"</span>);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        SeasonEnum s = SeasonEnum.SPRING;</span><br><span class="line">        SeasonTest test = <span class="keyword">new</span> SeasonTest();</span><br><span class="line">        test.judge(s);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>case 表达式中直接写入枚举值，不需加入枚举类作为限定。</p>
+<p>七、java 中枚举类型,整型,字符串之间转换</p>
+<p>枚举类：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">enum</span> DATA_TYPE &#123;</span><br><span class="line">    STRING, DATE, NUMBER, UNKNOWN;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>枚举类型转成整型：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DATA_TYPE.DATE.ordinal()</span><br></pre></td></tr></table></figure>
+
+<p>枚举类型转换成字符串：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DATA_TYPE.DATE.name()</span><br></pre></td></tr></table></figure>
+
+<p>整型转换成枚举类型：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DATA_TYPE.values()[<span class="number">1</span>]</span><br></pre></td></tr></table></figure>
+
+<p>字符串转换成枚举型：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DATA_TYPE.valueOf(<span class="string">"DATE"</span>)</span><br></pre></td></tr></table></figure>
+
+<p><a href="https://www.cnblogs.com/hyl8218/p/5088287.html" target="_blank" rel="noopener">java enum(枚举)使用详解 + 总结</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/java/" rel="tag"># java</a>
+              <a href="/tags/owl/" rel="tag"># owl</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/02/21/java/java%E9%9D%A2%E8%AF%95%E9%A2%98%E4%B9%8Bint%E5%92%8CInteger%E7%9A%84%E5%8C%BA%E5%88%AB/" rel="prev" title="java面试题之int和Integer的区别">
+      <i class="fa fa-chevron-left"></i> java面试题之int和Integer的区别
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/02/21/java/%E8%A7%A3%E5%86%B3JPA%E7%9A%84%E6%9E%9A%E4%B8%BE%E5%B1%80%E9%99%90%E6%80%A7/" rel="next" title="解决JPA的枚举局限性">
+      解决JPA的枚举局限性 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Andy Ge</p>
+  <div class="site-description" itemprop="description">勇于积极进取，步入人生的世外桃源</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">728</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">134</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">315</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/andyge" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;andyge" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:geshaofei@126.com" title="E-Mail → mailto:geshaofei@126.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.ruanyifeng.com/" title="http:&#x2F;&#x2F;www.ruanyifeng.com&#x2F;" rel="noopener" target="_blank">阮一峰</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://colobu.com/" title="http:&#x2F;&#x2F;colobu.com&#x2F;" rel="noopener" target="_blank">鸟窝</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.cnblogs.com/hellokuangshen/" title="https:&#x2F;&#x2F;www.cnblogs.com&#x2F;hellokuangshen&#x2F;" rel="noopener" target="_blank">狂神</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://yelog.org/" title="https:&#x2F;&#x2F;yelog.org&#x2F;" rel="noopener" target="_blank">叶落阁</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Andy Ge</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.7.1
+  </div>
+
+        
+
+
+
+
+
+
+  <script>
+  function leancloudSelector(url) {
+    url = encodeURI(url);
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.getAttribute('id'));
+      var title = visitors.getAttribute('data-flag-title');
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .then(() => {
+                leancloudSelector(url).innerText = counter.time + 1;
+              })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              })
+          } else {
+              Counter('post', '/classes/Counter', { title: title, url: url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.getAttribute('id'));
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (let item of results) {
+            let { url, time } = item;
+            leancloudSelector(url).innerText = time;
+          }
+          for (let url of entries) {
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=2TdIb5gRlAVUw24l2W0zWnCj-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method: method,
+          headers: {
+            'X-LC-Id'     : '2TdIb5gRlAVUw24l2W0zWnCj-gzGzoHsz',
+            'X-LC-Key'    : 'cJdJrMLBXsj0ttq0WsL0aA2j',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

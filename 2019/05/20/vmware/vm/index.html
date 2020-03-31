@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"swiftist.cn","root":"/","scheme":"Pisces","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"EVBR3H53HW","apiKey":"2abd573a01143a0cc4108fa4d21ae67c","indexName":"swiftist","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="概念三种网卡模式桥接模式这种模式下，虚拟机和物理机连的是同一个网络，虚拟机和物理机是并列关系，地位是相当的。比如，你家有路由器，那么你的电脑和你的手机同时连接这个路由器提供的 Wi-Fi，那么它们的关系就是这种模式。 NAT 模式这种模式下，物理机会充当一个“路由器”的角色，虚拟机要想上网，必须经过物理机，那物理机如果不能上网，虚拟机也就不能上网了。之所以说这种模式兼容性最好，是因为物理机的网络环">
+<meta property="og:type" content="article">
+<meta property="og:title" content="vm.md">
+<meta property="og:url" content="https://swiftist.cn/2019/05/20/vmware/vm/index.html">
+<meta property="og:site_name" content="飞雪轩辕">
+<meta property="og:description" content="概念三种网卡模式桥接模式这种模式下，虚拟机和物理机连的是同一个网络，虚拟机和物理机是并列关系，地位是相当的。比如，你家有路由器，那么你的电脑和你的手机同时连接这个路由器提供的 Wi-Fi，那么它们的关系就是这种模式。 NAT 模式这种模式下，物理机会充当一个“路由器”的角色，虚拟机要想上网，必须经过物理机，那物理机如果不能上网，虚拟机也就不能上网了。之所以说这种模式兼容性最好，是因为物理机的网络环">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://swiftist.cn/images/linux/20180515110618879.png">
+<meta property="og:image" content="https://swiftist.cn/2019/05/20/images/linux/20180515110358197.png">
+<meta property="og:image" content="https://swiftist.cn/2019/05/20/images/linux/20180515111032824.png">
+<meta property="og:image" content="https://swiftist.cn/2019/05/20/images/linux/20180515105859808.png">
+<meta property="og:image" content="https://swiftist.cn/2019/05/20/images/linux/20180515111240502.png">
+<meta property="og:image" content="https://swiftist.cn/2019/05/20/images/linux/20180515111627760.png">
+<meta property="og:image" content="https://swiftist.cn/2019/05/20/images/linux/20180515111723770.png">
+<meta property="og:image" content="https://swiftist.cn/2019/05/20/images/linux/WX20190526-170950@2x.png">
+<meta property="og:image" content="https://swiftist.cn/2019/05/20/images/linux/WX20190526-171123@2x.png">
+<meta property="og:image" content="https://swiftist.cn/2019/05/20/images/linux/WX20190520-060210@2x.png">
+<meta property="article:published_time" content="2019-05-19T21:33:45.000Z">
+<meta property="article:modified_time" content="2020-03-31T15:07:39.451Z">
+<meta property="article:author" content="Andy Ge">
+<meta property="article:tag" content="vmware">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://swiftist.cn/images/linux/20180515110618879.png">
+
+<link rel="canonical" href="https://swiftist.cn/2019/05/20/vmware/vm/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>vm.md | 飞雪轩辕</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="飞雪轩辕" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">飞雪轩辕</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">人生的乐趣在于把梦想变成现实</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-java">
+
+    <a href="/categories/java/" rel="section"><i class="fa fa-fw fa-th-large"></i>java</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://swiftist.cn/2019/05/20/vmware/vm/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Andy Ge">
+      <meta itemprop="description" content="勇于积极进取，步入人生的世外桃源">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="飞雪轩辕">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          vm.md
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-05-20 05:33:45" itemprop="dateCreated datePublished" datetime="2019-05-20T05:33:45+08:00">2019-05-20</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-31 23:07:39" itemprop="dateModified" datetime="2020-03-31T23:07:39+08:00">2020-03-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/vmware/" itemprop="url" rel="index">
+                    <span itemprop="name">vmware</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span id="/2019/05/20/vmware/vm/" class="post-meta-item leancloud_visitors" data-flag-title="vm.md" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h1><h2 id="三种网卡模式"><a href="#三种网卡模式" class="headerlink" title="三种网卡模式"></a>三种网卡模式</h2><h3 id="桥接模式"><a href="#桥接模式" class="headerlink" title="桥接模式"></a>桥接模式</h3><p>这种模式下，虚拟机和物理机连的是同一个网络，虚拟机和物理机是并列关系，地位是相当的。比如，你家有路由器，那么你的电脑和你的手机同时连接这个路由器提供的 Wi-Fi，那么它们的关系就是这种模式。</p>
+<h3 id="NAT-模式"><a href="#NAT-模式" class="headerlink" title="NAT 模式"></a>NAT 模式</h3><p>这种模式下，物理机会充当一个“路由器”的角色，虚拟机要想上网，必须经过物理机，那物理机如果不能上网，虚拟机也就不能上网了。之所以说这种模式兼容性最好，是因为物理机的网络环境变化时，虚拟机的网络并不会有影响，比如，上班时你把物理机连接在公司的网络环境中，下班后又把物理机连接在你家的路由器上。你公司的网段有可能和你家的网段是不同的。桥接模式下，虚拟机和物理机一样，都要自动获取 IP 才可以上网，而做实验的时候，是需要把虚拟机设置为静态 IP 的，这样就导致虚拟机网络不稳定。而设置为 NAT 模式，虚拟机的网络并不需要依赖你公司的网络环境或者你家的网络环境。</p>
+<h3 id="仅主机模式"><a href="#仅主机模式" class="headerlink" title="仅主机模式"></a>仅主机模式</h3><p>这种模式下，相当于拿一根网线直连了物理机和虚拟机。</p>
+<h2 id="知识点"><a href="#知识点" class="headerlink" title="知识点"></a>知识点</h2><h3 id="网卡标识"><a href="#网卡标识" class="headerlink" title="网卡标识"></a>网卡标识</h3><ul>
+<li>eth0，eth1，eth2……代表网卡一，网卡二，网卡三……</li>
+<li>lo 代表 127.0.0.1，即 localhost</li>
+</ul>
+<h3 id="连接模式"><a href="#连接模式" class="headerlink" title="连接模式"></a>连接模式</h3><p>安装 VMWare Fusion 成功后，Mac OS 会新增两张网卡 vmnet1 以及 vmnet8，其中 vmnet1 是 Host-only 模式，vmnet8 是 NAT 模式，这里选择 vmnet8 使用 NAT 进行网络设置。</p>
+<h2 id="vmware-桥接模式联网"><a href="#vmware-桥接模式联网" class="headerlink" title="vmware 桥接模式联网"></a>vmware 桥接模式联网</h2><p>安装完成之后，<code>ping 宿主机IP</code>，返回<code>network is unreachable</code>，操作步骤如下：</p>
+<ol>
+<li>更改为桥接模式</li>
+<li>进入/etc/sysconfig/network-scripts/ 查看这下面的文件，每个人的这个文件有所不一样，但前辍是一样的，vi ifcfg-ens33</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">将ONBOOT&#x3D;no改成ONBOOT&#x3D;yes</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>重启服务并查看联网情况</li>
+</ol>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 重新启动网络服务</span></span><br><span class="line">service network restart</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看是否能够联通宿主机</span></span><br><span class="line">ping 192.168.1.104</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看虚拟的网卡，如果成功，能够看到IP地址</span></span><br><span class="line">ip addr</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>安装<code>ifconfig</code>要查看 MAC 地址，需要用到<code>ifconfig</code>，需要首先安装。</li>
+</ol>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">yum search ifconfig</span><br><span class="line">yum install net-tools.x86_64</span><br><span class="line">ifconfig</span><br></pre></td></tr></table></figure>
+
+<h2 id="SecureCRT"><a href="#SecureCRT" class="headerlink" title="SecureCRT"></a>SecureCRT</h2><p>由于直接操作虚拟机，不支持粘贴拷贝，所以可以通过 SecureCRT 远程连接，方便操作。</p>
+<h3 id="建立连接"><a href="#建立连接" class="headerlink" title="建立连接"></a>建立连接</h3><p>打开 SecureCRT，添加<code>Quick Connection</code>，选择<code>ssh2</code>、密码模式，输入机器的 IP 地址，登录名，点击链接，输入密码即可。</p>
+<a id="more"></a>
+
+<h2 id="更改为固定的-IP-地址"><a href="#更改为固定的-IP-地址" class="headerlink" title="更改为固定的 IP 地址"></a>更改为固定的 IP 地址</h2><h3 id="桥接模式2"><a href="#桥接模式2" class="headerlink" title="桥接模式2"></a>桥接模式2</h3><p>1、关闭 NetworkManager 服务</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">service NetworkManager stop</span><br></pre></td></tr></table></figure>
+
+<p>2、关闭 NetworkManager 开机启动</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chkconfig NetworkManager off</span><br></pre></td></tr></table></figure>
+
+<p>3、添加 /etc/sysconfig/network-scripts/ifcfg-eth0 文件</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">DEVICE</span>=eth0</span><br><span class="line"><span class="attr">BOOTPROTO</span>=static</span><br><span class="line"><span class="attr">IPADDR</span>=<span class="number">192.168</span>.<span class="number">1.10</span></span><br><span class="line"><span class="attr">NETMASK</span>=<span class="number">255.255</span>.<span class="number">255.0</span></span><br><span class="line"><span class="attr">GATEWAY</span>=<span class="number">192.168</span>.<span class="number">1.255</span></span><br><span class="line"><span class="attr">HWADDR</span>=<span class="number">00</span>:<span class="number">0</span>c:<span class="number">29</span>:<span class="number">59</span>:<span class="number">77</span>:a3</span><br><span class="line"><span class="attr">ONBOOT</span>=<span class="literal">yes</span></span><br><span class="line"><span class="attr">TYPE</span>=Ethernet</span><br><span class="line"><span class="attr">IPV6INIT</span>=<span class="literal">no</span></span><br></pre></td></tr></table></figure>
+
+<p>注：文件内容的值根据实际情况修改</p>
+<p>4、开机启动 network</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chkconfig network on</span><br></pre></td></tr></table></figure>
+
+<p>5、开启 network 服务</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">service network start</span><br></pre></td></tr></table></figure>
+
+<p>即可生效。</p>
+<p>6、查看是否生效，ping 宿主机</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ping 192.168.1.104</span><br></pre></td></tr></table></figure>
+
+<p>7、通过<code>ip addr</code>查看 ip 地址</p>
+<p>发现会有两个 ip 地址，修改<code>/etc/sysconfig/network-scripts/ifcfg-ens33</code>，将 BOOTPROTO=dhcp 改成 BOOTPROTO=static</p>
+<p>或者直接删除<code>/etc/sysconfig/network-scripts/ifcfg-ens33</code></p>
+<h3 id="NAT-模式2"><a href="#NAT-模式2" class="headerlink" title="NAT 模式2"></a>NAT 模式2</h3><p>Mac OS VMware Fusion Centos6.7 虚拟机 NAT 网络设置.<br>安装 Centos6.7 虚拟机后，虚拟机要访问外网，设置 NAT 网络。</p>
+<p>安装 VMWare Fusion 成功后，Mac OS 会新增两张网卡 vmnet1 以及 vmnet8，其中 vmnet1 是 Host-only 模式，vmnet8 是 NAT 模式，这里选择 vmnet8 使用 NAT 进行网络设置。</p>
+<p>修改 VMWare 的 vmnet8 配置文件/Library/Preferences/VMware\ Fusion/networking，指定获取 IP 为静态以及修改网段为自定义的网段，如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">VERSION&#x3D;1,0</span><br><span class="line">answer VNET_1_DHCP yes</span><br><span class="line">answer VNET_1_DHCP_CFG_HASH 2F5FB22CC017C28C31C897A3E2A28E6794B9D193</span><br><span class="line">answer VNET_1_HOSTONLY_NETMASK 255.255.255.0</span><br><span class="line">answer VNET_1_HOSTONLY_SUBNET 172.16.198.0</span><br><span class="line">answer VNET_1_VIRTUAL_ADAPTER yes</span><br><span class="line">answer VNET_8_DHCP no</span><br><span class="line">answer VNET_8_DHCP_CFG_HASH 3060AE15687A6638721EFBB36FDBCC3DA7F1F555</span><br><span class="line">answer VNET_8_HOSTONLY_NETMASK 255.255.255.0</span><br><span class="line">answer VNET_8_HOSTONLY_SUBNET 172.16.183.0</span><br><span class="line">answer VNET_8_NAT yes</span><br><span class="line">answer VNET_8_VIRTUAL_ADAPTER yes</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/linux/20180515110618879.png" alt=""></p>
+<p>修改完成后，查看 Mac 本机的 ip，使用命令 ifconfig 可以看到</p>
+<p><img src="../../images/linux/20180515110358197.png" alt=""></p>
+<p>查看 vmnet8 的网关，配置文件/Library/Preferences/VMware\ Fusion/vmnet8/nat.conf，默认网关是 xxx.xxx.xxx.2，可修改。</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[host]</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># NAT gateway address</span></span><br><span class="line"><span class="attr">ip</span> = <span class="number">172.16</span>.<span class="number">183.2</span></span><br><span class="line"><span class="attr">netmask</span> = <span class="number">255.255</span>.<span class="number">255.0</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="../../images/linux/20180515111032824.png" alt=""></p>
+<p>设置 VMware 网络为 NAT 模式</p>
+<p><img src="../../images/linux/20180515105859808.png" alt=""></p>
+<p>选择虚拟机的网络适配器为如下，即为 NAT 模式</p>
+<p><img src="../../images/linux/20180515111240502.png" alt=""></p>
+<p>至此 MAC 以及 VMWare 关于 NAT 配置完成，只需配置 Centos6.7 中的网卡信息，即可访问外网。eth-0 网卡的配置文件</p>
+<p>/etc/sysconfig/network-scripts/ifcfg-eth0</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">DEVICE</span>=eth0</span><br><span class="line"><span class="attr">HWADDR</span>=<span class="number">00</span>:<span class="number">0</span>C:<span class="number">29</span>:<span class="number">91</span>:<span class="number">83</span>:<span class="number">0</span>A</span><br><span class="line"><span class="attr">TYPE</span>=Ethernet</span><br><span class="line"><span class="attr">ONBOOT</span>=<span class="literal">yes</span></span><br><span class="line"><span class="attr">NM_CONTROLLED</span>=<span class="literal">yes</span></span><br><span class="line"><span class="attr">BOOTPROTO</span>=static</span><br><span class="line"><span class="attr">IPADDR</span>=<span class="number">192.16</span>.<span class="number">1.100</span></span><br><span class="line"><span class="attr">NETMASKER</span>=<span class="number">255.255</span>.<span class="number">255.0</span></span><br><span class="line"><span class="attr">GATEWAY</span>=<span class="number">192.16</span>.<span class="number">1.2</span></span><br><span class="line"><span class="attr">DNS1</span>=<span class="number">8.8</span>.<span class="number">8.8</span></span><br><span class="line"><span class="attr">DNS2</span>=<span class="number">8.8</span>.<span class="number">4.4</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="../../images/linux/20180515111627760.png" alt=""></p>
+<p>设置完成网卡重启，ping 下外网的 ip，可正常访问。</p>
+<p><img src="../../images/linux/20180515111723770.png" alt=""></p>
+<p>完成 Centos6.7 虚拟机访问外网。</p>
+<h2 id="当采用桥接模式时配置如下"><a href="#当采用桥接模式时配置如下" class="headerlink" title="当采用桥接模式时配置如下"></a>当采用桥接模式时配置如下</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">cat &lt;&lt;EOF &gt; /etc/sysconfig/network-scripts/ifcfg-eth0</span><br><span class="line">DEVICE=eth0</span><br><span class="line">HWADDR=00:0C:29:e0:8a:00</span><br><span class="line">TYPE=Ethernet</span><br><span class="line">ONBOOT=yes</span><br><span class="line">NM_CONTROLLED=yes</span><br><span class="line">BOOTPROTO=static</span><br><span class="line">IPADDR=192.168.1.116</span><br><span class="line">NETMASKER=255.255.255.0</span><br><span class="line">GATEWAY=192.168.1.1</span><br><span class="line">DNS1=8.8.8.8</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
+
+<h3 id="查看-MAC-地址"><a href="#查看-MAC-地址" class="headerlink" title="查看 MAC 地址"></a>查看 MAC 地址</h3><p><img src="../../images/linux/WX20190526-170950@2x.png" alt="MAC"></p>
+<h3 id="查看网关"><a href="#查看网关" class="headerlink" title="查看网关"></a>查看网关</h3><p>通过机器的偏好设置查看网络<br><img src="../../images/linux/WX20190526-171123@2x.png" alt="gateway"></p>
+<h3 id="网关和-DNS1-需要同时配置"><a href="#网关和-DNS1-需要同时配置" class="headerlink" title="网关和 DNS1 需要同时配置"></a>网关和 DNS1 需要同时配置</h3><h2 id="虚拟机克隆"><a href="#虚拟机克隆" class="headerlink" title="虚拟机克隆"></a>虚拟机克隆</h2><h3 id="通过-vmware-可以直接克隆，但是不能够上网，因为他们的ifcfg-eth0中的-IP-地址，MAC-地址，UUID-相同，需要更改。"><a href="#通过-vmware-可以直接克隆，但是不能够上网，因为他们的ifcfg-eth0中的-IP-地址，MAC-地址，UUID-相同，需要更改。" class="headerlink" title="通过 vmware 可以直接克隆，但是不能够上网，因为他们的ifcfg-eth0中的 IP 地址，MAC 地址，UUID 相同，需要更改。"></a>通过 vmware 可以直接克隆，但是不能够上网，因为他们的<code>ifcfg-eth0</code>中的 IP 地址，MAC 地址，UUID 相同，需要更改。</h3><h3 id="通过网络配置可以查看"><a href="#通过网络配置可以查看" class="headerlink" title="通过网络配置可以查看"></a>通过<code>网络配置</code>可以查看</h3><p><img src="../../images/linux/WX20190520-060210@2x.png" alt=""></p>
+<h2 id="要安装的软件"><a href="#要安装的软件" class="headerlink" title="要安装的软件"></a>要安装的软件</h2><ul>
+<li>net-tools.x86_64</li>
+<li>wget</li>
+<li>docker</li>
+<li>epel-release</li>
+</ul>
+<p>cat &gt;&gt;/etc/hosts&lt;&lt;EOF<br>192.16.1.11 k8s-master1 api.k8s.cn<br>192.16.1.12 k8s-master2<br>192.16.1.13 k8s-master3<br>192.16.1.14 k8s-slave1<br>192.16.1.15 k8s-slave2<br>192.16.1.10 k8s.registry.cn<br>EOF</p>
+<h2 id="Harbor"><a href="#Harbor" class="headerlink" title="Harbor"></a>Harbor</h2><p>$ systemctl daemon-reload<br>$ sudo service docker restart<br>$ sudo service docker status (should see active (running))</p>
+<p>默认管理用户名及密码：admin,Harbor12345</p>
+<p>ssh-copy-id root@k8s-master1</p>
+<p>yum install -y docker</p>
+<h2 id="存储设备映射"><a href="#存储设备映射" class="headerlink" title="存储设备映射"></a>存储设备映射</h2><p>安装 yum-utils，它提供一个 yum-config-manager 单元，同时安装的 device-mapper-persistent-data 和 lvm2 用于储存设备映射（devicemapper）必须的两个软件包。</p>
+<p>$ sudo yum install -y yum-utils device-mapper-persistent-data lvm2</p>
+<h2 id="安装-VMBase"><a href="#安装-VMBase" class="headerlink" title="安装 VMBase"></a>安装 VMBase</h2><ul>
+<li>NAT 模式</li>
+<li>常用工具：net-tools.x86_64，wget，</li>
+</ul>
+<h2 id="git-小命令"><a href="#git-小命令" class="headerlink" title="git 小命令"></a>git 小命令</h2><p>剪切粘贴的方法。dd 剪切当前行，然后移动光标到指定位置，再通过 p 或 P 粘贴。</p>
+<p>通过 m 命令。讲光标放在你要移动的行，输入:m +1 向下移动一行，输入:m -2 向上移动一行。</p>
+<p>首先在命令模式下，输入“：set nu”显示行号； 2.通过行号确定你要删除的行； 3.命令输入“：32,65d”,回车键，32-65 行就被删除了，很快捷吧<br>如果无意中删除错了，可以使用‘u’键恢复（命令模式下）</p>
+<p>cat &gt;&gt; /etc/hosts &lt;&lt;EOF<br>192.168.1.117 m7-autocv-gpu01 m7-autocv-gpu01<br>192.168.1.118 m7-autocv-gpu02 m7-autocv-gpu02<br>192.168.1.119 m7-autocv-gpu03 m7-autocv-gpu03<br>EOF</p>
+<p>cd /opt/k8s/work<br>cat &gt; etcd-csr.json &lt;&lt;EOF<br>{<br>“CN”: “etcd”,<br>“hosts”: [<br>“127.0.0.1”,<br>“192.168.1.117”,<br>“192.168.1.118”,<br>“192.168.1.119”<br>],<br>“key”: {<br>“algo”: “rsa”,<br>“size”: 2048<br>},<br>“names”: [<br>{<br>“C”: “CN”,<br>“ST”: “BeiJing”,<br>“L”: “BeiJing”,<br>“O”: “k8s”,<br>“OU”: “4Paradigm”<br>}<br>]<br>}<br>EOF</p>
+<p>source /opt/k8s/bin/environment.sh<br>for node_ip in ${NODE_IPS[@]}<br>  do<br>    echo “&gt;&gt;&gt; ${node_ip}”<br>ssh ${node_ip} “ping -c 1 172.30.192.0”<br>    ssh ${node_ip} “ping -c 1 172.30.168.0”<br>ssh ${node_ip} “ping -c 1 172.30.152.0”<br>done</p>
+<p>cat &gt; /opt/k8s/kube-nginx/conf/kube-nginx.conf &lt;&lt;EOF<br>worker_processes 1;</p>
+<p>events {<br>worker_connections 1024;<br>}</p>
+<p>stream {<br>upstream backend {<br>hash $remote_addr consistent;<br>server 192.168.1.117:6443 max_fails=3 fail_timeout=30s;<br>server 192.168.1.118:6443 max_fails=3 fail_timeout=30s;<br>server 192.168.1.119:6443 max_fails=3 fail_timeout=30s;<br>}</p>
+<pre><code>server {
+    listen 127.0.0.1:8443;
+    proxy_connect_timeout 1s;
+    proxy_pass backend;
+}</code></pre><p>}<br>EOF</p>
+<p>$ openssl req -newkey rsa:4096 -nodes -sha256 -keyout ca.key -x509 -days 365 -out ca.crt</p>
+<p>Generating a 4096 bit RSA private key<br>……………………………………++<br>……..++<br>writing new private key to ‘ca.key’</p>
+<hr>
+<p>You are about to be asked to enter information that will be incorporated<br>into your certificate request.<br>What you are about to enter is what is called a Distinguished Name or a DN.<br>There are quite a few fields but you can leave some blank<br>For some fields there will be a default value,<br>If you enter ‘.’, the field will be left blank.</p>
+<hr>
+<p>Country Name (2 letter code) [XX]:CN<br>State or Province Name (full name) []:GuangDong<br>Locality Name (eg, city) [Default City]:ShenZhen<br>Organization Name (eg, company) [Default Company Ltd]:Sunline<br>Organizational Unit Name (eg, section) []:HaiTeng<br>Common Name (eg, your name or your server’s hostname) []:Harbor<br>Email Address []:<a href="mailto:xxx@qq.cn">xxx@qq.cn</a></p>
+<p>$ openssl req -newkey rsa:4096 -nodes -sha256 -keyout sunline.com.key -out sunline.com.csr</p>
+<p>Generating a 4096 bit RSA private key<br>….++<br>………………………………………………………………………..++<br>writing new private key to ‘sunline.com.key’</p>
+<hr>
+<p>You are about to be asked to enter information that will be incorporated<br>into your certificate request.<br>What you are about to enter is what is called a Distinguished Name or a DN.<br>There are quite a few fields but you can leave some blank<br>For some fields there will be a default value,<br>If you enter ‘.’, the field will be left blank.</p>
+<hr>
+<p>Country Name (2 letter code) [XX]:CN<br>State or Province Name (full name) []:GuangDong<br>Locality Name (eg, city) [Default City]:ShenZhen<br>Organization Name (eg, company) [Default Company Ltd]:Sunline<br>Organizational Unit Name (eg, section) []:HaiTeng<br>Common Name (eg, your name or your server’s hostname) []:Harbor<br>Email Address []:<a href="mailto:xxx@qq.cn">xxx@qq.cn</a><br>Please enter the following ‘extra’ attributes<br>to be sent with your certificate request<br>A challenge password []:<br>An optional company name []:</p>
+<p>$ openssl x509 -req -days 365 -in sunline.com.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out sunline.com.crt</p>
+<p>Signature ok<br>subject=/C=CN/ST=GuangDong/L=ShenZhen/O=Sunline/OU=HaiTeng/CN=Harbor/emailAddress=houfei@sunline.cn<br>Getting CA Private Key</p>
+<p>$ echo subjectAltName = IP:192.168.1.104 &gt; extfile.cnf<br>$ openssl x509 -req -days 365 -in sunline.com.csr -CA ca.crt -CAkey ca.key -CAcreateserial -extfile extfile.cnf -out sunline.com.crt</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/vmware/" rel="tag"># vmware</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/05/18/pig/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%9B%BE%E8%B0%B1/" rel="prev" title="架构师图谱.md">
+      <i class="fa fa-chevron-left"></i> 架构师图谱.md
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/05/21/vmware/vmware%E5%AE%89%E8%A3%85%E6%AD%A5%E9%AA%A4/" rel="next" title="vmware虚拟机安装步骤.md">
+      vmware虚拟机安装步骤.md <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#概念"><span class="nav-number">1.</span> <span class="nav-text">概念</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#三种网卡模式"><span class="nav-number">1.1.</span> <span class="nav-text">三种网卡模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#桥接模式"><span class="nav-number">1.1.1.</span> <span class="nav-text">桥接模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NAT-模式"><span class="nav-number">1.1.2.</span> <span class="nav-text">NAT 模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#仅主机模式"><span class="nav-number">1.1.3.</span> <span class="nav-text">仅主机模式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#知识点"><span class="nav-number">1.2.</span> <span class="nav-text">知识点</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#网卡标识"><span class="nav-number">1.2.1.</span> <span class="nav-text">网卡标识</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#连接模式"><span class="nav-number">1.2.2.</span> <span class="nav-text">连接模式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#vmware-桥接模式联网"><span class="nav-number">1.3.</span> <span class="nav-text">vmware 桥接模式联网</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SecureCRT"><span class="nav-number">1.4.</span> <span class="nav-text">SecureCRT</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#建立连接"><span class="nav-number">1.4.1.</span> <span class="nav-text">建立连接</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#更改为固定的-IP-地址"><span class="nav-number">1.5.</span> <span class="nav-text">更改为固定的 IP 地址</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#桥接模式2"><span class="nav-number">1.5.1.</span> <span class="nav-text">桥接模式2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NAT-模式2"><span class="nav-number">1.5.2.</span> <span class="nav-text">NAT 模式2</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#当采用桥接模式时配置如下"><span class="nav-number">1.6.</span> <span class="nav-text">当采用桥接模式时配置如下</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#查看-MAC-地址"><span class="nav-number">1.6.1.</span> <span class="nav-text">查看 MAC 地址</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#查看网关"><span class="nav-number">1.6.2.</span> <span class="nav-text">查看网关</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#网关和-DNS1-需要同时配置"><span class="nav-number">1.6.3.</span> <span class="nav-text">网关和 DNS1 需要同时配置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#虚拟机克隆"><span class="nav-number">1.7.</span> <span class="nav-text">虚拟机克隆</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#通过-vmware-可以直接克隆，但是不能够上网，因为他们的ifcfg-eth0中的-IP-地址，MAC-地址，UUID-相同，需要更改。"><span class="nav-number">1.7.1.</span> <span class="nav-text">通过 vmware 可以直接克隆，但是不能够上网，因为他们的ifcfg-eth0中的 IP 地址，MAC 地址，UUID 相同，需要更改。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#通过网络配置可以查看"><span class="nav-number">1.7.2.</span> <span class="nav-text">通过网络配置可以查看</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#要安装的软件"><span class="nav-number">1.8.</span> <span class="nav-text">要安装的软件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Harbor"><span class="nav-number">1.9.</span> <span class="nav-text">Harbor</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#存储设备映射"><span class="nav-number">1.10.</span> <span class="nav-text">存储设备映射</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装-VMBase"><span class="nav-number">1.11.</span> <span class="nav-text">安装 VMBase</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#git-小命令"><span class="nav-number">1.12.</span> <span class="nav-text">git 小命令</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Andy Ge</p>
+  <div class="site-description" itemprop="description">勇于积极进取，步入人生的世外桃源</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">728</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">134</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">315</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/andyge" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;andyge" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:geshaofei@126.com" title="E-Mail → mailto:geshaofei@126.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.ruanyifeng.com/" title="http:&#x2F;&#x2F;www.ruanyifeng.com&#x2F;" rel="noopener" target="_blank">阮一峰</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://colobu.com/" title="http:&#x2F;&#x2F;colobu.com&#x2F;" rel="noopener" target="_blank">鸟窝</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.cnblogs.com/hellokuangshen/" title="https:&#x2F;&#x2F;www.cnblogs.com&#x2F;hellokuangshen&#x2F;" rel="noopener" target="_blank">狂神</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://yelog.org/" title="https:&#x2F;&#x2F;yelog.org&#x2F;" rel="noopener" target="_blank">叶落阁</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Andy Ge</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.7.1
+  </div>
+
+        
+
+
+
+
+
+
+  <script>
+  function leancloudSelector(url) {
+    url = encodeURI(url);
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.getAttribute('id'));
+      var title = visitors.getAttribute('data-flag-title');
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .then(() => {
+                leancloudSelector(url).innerText = counter.time + 1;
+              })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              })
+          } else {
+              Counter('post', '/classes/Counter', { title: title, url: url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.getAttribute('id'));
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (let item of results) {
+            let { url, time } = item;
+            leancloudSelector(url).innerText = time;
+          }
+          for (let url of entries) {
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=2TdIb5gRlAVUw24l2W0zWnCj-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method: method,
+          headers: {
+            'X-LC-Id'     : '2TdIb5gRlAVUw24l2W0zWnCj-gzGzoHsz',
+            'X-LC-Key'    : 'cJdJrMLBXsj0ttq0WsL0aA2j',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

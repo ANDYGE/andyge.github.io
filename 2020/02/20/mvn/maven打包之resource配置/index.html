@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"swiftist.cn","root":"/","scheme":"Pisces","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"EVBR3H53HW","apiKey":"2abd573a01143a0cc4108fa4d21ae67c","indexName":"swiftist","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="打包一、简介构建 Maven 项目的时候，如果没有进行特殊的配置，Maven 会按照标准的目录结构查找和处理各种类型文件。 src&#x2F;main&#x2F;java 和 src&#x2F;test&#x2F;java这两个目录中的所有*.java 文件会分别在 comile 和 test-comiple 阶段被编译，编译结果分别放到了 target&#x2F;classes 和 targe&#x2F;test-classes 目录中，但是这两个目录中">
+<meta property="og:type" content="article">
+<meta property="og:title" content="maven打包之resource配置">
+<meta property="og:url" content="https://swiftist.cn/2020/02/20/mvn/maven%E6%89%93%E5%8C%85%E4%B9%8Bresource%E9%85%8D%E7%BD%AE/index.html">
+<meta property="og:site_name" content="飞雪轩辕">
+<meta property="og:description" content="打包一、简介构建 Maven 项目的时候，如果没有进行特殊的配置，Maven 会按照标准的目录结构查找和处理各种类型文件。 src&#x2F;main&#x2F;java 和 src&#x2F;test&#x2F;java这两个目录中的所有*.java 文件会分别在 comile 和 test-comiple 阶段被编译，编译结果分别放到了 target&#x2F;classes 和 targe&#x2F;test-classes 目录中，但是这两个目录中">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://swiftist.cn/images/pasteImage/2020-02-20-12-25-20.png">
+<meta property="og:image" content="https://swiftist.cn/2020/02/20/images/pasteImage/2020-02-20-12-26-57.png">
+<meta property="og:image" content="https://swiftist.cn/2020/02/20/images/pasteImage/2020-02-20-12-27-11.png">
+<meta property="og:image" content="https://swiftist.cn/2020/02/20/images/pasteImage/2020-02-20-12-27-21.png">
+<meta property="og:image" content="https://swiftist.cn/2020/02/20/images/pasteImage/2020-02-20-12-27-48.png">
+<meta property="og:image" content="https://swiftist.cn/2020/02/20/images/pasteImage/2020-02-20-12-28-42.png">
+<meta property="og:image" content="https://swiftist.cn/2020/02/20/images/pasteImage/2020-02-20-12-28-54.png">
+<meta property="article:published_time" content="2020-02-20T04:19:58.000Z">
+<meta property="article:modified_time" content="2020-03-31T15:07:39.390Z">
+<meta property="article:author" content="Andy Ge">
+<meta property="article:tag" content="spring">
+<meta property="article:tag" content="maven">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://swiftist.cn/images/pasteImage/2020-02-20-12-25-20.png">
+
+<link rel="canonical" href="https://swiftist.cn/2020/02/20/mvn/maven%E6%89%93%E5%8C%85%E4%B9%8Bresource%E9%85%8D%E7%BD%AE/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>maven打包之resource配置 | 飞雪轩辕</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="飞雪轩辕" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">飞雪轩辕</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">人生的乐趣在于把梦想变成现实</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-java">
+
+    <a href="/categories/java/" rel="section"><i class="fa fa-fw fa-th-large"></i>java</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://swiftist.cn/2020/02/20/mvn/maven%E6%89%93%E5%8C%85%E4%B9%8Bresource%E9%85%8D%E7%BD%AE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Andy Ge">
+      <meta itemprop="description" content="勇于积极进取，步入人生的世外桃源">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="飞雪轩辕">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          maven打包之resource配置
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-02-20 12:19:58" itemprop="dateCreated datePublished" datetime="2020-02-20T12:19:58+08:00">2020-02-20</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-31 23:07:39" itemprop="dateModified" datetime="2020-03-31T23:07:39+08:00">2020-03-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/maven/" itemprop="url" rel="index">
+                    <span itemprop="name">maven</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/02/20/mvn/maven%E6%89%93%E5%8C%85%E4%B9%8Bresource%E9%85%8D%E7%BD%AE/" class="post-meta-item leancloud_visitors" data-flag-title="maven打包之resource配置" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="打包"><a href="#打包" class="headerlink" title="打包"></a>打包</h1><h2 id="一、简介"><a href="#一、简介" class="headerlink" title="一、简介"></a>一、简介</h2><p>构建 Maven 项目的时候，如果没有进行特殊的配置，Maven 会按照标准的目录结构查找和处理各种类型文件。</p>
+<h3 id="src-main-java-和-src-test-java"><a href="#src-main-java-和-src-test-java" class="headerlink" title="src/main/java 和 src/test/java"></a>src/main/java 和 src/test/java</h3><p>这两个目录中的所有*.java 文件会分别在 comile 和 test-comiple 阶段被编译，编译结果分别放到了 target/classes 和 targe/test-classes 目录中，但是这两个目录中的其他文件都会被忽略掉。</p>
+<h3 id="src-main-resouces-和-src-test-resources"><a href="#src-main-resouces-和-src-test-resources" class="headerlink" title="src/main/resouces 和 src/test/resources"></a>src/main/resouces 和 src/test/resources</h3><p>这两个目录中的文件也会分别被复制到 target/classes 和 target/test-classes 目录中。</p>
+<h3 id="target-classes"><a href="#target-classes" class="headerlink" title="target/classes"></a>target/classes</h3><p>打包插件默认会把这个目录中的所有内容打入到 jar 包或者 war 包中。</p>
+<p>如下所示:<br><img src="/images/pasteImage/2020-02-20-12-25-20.png" alt=""></p>
+<h2 id="二、Maven-项目的标准目录结构"><a href="#二、Maven-项目的标准目录结构" class="headerlink" title="二、Maven 项目的标准目录结构"></a>二、Maven 项目的标准目录结构</h2><ul>
+<li>src<ul>
+<li>main<ul>
+<li>java 源文件</li>
+<li>resources 资源文件</li>
+<li>filters 资源过滤文件</li>
+<li>config 配置文件</li>
+<li>scripts 脚本文件</li>
+<li>webapp web 应用文件</li>
+</ul>
+</li>
+<li>test<ul>
+<li>java 测试源文件</li>
+<li>resources 测试资源文件</li>
+<li>filters 测试资源过滤文件</li>
+</ul>
+</li>
+<li>it 集成测试</li>
+<li>assembly assembly descriptors</li>
+<li>site Site</li>
+</ul>
+</li>
+<li>target<ul>
+<li>generated-sources</li>
+<li>classes</li>
+<li>generated-test-sources</li>
+<li>test-classes</li>
+<li>xxx.jar</li>
+</ul>
+</li>
+<li>pom.xml</li>
+<li>LICENSE.txt</li>
+<li>NOTICE.txt</li>
+<li>README.txt</li>
+</ul>
+<h2 id="三、打包时资源文件的配置"><a href="#三、打包时资源文件的配置" class="headerlink" title="三、打包时资源文件的配置"></a>三、打包时资源文件的配置</h2><h3 id="3-1、打包-src-main-java-目录下的-xml"><a href="#3-1、打包-src-main-java-目录下的-xml" class="headerlink" title="3.1、打包 src/main/java 目录下的 xml"></a>3.1、打包 src/main/java 目录下的 xml</h3><p>一般情况下，我们用到的资源文件(各种 xml，properites，xsd 文件等)都放在 src/main/resources 下面，利用 maven 打包时，maven 能把这些资源文件打包到相应的 jar 或者 war 里。</p>
+<p>有时候，比如 mybatis 的 mapper.xml 文件，我们习惯把它和 Mapper.java 放一起，都在 src/main/java 下面，这样利用 maven 打包时，就需要修改 pom.xml 文件，来把 mapper.xml 文件一起打包进 jar 或者 war 里了，否则，这些文件不会被打包的。(maven 认为 src/main/java 只是 java 的源代码路径)</p>
+<p>下面通过一个简单的示例来说明:</p>
+<p>项目结构如下所示，有两个 UserMaper.xml 文件，所在目录不同<br><img src="../../images/pasteImage/2020-02-20-12-26-57.png" alt=""></p>
+<p>默认情况下，在 POM.XML 目录下执行: mvn clean package 打包命令在 target\classes 目录下不会把 UserMapper.xml 打包到下 mapper 目录下<br><img src="../../images/pasteImage/2020-02-20-12-27-11.png" alt=""></p>
+<p>而 resources 目录下的文件始终都会打包进 jar 包或 war 包<br><img src="../../images/pasteImage/2020-02-20-12-27-21.png" alt=""></p>
+<p>这个时候使用 mybatis 就会出一些问题，找不到 UserMapper 所对应的 xml 文件解决方法有如下几种:</p>
+<h4 id="1-配置-POM-XML-的-resource-把-xml-也打包到-mapper-目录下"><a href="#1-配置-POM-XML-的-resource-把-xml-也打包到-mapper-目录下" class="headerlink" title="(1)配置 POM.XML 的 resource 把 xml 也打包到 mapper 目录下"></a>(1)配置 POM.XML 的 resource 把 xml 也打包到 mapper 目录下</h4><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">build</span>&gt;</span></span><br><span class="line">   <span class="comment">&lt;!-- 资源目录 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">resources</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">resource</span>&gt;</span></span><br><span class="line">            <span class="comment">&lt;!-- 设定主资源目录  --&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">directory</span>&gt;</span>src/main/java<span class="tag">&lt;/<span class="name">directory</span>&gt;</span></span><br><span class="line"></span><br><span class="line">            <span class="comment">&lt;!-- maven default生命周期，process-resources阶段执行maven-resources-plugin插件的resources目标处理主资源目下的资源文件时，只处理如下配置中包含的资源类型 --&gt;</span></span><br><span class="line">			 <span class="tag">&lt;<span class="name">includes</span>&gt;</span></span><br><span class="line">				  <span class="tag">&lt;<span class="name">include</span>&gt;</span>**/*.xml<span class="tag">&lt;/<span class="name">include</span>&gt;</span></span><br><span class="line">			 <span class="tag">&lt;/<span class="name">includes</span>&gt;</span></span><br><span class="line"></span><br><span class="line">            <span class="comment">&lt;!-- maven default生命周期，process-resources阶段执行maven-resources-plugin插件的resources目标处理主资源目下的资源文件时，不处理如下配置中包含的资源类型（剔除下如下配置中包含的资源类型）--&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">excludes</span>&gt;</span></span><br><span class="line">				<span class="tag">&lt;<span class="name">exclude</span>&gt;</span>**/*.yaml<span class="tag">&lt;/<span class="name">exclude</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;/<span class="name">excludes</span>&gt;</span></span><br><span class="line"></span><br><span class="line">            <span class="comment">&lt;!-- maven default生命周期，process-resources阶段执行maven-resources-plugin插件的resources目标处理主资源目下的资源文件时，指定处理后的资源文件输出目录，默认是$&#123;build.outputDirectory&#125;指定的目录--&gt;</span></span><br><span class="line">            <span class="comment">&lt;!--&lt;targetPath&gt;$&#123;build.outputDirectory&#125;&lt;/targetPath&gt; --&gt;</span></span><br><span class="line"></span><br><span class="line">            <span class="comment">&lt;!-- maven default生命周期，process-resources阶段执行maven-resources-plugin插件的resources目标处理主资源目下的资源文件时，是否对主资源目录开启资源过滤 --&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">filtering</span>&gt;</span>true<span class="tag">&lt;/<span class="name">filtering</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">resource</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">resources</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">build</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>其中*<em>/</em>这样的写法，是为了保证各级子目录下的资源文件被打包。resources 是可以看做是容器，这个容器里面可以放很多个像 resource 这样的配置。而 directory 就是配置文件所在的路径，includes 从英文单词角度看，就是包含的意思，此时在执行命令，就会把 xml 也打包到 mapper 目录下了<br><img src="../../images/pasteImage/2020-02-20-12-27-48.png" alt=""></p>
+<p>Resources 官方文档地址为:<a href="http://maven.apache.org/pom.html#Resources" target="_blank" rel="noopener">http://maven.apache.org/pom.html#Resources</a></p>
+<h4 id="2-maven-resources-plugin-插件"><a href="#2-maven-resources-plugin-插件" class="headerlink" title="(2)maven-resources-plugin 插件"></a>(2)maven-resources-plugin 插件</h4><p>为了使项目结构更为清晰，Maven 区别对待 Java 代码文件和资源文件，maven-compiler-plugin 用来编译 Java 代码，maven-resources-plugin 则用来处理资源文件。</p>
+<p>默认的主资源文件目录是 src/main/resources，很多用户会需要添加额外的资源文件目录，这个时候就可以通过配置 maven-resources-plugin 来实现。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--</span></span><br><span class="line"><span class="comment">        此plugin可以用</span></span><br><span class="line"><span class="comment">        利用此plugin，把源代码中的xml文件，打包到相应位置，</span></span><br><span class="line"><span class="comment">        这里主要是为了打包Mybatis的mapper.xml文件</span></span><br><span class="line"><span class="comment">        --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>maven-resources-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.5<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">executions</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">execution</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">id</span>&gt;</span>copy-xmls<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">phase</span>&gt;</span>process-sources<span class="tag">&lt;/<span class="name">phase</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">goals</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">goal</span>&gt;</span>copy-resources<span class="tag">&lt;/<span class="name">goal</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">goals</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">outputDirectory</span>&gt;</span>$&#123;basedir&#125;/target/classes<span class="tag">&lt;/<span class="name">outputDirectory</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">resources</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">resource</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">directory</span>&gt;</span>$&#123;basedir&#125;/src/main/java<span class="tag">&lt;/<span class="name">directory</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">includes</span>&gt;</span></span><br><span class="line">                            <span class="tag">&lt;<span class="name">include</span>&gt;</span>**/*.xml<span class="tag">&lt;/<span class="name">include</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;/<span class="name">includes</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;/<span class="name">resource</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">resources</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">execution</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">executions</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>此外，资源文件过滤也是 Maven 的一大特性，你可以在资源文件中使用${propertyName}形式的 Maven 属性，然后配置 maven-resources-plugin 开启对资源文件的过滤，之后就可以针对不同环境通过命令行或者 Profile 传入属性的值，以实现更为灵活的构建。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.maven.plugins<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>maven-resources-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">encoding</span>&gt;</span>UTF-8<span class="tag">&lt;/<span class="name">encoding</span>&gt;</span></span><br><span class="line">		<span class="comment">&lt;!-- 过滤后缀为pem、pfx的证书文件 --&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">nonFilteredFileExtensions</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">nonFilteredFileExtension</span>&gt;</span>pem<span class="tag">&lt;/<span class="name">nonFilteredFileExtension</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">nonFilteredFileExtension</span>&gt;</span>pfx<span class="tag">&lt;/<span class="name">nonFilteredFileExtension</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">nonFilteredFileExtension</span>&gt;</span>p12<span class="tag">&lt;/<span class="name">nonFilteredFileExtension</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;/<span class="name">nonFilteredFileExtensions</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="3-build-helper-maven-plugin-插件"><a href="#3-build-helper-maven-plugin-插件" class="headerlink" title="(3)build-helper-maven-plugin 插件"></a>(3)build-helper-maven-plugin 插件</h4><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--</span></span><br><span class="line"><span class="comment">      此plugin可以用</span></span><br><span class="line"><span class="comment">      利用此plugin，把源代码中的xml文件，</span></span><br><span class="line"><span class="comment">      打包到相应位置，这里主要是为了打包Mybatis的mapper.xml文件</span></span><br><span class="line"><span class="comment">      --&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">              <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.codehaus.mojo<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">              <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>build-helper-maven-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">              <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.8<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">              <span class="tag">&lt;<span class="name">executions</span>&gt;</span></span><br><span class="line">                  <span class="tag">&lt;<span class="name">execution</span>&gt;</span></span><br><span class="line">                      <span class="tag">&lt;<span class="name">id</span>&gt;</span>add-resource<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">                      <span class="tag">&lt;<span class="name">phase</span>&gt;</span>generate-resources<span class="tag">&lt;/<span class="name">phase</span>&gt;</span></span><br><span class="line">                      <span class="tag">&lt;<span class="name">goals</span>&gt;</span></span><br><span class="line">                          <span class="tag">&lt;<span class="name">goal</span>&gt;</span>add-resource<span class="tag">&lt;/<span class="name">goal</span>&gt;</span></span><br><span class="line">                      <span class="tag">&lt;/<span class="name">goals</span>&gt;</span></span><br><span class="line">                      <span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">                          <span class="tag">&lt;<span class="name">resources</span>&gt;</span></span><br><span class="line">                              <span class="tag">&lt;<span class="name">resource</span>&gt;</span></span><br><span class="line">                                  <span class="tag">&lt;<span class="name">directory</span>&gt;</span>src/main/java<span class="tag">&lt;/<span class="name">directory</span>&gt;</span></span><br><span class="line">                                  <span class="tag">&lt;<span class="name">includes</span>&gt;</span></span><br><span class="line">                                      <span class="tag">&lt;<span class="name">include</span>&gt;</span>**/*.xml<span class="tag">&lt;/<span class="name">include</span>&gt;</span></span><br><span class="line">                                  <span class="tag">&lt;/<span class="name">includes</span>&gt;</span></span><br><span class="line">                              <span class="tag">&lt;/<span class="name">resource</span>&gt;</span></span><br><span class="line">                          <span class="tag">&lt;/<span class="name">resources</span>&gt;</span></span><br><span class="line">                      <span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br><span class="line">                  <span class="tag">&lt;/<span class="name">execution</span>&gt;</span></span><br><span class="line">              <span class="tag">&lt;/<span class="name">executions</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="3-2、src-main-resources-目录下的-xml-等资源文件不被打包"><a href="#3-2、src-main-resources-目录下的-xml-等资源文件不被打包" class="headerlink" title="3.2、src/main/resources 目录下的 xml 等资源文件不被打包"></a>3.2、src/main/resources 目录下的 xml 等资源文件不被打包</h3><p>默认 resources 目录下的文件都会被打包，如果想 resources 目录下的 xml 文件不被打包，可通过如下配置:</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--过滤resource下的文件--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">resources</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">resource</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">directory</span>&gt;</span>src/main/resources<span class="tag">&lt;/<span class="name">directory</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">includes</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">include</span>&gt;</span>*.properties<span class="tag">&lt;/<span class="name">include</span>&gt;</span>  <span class="comment">&lt;!--打包properties文件--&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">includes</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">excludes</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">exclude</span>&gt;</span>*.xml<span class="tag">&lt;/<span class="name">exclude</span>&gt;</span>  <span class="comment">&lt;!--过滤xml与yaml文件--&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">exclude</span>&gt;</span>*.yaml<span class="tag">&lt;/<span class="name">exclude</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">excludes</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">resource</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">resources</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>编译之后如下:<br><img src="../../images/pasteImage/2020-02-20-12-28-42.png" alt=""></p>
+<p>当然也可以通过插件来实现</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>maven-resources-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">executions</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">execution</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">id</span>&gt;</span>copy-resources<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">phase</span>&gt;</span>validate<span class="tag">&lt;/<span class="name">phase</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">goals</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">goal</span>&gt;</span>copy-resources<span class="tag">&lt;/<span class="name">goal</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">goals</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line"></span><br><span class="line">				<span class="comment">&lt;!-- 并把文件复制到target/conf目录下--&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">outputDirectory</span>&gt;</span>$&#123;project.build.directory&#125;/conf<span class="tag">&lt;/<span class="name">outputDirectory</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">resources</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">resource</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">directory</span>&gt;</span>src/main/resources<span class="tag">&lt;/<span class="name">directory</span>&gt;</span></span><br><span class="line">						<span class="comment">&lt;!-- 指定不需要处理的资源 &lt;excludes&gt; &lt;exclude&gt;WEB-INF/*.*&lt;/exclude&gt; &lt;/excludes&gt; --&gt;</span></span><br><span class="line">						<span class="tag">&lt;<span class="name">excludes</span>&gt;</span> <span class="tag">&lt;<span class="name">exclude</span>&gt;</span>**/*.xml<span class="tag">&lt;/<span class="name">exclude</span>&gt;</span> <span class="tag">&lt;/<span class="name">excludes</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">filtering</span>&gt;</span>true<span class="tag">&lt;/<span class="name">filtering</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;/<span class="name">resource</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">resources</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">execution</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">executions</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>实现的效果如下:<br><img src="../../images/pasteImage/2020-02-20-12-28-54.png" alt=""></p>
+<p>编译好之后，会在 target 目录下生成 conf 目录并且把 resources 目录下的所有文件都自动拷贝到 target/conf/目录下</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/spring/" rel="tag"># spring</a>
+              <a href="/tags/maven/" rel="tag"># maven</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/02/20/spring/SpringBoot-%E9%A1%B9%E7%9B%AE%E4%B8%AD%E4%BD%BF%E7%94%A8Log4j2%E8%AF%A6%E7%BB%86/" rel="prev" title="SpringBoot 项目中使用Log4j2详细">
+      <i class="fa fa-chevron-left"></i> SpringBoot 项目中使用Log4j2详细
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/02/21/git/git%E6%80%8E%E6%A0%B7%E5%88%A0%E9%99%A4%E6%9C%AA%E7%9B%91%E8%A7%86%E7%9A%84%E6%96%87%E4%BB%B6untracked-files/" rel="next" title="git怎样删除未监视的文件untracked files">
+      git怎样删除未监视的文件untracked files <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#打包"><span class="nav-number">1.</span> <span class="nav-text">打包</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、简介"><span class="nav-number">1.1.</span> <span class="nav-text">一、简介</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#src-main-java-和-src-test-java"><span class="nav-number">1.1.1.</span> <span class="nav-text">src&#x2F;main&#x2F;java 和 src&#x2F;test&#x2F;java</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#src-main-resouces-和-src-test-resources"><span class="nav-number">1.1.2.</span> <span class="nav-text">src&#x2F;main&#x2F;resouces 和 src&#x2F;test&#x2F;resources</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#target-classes"><span class="nav-number">1.1.3.</span> <span class="nav-text">target&#x2F;classes</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、Maven-项目的标准目录结构"><span class="nav-number">1.2.</span> <span class="nav-text">二、Maven 项目的标准目录结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、打包时资源文件的配置"><span class="nav-number">1.3.</span> <span class="nav-text">三、打包时资源文件的配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1、打包-src-main-java-目录下的-xml"><span class="nav-number">1.3.1.</span> <span class="nav-text">3.1、打包 src&#x2F;main&#x2F;java 目录下的 xml</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-配置-POM-XML-的-resource-把-xml-也打包到-mapper-目录下"><span class="nav-number">1.3.1.1.</span> <span class="nav-text">(1)配置 POM.XML 的 resource 把 xml 也打包到 mapper 目录下</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-maven-resources-plugin-插件"><span class="nav-number">1.3.1.2.</span> <span class="nav-text">(2)maven-resources-plugin 插件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-build-helper-maven-plugin-插件"><span class="nav-number">1.3.1.3.</span> <span class="nav-text">(3)build-helper-maven-plugin 插件</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2、src-main-resources-目录下的-xml-等资源文件不被打包"><span class="nav-number">1.3.2.</span> <span class="nav-text">3.2、src&#x2F;main&#x2F;resources 目录下的 xml 等资源文件不被打包</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Andy Ge</p>
+  <div class="site-description" itemprop="description">勇于积极进取，步入人生的世外桃源</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">728</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">134</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">315</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/andyge" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;andyge" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:geshaofei@126.com" title="E-Mail → mailto:geshaofei@126.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.ruanyifeng.com/" title="http:&#x2F;&#x2F;www.ruanyifeng.com&#x2F;" rel="noopener" target="_blank">阮一峰</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://colobu.com/" title="http:&#x2F;&#x2F;colobu.com&#x2F;" rel="noopener" target="_blank">鸟窝</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.cnblogs.com/hellokuangshen/" title="https:&#x2F;&#x2F;www.cnblogs.com&#x2F;hellokuangshen&#x2F;" rel="noopener" target="_blank">狂神</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://yelog.org/" title="https:&#x2F;&#x2F;yelog.org&#x2F;" rel="noopener" target="_blank">叶落阁</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Andy Ge</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.7.1
+  </div>
+
+        
+
+
+
+
+
+
+  <script>
+  function leancloudSelector(url) {
+    url = encodeURI(url);
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.getAttribute('id'));
+      var title = visitors.getAttribute('data-flag-title');
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .then(() => {
+                leancloudSelector(url).innerText = counter.time + 1;
+              })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              })
+          } else {
+              Counter('post', '/classes/Counter', { title: title, url: url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.getAttribute('id'));
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (let item of results) {
+            let { url, time } = item;
+            leancloudSelector(url).innerText = time;
+          }
+          for (let url of entries) {
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=2TdIb5gRlAVUw24l2W0zWnCj-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method: method,
+          headers: {
+            'X-LC-Id'     : '2TdIb5gRlAVUw24l2W0zWnCj-gzGzoHsz',
+            'X-LC-Key'    : 'cJdJrMLBXsj0ttq0WsL0aA2j',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

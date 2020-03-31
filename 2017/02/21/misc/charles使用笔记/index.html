@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"swiftist.cn","root":"/","scheme":"Pisces","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"EVBR3H53HW","apiKey":"2abd573a01143a0cc4108fa4d21ae67c","indexName":"swiftist","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="charles 是一个 HTTP 代理服务器,HTTP 监视器,反转代理服务器，当浏览器连接 Charles 的代理访问互联网时，Charles 可以监控浏览器发送和接收的所有数据。它允许一个开发者查看所有连接互联网的 HTTP 通信，这些包括 request, response 和 HTTP headers （包含 cookies 与 caching 信息）。  主要功能  支持 SSL 代理">
+<meta property="og:type" content="article">
+<meta property="og:title" content="charles使用笔记">
+<meta property="og:url" content="https://swiftist.cn/2017/02/21/misc/charles%E4%BD%BF%E7%94%A8%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:site_name" content="飞雪轩辕">
+<meta property="og:description" content="charles 是一个 HTTP 代理服务器,HTTP 监视器,反转代理服务器，当浏览器连接 Charles 的代理访问互联网时，Charles 可以监控浏览器发送和接收的所有数据。它允许一个开发者查看所有连接互联网的 HTTP 通信，这些包括 request, response 和 HTTP headers （包含 cookies 与 caching 信息）。  主要功能  支持 SSL 代理">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://swiftist.cn/images/charles/charles0.png">
+<meta property="og:image" content="https://swiftist.cn/2017/02/21/images/charles/charles18.png">
+<meta property="og:image" content="https://swiftist.cn/2017/02/21/images/charles/charles2.png">
+<meta property="og:image" content="https://swiftist.cn/2017/02/21/images/charles/charles3.png">
+<meta property="og:image" content="https://swiftist.cn/2017/02/21/images/charles/charles4.png">
+<meta property="og:image" content="https://swiftist.cn/2017/02/21/images/charles/charles5.png">
+<meta property="og:image" content="https://swiftist.cn/2017/02/21/images/charles/charles6.png">
+<meta property="og:image" content="https://swiftist.cn/2017/02/21/images/charles/charles7.png">
+<meta property="og:image" content="https://swiftist.cn/2017/02/21/images/charles/charles14.png">
+<meta property="og:image" content="https://swiftist.cn/2017/02/21/images/charles/charles8.png">
+<meta property="og:image" content="https://swiftist.cn/2017/02/21/images/charles/charles19.png">
+<meta property="og:image" content="https://swiftist.cn/2017/02/21/images/charles/charles9.png">
+<meta property="og:image" content="https://swiftist.cn/2017/02/21/images/charles/charles22.png">
+<meta property="og:image" content="https://swiftist.cn/2017/02/21/images/charles/charles10.png">
+<meta property="og:image" content="https://swiftist.cn/2017/02/21/images/charles/charles11.png">
+<meta property="og:image" content="https://swiftist.cn/2017/02/21/images/charles/charles12.png">
+<meta property="og:image" content="https://swiftist.cn/2017/02/21/images/charles/charles13.png">
+<meta property="og:image" content="https://swiftist.cn/2017/02/21/images/charles/charles15.png">
+<meta property="og:image" content="https://swiftist.cn/2017/02/21/images/charles/charles16.png">
+<meta property="og:image" content="https://swiftist.cn/2017/02/21/images/charles/charles21.png">
+<meta property="og:image" content="https://swiftist.cn/2017/02/21/images/charles/charles1.png">
+<meta property="og:image" content="https://swiftist.cn/2017/02/21/images/charles/charles19.png">
+<meta property="og:image" content="https://swiftist.cn/2017/02/21/images/charles/charles20.png">
+<meta property="article:published_time" content="2017-02-21T02:02:07.000Z">
+<meta property="article:modified_time" content="2020-03-31T15:07:39.384Z">
+<meta property="article:author" content="Andy Ge">
+<meta property="article:tag" content="笔记">
+<meta property="article:tag" content="charles">
+<meta property="article:tag" content="抓包">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://swiftist.cn/images/charles/charles0.png">
+
+<link rel="canonical" href="https://swiftist.cn/2017/02/21/misc/charles%E4%BD%BF%E7%94%A8%E7%AC%94%E8%AE%B0/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>charles使用笔记 | 飞雪轩辕</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="飞雪轩辕" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">飞雪轩辕</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">人生的乐趣在于把梦想变成现实</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-java">
+
+    <a href="/categories/java/" rel="section"><i class="fa fa-fw fa-th-large"></i>java</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://swiftist.cn/2017/02/21/misc/charles%E4%BD%BF%E7%94%A8%E7%AC%94%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Andy Ge">
+      <meta itemprop="description" content="勇于积极进取，步入人生的世外桃源">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="飞雪轩辕">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          charles使用笔记
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-02-21 10:02:07" itemprop="dateCreated datePublished" datetime="2017-02-21T10:02:07+08:00">2017-02-21</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-31 23:07:39" itemprop="dateModified" datetime="2020-03-31T23:07:39+08:00">2020-03-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%9D%82%E9%A1%B9/" itemprop="url" rel="index">
+                    <span itemprop="name">杂项</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span id="/2017/02/21/misc/charles%E4%BD%BF%E7%94%A8%E7%AC%94%E8%AE%B0/" class="post-meta-item leancloud_visitors" data-flag-title="charles使用笔记" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <blockquote>
+<p>charles 是一个 HTTP 代理服务器,HTTP 监视器,反转代理服务器，当浏览器连接 Charles 的代理访问互联网时，Charles 可以监控浏览器发送和接收的所有数据。它允许一个开发者查看所有连接互联网的 HTTP 通信，这些包括 request, response 和 HTTP headers （包含 cookies 与 caching 信息）。</p>
+</blockquote>
+<p>主要功能</p>
+<ul>
+<li>支持 SSL 代理。可以截取分析 SSL 的请求。</li>
+<li>支持流量控制。可以模拟慢速网络以及等待时间（latency）较长的请求。</li>
+<li>支持 AJAX 调试。可以自动将 json 或 xml 数据格式化，方便查看。</li>
+<li>支持 AMF 调试。可以将 Flash Remoting 或 Flex Remoting 信息格式化，方便查看。</li>
+<li>支持重发网络请求，方便后端调试。</li>
+<li>支持修改网络请求参数。</li>
+<li>支持网络请求的截获并动态修改。</li>
+<li>检查 HTML，CSS 和 RSS 内容是否符合 W3C 标准。</li>
+</ul>
+<a id="more"></a>
+
+<p><strong>注意：该软件在特殊情况下会出现劫持浏览器导致无法浏览网页的问题(请谨慎使用)。</strong></p>
+<h2 id="下载"><a href="#下载" class="headerlink" title="下载"></a>下载</h2><p><a href="https://www.charlesproxy.com/download/" target="_blank" rel="noopener">https://www.charlesproxy.com/download/</a></p>
+<p><img src="/images/charles/charles0.png" alt=""></p>
+<h2 id="破解-4-2-1-版"><a href="#破解-4-2-1-版" class="headerlink" title="破解(4.2.1 版)"></a>破解(4.2.1 版)</h2><p>将 <a href="/images/charles/charles.jar">charles.jar</a> 拷贝到 App 的包内的 content/java 目录下，覆盖原来的即可。<br><img src="../../images/charles/charles18.png" alt=""></p>
+<!--more-->
+
+<h2 id="将电脑和手机设置成同一个网络"><a href="#将电脑和手机设置成同一个网络" class="headerlink" title="将电脑和手机设置成同一个网络"></a>将电脑和手机设置成同一个网络</h2><h3 id="查看电脑的网络-IP"><a href="#查看电脑的网络-IP" class="headerlink" title="查看电脑的网络 IP"></a>查看电脑的网络 IP</h3><p><img src="../../images/charles/charles2.png" alt=""><br><img src="../../images/charles/charles3.png" alt=""></p>
+<h3 id="设置手机的代理"><a href="#设置手机的代理" class="headerlink" title="设置手机的代理"></a>设置手机的代理</h3><h4 id="安卓手机"><a href="#安卓手机" class="headerlink" title="安卓手机"></a>安卓手机</h4><p><img src="../../images/charles/charles4.png" alt=""></p>
+<p>将上面的 IP 地址填入：</p>
+<p><img src="../../images/charles/charles5.png" alt=""></p>
+<h4 id="苹果手机"><a href="#苹果手机" class="headerlink" title="苹果手机"></a>苹果手机</h4><p><img src="../../images/charles/charles6.png" alt=""></p>
+<h2 id="允许请求"><a href="#允许请求" class="headerlink" title="允许请求"></a>允许请求</h2><p>设置好了后，打开之前下载好的花瓶，然后你的手机请求网络，电脑会弹出是否同意访问的选择，点击 allow，就可以进行抓包了。</p>
+<p><img src="../../images/charles/charles7.png" alt=""></p>
+<h2 id="界面"><a href="#界面" class="headerlink" title="界面"></a>界面</h2><ol>
+<li>工具栏。<br>设置，配置等。</li>
+<li>抓包列表。<br>抓包的结果以列表的形式展示。</li>
+<li>结果展示。<br>可以查看请求头，请求内容等相关。<br><img src="../../images/charles/charles14.png" alt=""></li>
+</ol>
+<p>现在只能查看 http 请求，https 请求的话，是无法查看的，请求列表都是 unknown。</p>
+<p><img src="../../images/charles/charles8.png" alt=""></p>
+<p>正确配置后的应该为：</p>
+<p><img src="../../images/charles/charles19.png" alt=""></p>
+<h2 id="https-请求配置"><a href="#https-请求配置" class="headerlink" title="https 请求配置"></a>https 请求配置</h2><h3 id="首先在电脑上安装-charles-根证书"><a href="#首先在电脑上安装-charles-根证书" class="headerlink" title="首先在电脑上安装 charles 根证书"></a>首先在电脑上安装 charles 根证书</h3><p><img src="../../images/charles/charles9.png" alt=""></p>
+<p><img src="../../images/charles/charles22.png" alt=""></p>
+<p>安装成功之后在系统的证书列表中可以看到：</p>
+<p><img src="../../images/charles/charles10.png" alt=""></p>
+<h3 id="然后在手机上安装"><a href="#然后在手机上安装" class="headerlink" title="然后在手机上安装"></a>然后在手机上安装</h3><p><img src="../../images/charles/charles11.png" alt=""></p>
+<p>点击之后弹出如下窗口：</p>
+<p><img src="../../images/charles/charles12.png" alt=""></p>
+<p>在手机浏览器地址栏输入<strong>chls.pro/ssl</strong></p>
+<p><img src="../../images/charles/charles13.png" alt=""></p>
+<h3 id="添加要访问的-https-域名及端口"><a href="#添加要访问的-https-域名及端口" class="headerlink" title="添加要访问的 https 域名及端口"></a>添加要访问的 https 域名及端口</h3><p><img src="../../images/charles/charles15.png" alt=""></p>
+<p><img src="../../images/charles/charles16.png" alt=""></p>
+<p>如果想查看所有的 Https 的网站，直接为空保存即可</p>
+<p><img src="../../images/charles/charles21.png" alt=""></p>
+<h3 id="在手机上访问-Https-协议的网站"><a href="#在手机上访问-Https-协议的网站" class="headerlink" title="在手机上访问 Https 协议的网站"></a>在手机上访问 Https 协议的网站</h3><p>在电脑上既可以看得到 https 解密后的内容</p>
+<p><img src="../../images/charles/charles1.png" alt=""></p>
+<p><img src="../../images/charles/charles19.png" alt=""></p>
+<h2 id="本机抓包"><a href="#本机抓包" class="headerlink" title="本机抓包"></a>本机抓包</h2><p>要把电脑设置为代理</p>
+<p><img src="../../images/charles/charles20.png" alt=""></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -x 127.0.0.1:8888 https://www.baidu.com</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AC%94%E8%AE%B0/" rel="tag"># 笔记</a>
+              <a href="/tags/charles/" rel="tag"># charles</a>
+              <a href="/tags/%E6%8A%93%E5%8C%85/" rel="tag"># 抓包</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/01/12/go/go%E7%9A%84%E5%AE%89%E8%A3%85%E5%92%8C%E9%85%8D%E7%BD%AE/" rel="prev" title="go的安装和配置">
+      <i class="fa fa-chevron-left"></i> go的安装和配置
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/02/22/spring/spring/" rel="next" title="Spring学习笔记">
+      Spring学习笔记 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#下载"><span class="nav-number">1.</span> <span class="nav-text">下载</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#破解-4-2-1-版"><span class="nav-number">2.</span> <span class="nav-text">破解(4.2.1 版)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#将电脑和手机设置成同一个网络"><span class="nav-number">3.</span> <span class="nav-text">将电脑和手机设置成同一个网络</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#查看电脑的网络-IP"><span class="nav-number">3.1.</span> <span class="nav-text">查看电脑的网络 IP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设置手机的代理"><span class="nav-number">3.2.</span> <span class="nav-text">设置手机的代理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#安卓手机"><span class="nav-number">3.2.1.</span> <span class="nav-text">安卓手机</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#苹果手机"><span class="nav-number">3.2.2.</span> <span class="nav-text">苹果手机</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#允许请求"><span class="nav-number">4.</span> <span class="nav-text">允许请求</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#界面"><span class="nav-number">5.</span> <span class="nav-text">界面</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#https-请求配置"><span class="nav-number">6.</span> <span class="nav-text">https 请求配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#首先在电脑上安装-charles-根证书"><span class="nav-number">6.1.</span> <span class="nav-text">首先在电脑上安装 charles 根证书</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#然后在手机上安装"><span class="nav-number">6.2.</span> <span class="nav-text">然后在手机上安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#添加要访问的-https-域名及端口"><span class="nav-number">6.3.</span> <span class="nav-text">添加要访问的 https 域名及端口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在手机上访问-Https-协议的网站"><span class="nav-number">6.4.</span> <span class="nav-text">在手机上访问 Https 协议的网站</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#本机抓包"><span class="nav-number">7.</span> <span class="nav-text">本机抓包</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Andy Ge</p>
+  <div class="site-description" itemprop="description">勇于积极进取，步入人生的世外桃源</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">728</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">134</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">315</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/andyge" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;andyge" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:geshaofei@126.com" title="E-Mail → mailto:geshaofei@126.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.ruanyifeng.com/" title="http:&#x2F;&#x2F;www.ruanyifeng.com&#x2F;" rel="noopener" target="_blank">阮一峰</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://colobu.com/" title="http:&#x2F;&#x2F;colobu.com&#x2F;" rel="noopener" target="_blank">鸟窝</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.cnblogs.com/hellokuangshen/" title="https:&#x2F;&#x2F;www.cnblogs.com&#x2F;hellokuangshen&#x2F;" rel="noopener" target="_blank">狂神</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://yelog.org/" title="https:&#x2F;&#x2F;yelog.org&#x2F;" rel="noopener" target="_blank">叶落阁</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Andy Ge</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.7.1
+  </div>
+
+        
+
+
+
+
+
+
+  <script>
+  function leancloudSelector(url) {
+    url = encodeURI(url);
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.getAttribute('id'));
+      var title = visitors.getAttribute('data-flag-title');
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .then(() => {
+                leancloudSelector(url).innerText = counter.time + 1;
+              })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              })
+          } else {
+              Counter('post', '/classes/Counter', { title: title, url: url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.getAttribute('id'));
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (let item of results) {
+            let { url, time } = item;
+            leancloudSelector(url).innerText = time;
+          }
+          for (let url of entries) {
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=2TdIb5gRlAVUw24l2W0zWnCj-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method: method,
+          headers: {
+            'X-LC-Id'     : '2TdIb5gRlAVUw24l2W0zWnCj-gzGzoHsz',
+            'X-LC-Key'    : 'cJdJrMLBXsj0ttq0WsL0aA2j',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

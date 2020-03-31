@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"swiftist.cn","root":"/","scheme":"Pisces","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"EVBR3H53HW","apiKey":"2abd573a01143a0cc4108fa4d21ae67c","indexName":"swiftist","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="转自 http:&#x2F;&#x2F;8btc.com&#x2F;thread-158287-1-6.html  当Daniel Larimer在4月5日发布了EOSIO Dawn 3.0不久后EOS价格大幅度上涨多天。该预备版本的发布代表着目标在2018年6月发布正式版EOSIO 1.0的奋斗途中一个重要里程碑，并且EOS全球开发团队为使EOSIO成为构建区块链应用最强大的平台正日以继夜地工作着。笔者发现该版本中最引人瞩目">
+<meta property="og:type" content="article">
+<meta property="og:title" content="EOS高吞吐量的杀手锏BFT-DPoS">
+<meta property="og:url" content="https://swiftist.cn/2018/05/31/blockChain/EOS%E9%AB%98%E5%90%9E%E5%90%90%E9%87%8F%E7%9A%84%E6%9D%80%E6%89%8B%E9%94%8FBFT-DPoS/index.html">
+<meta property="og:site_name" content="飞雪轩辕">
+<meta property="og:description" content="转自 http:&#x2F;&#x2F;8btc.com&#x2F;thread-158287-1-6.html  当Daniel Larimer在4月5日发布了EOSIO Dawn 3.0不久后EOS价格大幅度上涨多天。该预备版本的发布代表着目标在2018年6月发布正式版EOSIO 1.0的奋斗途中一个重要里程碑，并且EOS全球开发团队为使EOSIO成为构建区块链应用最强大的平台正日以继夜地工作着。笔者发现该版本中最引人瞩目">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://swiftist.cn/images/blockChain/byzantine.jpg">
+<meta property="og:image" content="https://swiftist.cn/2018/05/31/images/blockChain/BFT-DPoS1.png">
+<meta property="og:image" content="https://swiftist.cn/2018/05/31/images/blockChain/BFT-DPoS2.jpg">
+<meta property="og:image" content="https://swiftist.cn/2018/05/31/images/blockChain/BFT-DPoS3.jpg">
+<meta property="article:published_time" content="2018-05-31T09:51:34.000Z">
+<meta property="article:modified_time" content="2020-03-31T15:07:39.323Z">
+<meta property="article:author" content="Andy Ge">
+<meta property="article:tag" content="EOS">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://swiftist.cn/images/blockChain/byzantine.jpg">
+
+<link rel="canonical" href="https://swiftist.cn/2018/05/31/blockChain/EOS%E9%AB%98%E5%90%9E%E5%90%90%E9%87%8F%E7%9A%84%E6%9D%80%E6%89%8B%E9%94%8FBFT-DPoS/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>EOS高吞吐量的杀手锏BFT-DPoS | 飞雪轩辕</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="飞雪轩辕" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">飞雪轩辕</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">人生的乐趣在于把梦想变成现实</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-java">
+
+    <a href="/categories/java/" rel="section"><i class="fa fa-fw fa-th-large"></i>java</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://swiftist.cn/2018/05/31/blockChain/EOS%E9%AB%98%E5%90%9E%E5%90%90%E9%87%8F%E7%9A%84%E6%9D%80%E6%89%8B%E9%94%8FBFT-DPoS/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Andy Ge">
+      <meta itemprop="description" content="勇于积极进取，步入人生的世外桃源">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="飞雪轩辕">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          EOS高吞吐量的杀手锏BFT-DPoS
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-05-31 17:51:34" itemprop="dateCreated datePublished" datetime="2018-05-31T17:51:34+08:00">2018-05-31</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-31 23:07:39" itemprop="dateModified" datetime="2020-03-31T23:07:39+08:00">2020-03-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%8C%BA%E5%9D%97%E9%93%BE/" itemprop="url" rel="index">
+                    <span itemprop="name">区块链</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span id="/2018/05/31/blockChain/EOS%E9%AB%98%E5%90%9E%E5%90%90%E9%87%8F%E7%9A%84%E6%9D%80%E6%89%8B%E9%94%8FBFT-DPoS/" class="post-meta-item leancloud_visitors" data-flag-title="EOS高吞吐量的杀手锏BFT-DPoS" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>转自 <a href="http://8btc.com/thread-158287-1-6.html" target="_blank" rel="noopener">http://8btc.com/thread-158287-1-6.html</a> </p>
+<p>当Daniel Larimer在4月5日发布了EOSIO Dawn 3.0不久后EOS价格大幅度上涨多天。该预备版本的发布代表着目标在2018年6月发布正式版EOSIO 1.0的奋斗途中一个重要里程碑，并且EOS全球开发团队为使EOSIO成为构建区块链应用最强大的平台正日以继夜地工作着。笔者发现该版本中最引人瞩目的地方要数500毫秒出块间隔和BFT-DPoS的共识算法，这无疑是EOS为达到支持百万级别用户的区块链系统中最核心的技术突破，因此本文将详细分析BFT-DPoS共识算法并解读其为何可达到远远超出其它区块链系统的500毫秒出块间隔的性能。</p>
+<p>为使读者能顺利理解BFT-DPoS共识算法，笔者在这里首先简单介绍一下BFT 协议和DPoS算法。</p>
+<h2 id="一、BFT协议"><a href="#一、BFT协议" class="headerlink" title="一、BFT协议"></a>一、BFT协议</h2><p>BFT协议全称为拜占庭容错协议，在介绍该协议之前首先需理解何为“拜占庭问题”。该问题是由著名计算机科学家Leslie Lamport在1982年发表的论文“The Byzantine generals problem”中提出的，拜占庭是古代东罗马帝国的首都，由于地域宽广，守卫边境的多个将军（系统中的多个节点）需要通过信使来传递消息，达成某些一致的决定。但由于将军中可能存在叛徒（系统中节点出错），这些叛徒将努力向不同的将军发送不同的消息，试图干扰共识的达成。拜占庭问题即为：在此情况下，如何让忠诚的将军们能达成行动的一致。</p>
+<p><img src="/images/blockChain/byzantine.jpg" alt="EOS高吞吐量的杀手锏BFT-DPoS"></p>
+<a id="more"></a>
+
+<p>该问题的提出对后来区块链的发展有着直接的影响，区块链在本质上就是在一群无相互信任的节点间（有的节点会丢弃信息，有的节点会篡改信息），如何达成有效的共识。Lamport对该问题的研究指出“对于拜占庭问题来说，假如节点总数为N，叛变将军数为F，则当N大于或等于3F+1时，问题才有解。”也就是说当一群节点中恶意节点的数量少于总数量的三分之一时，这群节点便可通过某种协议达成对某一状态的共识，而这种协议就是BFT协议。<br>BFT协议简单的表述就是：首先在一群数量有限的节点中通过轮换或者随机算法选出某个节点为主节点，该节点在此时具有出块的权利。当主节点将该时段的交易打包成区块后用自己的私钥对该区块签名，并将其广播到所有节点。其它节点对该区块进行验证和确认，若某个节点确认该区块后对该区块进行签名并发送给主节点。当主节点收到至少三分之二的不同节点的签名区块后，则该区块完成了所有节点的验证成为不可逆区块串联到区块链中。</p>
+<p><img src="../../images/blockChain/BFT-DPoS1.png" alt="EOS高吞吐量的杀手锏BFT-DPoS"></p>
+<h2 id="二、DPoS-算法"><a href="#二、DPoS-算法" class="headerlink" title="二、DPoS 算法"></a>二、DPoS 算法</h2><p>在比特币的共识算法中由于PoW资源消耗过大，并且算力也越来越集中，因此Dan Larimer在2014年作为比特股的首席开发者时提出了一种快速、安全且能源消耗比较小的授权股权证明（DPoS）共识机制。DPoS在最小化网络成本的同时，赋予每个持股人一定的投票权，由他们投票产生“超级节点”代表。最后由获得票数最多的一定数量的超级节点轮流平等地产生区块。在比特股中Dan Larimer选择了101个超级节点，但在EOS中选择了21个超级节点，主要有两方面原因：一是由于用户很难对较多数量的超级节点充分了解，所以过多的超级节点会降低用户投票的活跃度；二是规模为20的节点数目可以在拜占庭问题中以更低的资源成本来获得高效的共识。</p>
+<p>这些超级节点的主要职责是：提供相关计算资源和网络资源，保证节点的正常运行；当轮到某超级节点拥有出块权时，超级节点收集该时段内的所有交易，并对交易验证后打包成区块广播至其他超级节点，其他节点验证后把区块添加到自己的数据库中。在EOS技术白皮书中，每个出块间隔定义为3秒，这主要是由于在当前的网络环境下，一个超级节点打包区块并将其广播，绝大多数其他节点收到该区块的过程耗时最多3秒。只有下一个超级节点收到了上一个超级节点广播的区块时，再进行新区块的生成才不会造成对某个超级节点产生区块的忽略。而一个区块要成为不可逆区块需要超过三分之二的超级节点进行确认，在DPoS中只有超级节点产生一个新区块，才表示它对之前收到的区块链进行了确认，所以一个区块产生后，其后续串联14个区块才表明该区块是不可逆区块，区块中的交易是不可逆交易，整个确认过程需要45秒。</p>
+<p>DPoS共识算法也具有极强的抗分叉能力，因为区块添加到一条区块链分叉的速率与拥有该共识的超级节点比例是相关的，也就是说，具有较多超级节点的分叉会比拥有较少的那一条分叉增长速率快。任何时候一个诚实的超级节点看到一条有效的更长链时，都会从当前的分叉切换过来，又由于超级节点数量为奇数个，所以在任何时刻一定会有一条较长的链。当一个超级节点设法在两条分叉上同时生产区块时，EOS的持有者会在下一轮投票中将该超级节点删掉，并且EOS社区会给予相关恶意节点一定的惩罚。因此，在一般情况下，使用DPoS的EOS都是很难经历分叉的。</p>
+<h2 id="三、BFT-DPoS-共识机制"><a href="#三、BFT-DPoS-共识机制" class="headerlink" title="三、BFT-DPoS 共识机制"></a>三、BFT-DPoS 共识机制</h2><p>在最早的EOS技术白皮书中，EOS主要采用上述的DPoS机制每3秒来产生一个区块，而在最新版的EOS Dwan 3.0中为使区块链系统有更快的出块速度，EOS 采用了BFT-DPoS共识机制从而达到了500毫秒的出块间隔。该机制的具体过程是：EOS的持有者通过投票系统对各个超级节点竞选者进行投票，选出21个节点为超级节点。然后这21个超级节点以自身的网络资源状况商议出一个出块权拥有顺序，在每个超级节点拥有出块权时，以间隔为500毫秒（500毫秒是EOS团队通过大量实验测试得出的当前网络状态下可达到的最小的稳定状态下的出块间隔）连续产生12个新区块，然后切换到下一个超级节点连续产生之后的12个区块。</p>
+<p><img src="../../images/blockChain/BFT-DPoS2.jpg" alt="EOS高吞吐量的杀手锏BFT-DPoS"></p>
+<p>该方式可以保证一个超级节点可以连续以500毫秒的间隔产生区块，因为在同一超级节点产生新区块时不受当前网络状况的影响，但由于网络的延迟很难使得其他节点对已经产生的区块进行确认，使其成为不可逆区块。因此EOS引入了 BFT协议，当超级节点A产生第一个新区块后，A将该区块进行签名并广播给其他超级节点，其他超级节点对该区块进行验证后对其进行签名并返回给A节点，当A节点收到来自14个不同节点签名的区块后，该区块就成为不可逆区块串联到之前的区块链中（以500毫秒产生新区块的过程和对区块进行BFT协议共识的过程在超级节点中是同时进行的，即确认过程不影响超级节点产生新的区块）。EOS团队通过大量实验测试，在当前的网络状况下，一个超级节点广播一个新区块并确认的过程可在1秒的时间内完成。因此，每个新区块的产生到成为不可逆区块最多需要1.5秒的时间，这就使得跨链通信的时延大大缩小。因为一个区块链在引入另一条区块链的交易状态时必须等待其成为不可逆交易，所以两个基于EOS的区块链在3秒钟以内就可以进行一次来回的通信，而以太坊进行类似的通信需要9分钟，比特币需要3小时以上。</p>
+<p><img src="../../images/blockChain/BFT-DPoS3.jpg" alt="EOS高吞吐量的杀手锏BFT-DPoS"></p>
+<p>上述过程虽然可以保证同一超级节点产生新区块时可以达到500毫秒的间隔，但当切换超级节点产生区块时，由于网络延迟使得上一节点产生的最后几个新区块有可能被该超级节点忽略。为解决此问题，EOS选用了确定顺序的超级节点轮流出块，比如以纽约（美国东海岸）、芝加哥（美国中部）、洛杉矶（美国西海岸）、日本东京、中国上海这样的顺序，该顺序使得上一节点产生的最后区块传播到下一节点时有最小的延迟，从而避免下一个超级节点忽略上一节点产生的区块。如果是随机定义出块权的超级节点，那么在现有的网络条件下，出块间隔只有控制在3 秒时才可保证下一节点较大概率上不会忽略上一节点产生的区块。</p>
+<p>使用上述BFT-DPoS协议就可以使得EOS的出块间隔从原来的3秒降低到500毫秒，这也使得跨链通信的时延大大缩短，单位时间内可确认的交易数量大大提升。笔者相信如果这样的机制在EOSIO1.0的正式版本中成功实现，那无疑是区块链技术向支持百万级别用户的目标迈出的巨大一步。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/EOS/" rel="tag"># EOS</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/05/30/misc/%E4%B8%89%E5%9B%BD%E6%95%85%E4%BA%8B/" rel="prev" title="三国故事">
+      <i class="fa fa-chevron-left"></i> 三国故事
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/05/31/blockChain/EOS%E6%8A%80%E6%9C%AF%E5%88%86%E6%9E%90/" rel="next" title="EOS技术分析">
+      EOS技术分析 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、BFT协议"><span class="nav-number">1.</span> <span class="nav-text">一、BFT协议</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、DPoS-算法"><span class="nav-number">2.</span> <span class="nav-text">二、DPoS 算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、BFT-DPoS-共识机制"><span class="nav-number">3.</span> <span class="nav-text">三、BFT-DPoS 共识机制</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Andy Ge</p>
+  <div class="site-description" itemprop="description">勇于积极进取，步入人生的世外桃源</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">728</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">134</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">315</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/andyge" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;andyge" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:geshaofei@126.com" title="E-Mail → mailto:geshaofei@126.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.ruanyifeng.com/" title="http:&#x2F;&#x2F;www.ruanyifeng.com&#x2F;" rel="noopener" target="_blank">阮一峰</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://colobu.com/" title="http:&#x2F;&#x2F;colobu.com&#x2F;" rel="noopener" target="_blank">鸟窝</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.cnblogs.com/hellokuangshen/" title="https:&#x2F;&#x2F;www.cnblogs.com&#x2F;hellokuangshen&#x2F;" rel="noopener" target="_blank">狂神</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://yelog.org/" title="https:&#x2F;&#x2F;yelog.org&#x2F;" rel="noopener" target="_blank">叶落阁</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Andy Ge</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.7.1
+  </div>
+
+        
+
+
+
+
+
+
+  <script>
+  function leancloudSelector(url) {
+    url = encodeURI(url);
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.getAttribute('id'));
+      var title = visitors.getAttribute('data-flag-title');
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .then(() => {
+                leancloudSelector(url).innerText = counter.time + 1;
+              })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              })
+          } else {
+              Counter('post', '/classes/Counter', { title: title, url: url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.getAttribute('id'));
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (let item of results) {
+            let { url, time } = item;
+            leancloudSelector(url).innerText = time;
+          }
+          for (let url of entries) {
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=2TdIb5gRlAVUw24l2W0zWnCj-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method: method,
+          headers: {
+            'X-LC-Id'     : '2TdIb5gRlAVUw24l2W0zWnCj-gzGzoHsz',
+            'X-LC-Key'    : 'cJdJrMLBXsj0ttq0WsL0aA2j',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

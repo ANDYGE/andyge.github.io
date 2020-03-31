@@ -1,0 +1,1409 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"swiftist.cn","root":"/","scheme":"Pisces","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"EVBR3H53HW","apiKey":"2abd573a01143a0cc4108fa4d21ae67c","indexName":"swiftist","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="勇于积极进取，步入人生的世外桃源">
+<meta property="og:type" content="website">
+<meta property="og:title" content="飞雪轩辕">
+<meta property="og:url" content="https://swiftist.cn/index.html">
+<meta property="og:site_name" content="飞雪轩辕">
+<meta property="og:description" content="勇于积极进取，步入人生的世外桃源">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:author" content="Andy Ge">
+<meta property="article:tag" content="技术博客">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://swiftist.cn/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: true,
+    isPost: false
+  };
+</script>
+
+  <title>飞雪轩辕</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="飞雪轩辕" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">飞雪轩辕</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">人生的乐趣在于把梦想变成现实</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-java">
+
+    <a href="/categories/java/" rel="section"><i class="fa fa-fw fa-th-large"></i>java</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://swiftist.cn/2020/03/31/mongodb/springboot%E6%95%B4%E5%90%88mongodb%E6%97%B6%E6%97%A5%E5%BF%97%E8%BE%93%E5%87%BA%E9%97%AE%E9%A2%98/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Andy Ge">
+      <meta itemprop="description" content="勇于积极进取，步入人生的世外桃源">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="飞雪轩辕">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/03/31/mongodb/springboot%E6%95%B4%E5%90%88mongodb%E6%97%B6%E6%97%A5%E5%BF%97%E8%BE%93%E5%87%BA%E9%97%AE%E9%A2%98/" class="post-title-link" itemprop="url">springboot整合mongodb时日志输出问题</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-03-31 22:04:58 / 修改时间：23:07:39" itemprop="dateCreated datePublished" datetime="2020-03-31T22:04:58+08:00">2020-03-31</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/mongo/" itemprop="url" rel="index">
+                    <span itemprop="name">mongo</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/03/31/mongodb/springboot%E6%95%B4%E5%90%88mongodb%E6%97%B6%E6%97%A5%E5%BF%97%E8%BE%93%E5%87%BA%E9%97%AE%E9%A2%98/" class="post-meta-item leancloud_visitors" data-flag-title="springboot整合mongodb时日志输出问题" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>日志打印输出会出现下列的问题</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">2019-02-14 23:59:42.559 logback [cluster-ClusterId&#123;value=<span class="string">'5c656f9dc971e900070fb48a'</span>, description=<span class="string">'null'</span>&#125;-172.16.252.247:3717] DEBUG org.mongodb.driver.cluster - Updating cluster description to  &#123;<span class="built_in">type</span>=REPLICA_SET, servers=[&#123;address=172.16.252.246:3717, <span class="built_in">type</span>=REPLICA_SET_PRIMARY, roundTripTime=0.7 ms, state=CONNECTED&#125;, &#123;address=172.16.252.247:3717, <span class="built_in">type</span>=REPLICA_SET_SECONDARY, roundTripTime=0.7 ms, state=CONNECTED&#125;]</span><br><span class="line">2019-02-14 23:59:42.559 logback [cluster-ClusterId&#123;value=<span class="string">'5c656f9dc971e900070fb48a'</span>, description=<span class="string">'null'</span>&#125;-172.16.252.246:3717] DEBUG org.mongodb.driver.cluster - Updating cluster description to  &#123;<span class="built_in">type</span>=REPLICA_SET, servers=[&#123;address=172.16.252.246:3717, <span class="built_in">type</span>=REPLICA_SET_PRIMARY, roundTripTime=0.6 ms, state=CONNECTED&#125;, &#123;address=172.16.252.247:3717, <span class="built_in">type</span>=REPLICA_SET_SECONDARY, roundTripTime=0.7 ms, state=CONNECTED&#125;]</span><br><span class="line">2019-02-14 23:59:52.559 logback [cluster-ClusterId&#123;value=<span class="string">'5c656f9dc971e900070fb48a'</span>, description=<span class="string">'null'</span>&#125;-172.16.252.247:3717] DEBUG org.mongodb.driver.cluster - Checking status of 172.16.252.247:3717</span><br><span class="line">2019-02-14 23:59:52.559 logback [cluster-ClusterId&#123;value=<span class="string">'5c656f9dc971e900070fb48a'</span>, description=<span class="string">'null'</span>&#125;-172.16.252.246:3717] DEBUG org.mongodb.driver.cluster - Checking status of 172.16.252.246:3717</span><br><span class="line">2019-02-14 23:59:52.560 logback [cluster-ClusterId&#123;value=<span class="string">'5c656f9dc971e900070fb48a'</span>, description=<span class="string">'null'</span>&#125;-172.16.252.247:3717] DEBUG org.mongodb.driver.protocol.command - Sending <span class="built_in">command</span> <span class="string">'&#123; "ismaster" : 1 &#125;'</span> with request id 1697 to database admin on connection [connectionId&#123;localValue:4, serverValue:76938&#125;] to server 172.16.252.247:3717</span><br><span class="line">2019-02-14 23:59:52.560 logback [cluster-ClusterId&#123;value=<span class="string">'5c656f9dc971e900070fb48a'</span>, description=<span class="string">'null'</span>&#125;-172.16.252.246:3717] DEBUG org.mongodb.driver.protocol.command - Sending <span class="built_in">command</span> <span class="string">'&#123; "ismaster" : 1 &#125;'</span> with request id 1698 to database admin on connection [connectionId&#123;localValue:3, serverValue:83463&#125;] to server 172.16.252.246:3717</span><br><span class="line">2019-02-14 23:59:52.560 logback [cluster-ClusterId&#123;value=<span class="string">'5c656f9dc971e900070fb48a'</span>, description=<span class="string">'null'</span>&#125;-172.16.252.247:3717] DEBUG org.mongodb.driver.protocol.command - Execution of <span class="built_in">command</span> with request id 1697 completed successfully <span class="keyword">in</span> 0.48 ms on connection [connectionId&#123;localValue:4, serverValue:76938&#125;] to server 172.16.252.247:3717</span><br><span class="line">2019-02-14 23:59:52.560 logback [cluster-ClusterId&#123;value=<span class="string">'5c656f9dc971e900070fb48a'</span>, description=<span class="string">'null'</span>&#125;-172.16.252.246:3717] DEBUG org.mongodb.driver.protocol.command - Execution of <span class="built_in">command</span> with request id 1698 completed successfully <span class="keyword">in</span> 0.52 ms on connection [connectionId&#123;localValue:3, serverValue:83463&#125;] to server 172.16.252.246:3717</span><br><span class="line">2019-02-14 23:59:52.560 logback [cluster-ClusterId&#123;value=<span class="string">'5c656f9dc971e900070fb48a'</span>, description=<span class="string">'null'</span>&#125;-172.16.252.247:3717] DEBUG org.mongodb.driver.cluster - Updating cluster description to  &#123;<span class="built_in">type</span>=REPLICA_SET, servers=[&#123;address=172.16.252.246:3717, <span class="built_in">type</span>=REPLICA_SET_PRIMARY, roundTripTime=0.6 ms, state=CONNECTED&#125;, &#123;address=172.16.252.247:3717, <span class="built_in">type</span>=REPLICA_SET_SECONDARY, roundTripTime=0.7 ms, state=CONNECTED&#125;]</span><br><span class="line">2019-02-14 23:59:52.560 logback [cluster-ClusterId&#123;value=<span class="string">'5c656f9dc971e900070fb48a'</span>, description=<span class="string">'null'</span>&#125;-172.16.252.246:3717] DEBUG org.mongodb.driver.cluster - Updating cluster description to  &#123;<span class="built_in">type</span>=REPLICA_SET, servers=[&#123;address=172.16.252.246:3717, <span class="built_in">type</span>=REPLICA_SET_PRIMARY, roundTripTime=0.6 ms, state=CONNECTED&#125;, &#123;address=172.16.252.247:3717, <span class="built_in">type</span>=REPLICA_SET_SECONDARY, roundTripTime=0.7 ms, state=CONNECTED&#125;]</span><br></pre></td></tr></table></figure>
+
+<p>会一直刷新,这样的查日志的时候就会很恶心.<br>那我们怎么解决呢?<br>聪明的你也想到了吧,当然是去 logback.xml 文件中把 monogdb.driver 相关的日志级别进行调整.写法如下:</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">Loggers</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!--mongodb loggers--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">logger</span> <span class="attr">name</span>=<span class="string">"org.mongodb.driver.cluster"</span> <span class="attr">level</span>=<span class="string">"INFO"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">logger</span> <span class="attr">name</span>=<span class="string">"org.mongodb.driver.connection"</span> <span class="attr">level</span>=<span class="string">"INFO"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">logger</span> <span class="attr">name</span>=<span class="string">"org.mongodb.driver.protocol.insert"</span> <span class="attr">level</span>=<span class="string">"INFO"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">logger</span> <span class="attr">name</span>=<span class="string">"org.mongodb.driver.protocol.delete"</span> <span class="attr">level</span>=<span class="string">"INFO"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">logger</span> <span class="attr">name</span>=<span class="string">"org.mongodb.driver.protocol.query"</span> <span class="attr">level</span>=<span class="string">"INFO"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">logger</span> <span class="attr">name</span>=<span class="string">"org.mongodb.driver.protocol.getmore"</span> <span class="attr">level</span>=<span class="string">"INFO"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">logger</span> <span class="attr">name</span>=<span class="string">"org.mongodb.driver.protocol.command"</span> <span class="attr">level</span>=<span class="string">"INFO"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">logger</span> <span class="attr">name</span>=<span class="string">"org.mongodb.driver.protocol.uri"</span> <span class="attr">level</span>=<span class="string">"INFO"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">logger</span> <span class="attr">name</span>=<span class="string">"org.mongodb.driver.protocol.management"</span> <span class="attr">level</span>=<span class="string">"INFO"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">Loggers</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>这样问题就得到解决了</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://swiftist.cn/2020/03/31/mysql/mysql%E4%B8%ADselect-into-%E5%92%8Cmssql%E4%B8%AD%E7%9A%84select-into-%E5%AF%B9%E6%AF%94/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Andy Ge">
+      <meta itemprop="description" content="勇于积极进取，步入人生的世外桃源">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="飞雪轩辕">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/03/31/mysql/mysql%E4%B8%ADselect-into-%E5%92%8Cmssql%E4%B8%AD%E7%9A%84select-into-%E5%AF%B9%E6%AF%94/" class="post-title-link" itemprop="url">mysql中select into 和mssql中的select into 对比</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-03-31 10:20:09 / 修改时间：23:07:39" itemprop="dateCreated datePublished" datetime="2020-03-31T10:20:09+08:00">2020-03-31</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/mysql/" itemprop="url" rel="index">
+                    <span itemprop="name">mysql</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/03/31/mysql/mysql%E4%B8%ADselect-into-%E5%92%8Cmssql%E4%B8%AD%E7%9A%84select-into-%E5%AF%B9%E6%AF%94/" class="post-meta-item leancloud_visitors" data-flag-title="mysql中select into 和mssql中的select into 对比" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>现在有张表为 student,我想将这个表里面的数据复制到一个为 dust 的新表中去。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- answer 01:</span></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> dust <span class="keyword">select</span> * <span class="keyword">from</span> student;<span class="comment">-- 用于复制前未创建新表dust的情况下</span></span><br><span class="line"><span class="comment">-- answer 02:</span></span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> dust <span class="keyword">select</span> * <span class="keyword">from</span> student;<span class="comment">-- 已经创建了新表dust的情况下</span></span><br></pre></td></tr></table></figure>
+
+<p>现在使用 select..into..语句实现以上东东。</p>
+<p>MySQL 不支持 Select Into 语句直接备份表结构和数据,一些种方法可以代替, 也有其它方法可以处理,总结如下:<br>方法 1:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- MYSQL不支持:</span></span><br><span class="line"><span class="keyword">Select</span> * <span class="keyword">Into</span> new_table_name <span class="keyword">from</span> old_table_name; 这是sql server中的用法</span><br><span class="line"><span class="comment">-- 替代方法:</span></span><br><span class="line"><span class="keyword">Create</span> <span class="keyword">table</span> new_table_name (<span class="keyword">Select</span> * <span class="keyword">from</span> old_table_name);</span><br></pre></td></tr></table></figure>
+
+<p>方法 2: 1.先备份表结构和数据<br>导出命令 -u 用户名 -p 密码 -h 主机 IP 地址 数据库名 表名 1 &gt; 导出文件.sql</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysqldump -uroot -proot -h192.168.0.88 ok_db oktable2 &gt; ok_db.sql</span><br></pre></td></tr></table></figure>
+
+<p>2.修改备份表的名字<br>3.登录 MySQL<br>4.选择数据库<br>5.执行: Source 备份表的路径 如:Source d:/ok_db.sql 回车即可。<br>6.完成.</p>
+<p>MySQL Select into outfile 用于导出指定的查询数据到文件如下：</p>
+<p>1.导出表中所有数据到 C 盘根目录 outfile.txt 中如下：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">Select</span> * <span class="keyword">into</span> <span class="keyword">outfile</span> <span class="string">'c://outfile.txt'</span> <span class="keyword">from</span> <span class="keyword">test</span>;</span><br></pre></td></tr></table></figure>
+
+<p>2.导出表中指定查询条件 2005-06-08 号的数据到 C 盘根目录 outfile1.txt 中如下：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">Select</span> * <span class="keyword">into</span> <span class="keyword">outfile</span> <span class="string">'c://outfile.txt'</span> <span class="keyword">from</span> <span class="keyword">test</span> <span class="keyword">where</span> beginDate=<span class="string">'2008-06-08'</span>;</span><br><span class="line"></span><br><span class="line">mysql&gt; load data local infile "d:/gpsdata.txt" into table positiondata fields terminated by ';' (userid,latitude,longitude,altitude,speed,innerid,repo</span><br><span class="line">rttime,status);</span><br><span class="line"></span><br><span class="line"><span class="keyword">LOAD</span> <span class="keyword">DATA</span> [<span class="keyword">LOW_PRIORITY</span> <span class="keyword">CONCURRENT</span>] [<span class="keyword">LOCAL</span>] <span class="keyword">INFILE</span> ’file_name.txt’</span><br><span class="line">[<span class="keyword">REPLACE</span> <span class="keyword">IGNORE</span>]</span><br><span class="line"><span class="keyword">INTO</span> <span class="keyword">TABLE</span> tbl_name</span><br><span class="line">[<span class="keyword">FIELDS</span></span><br><span class="line">[<span class="keyword">TERMINATED</span> <span class="keyword">BY</span> ’<span class="keyword">string</span>’]</span><br><span class="line">[[<span class="keyword">OPTIONALLY</span>] <span class="keyword">ENCLOSED</span> <span class="keyword">BY</span> ’<span class="built_in">char</span>’]</span><br><span class="line">[<span class="keyword">ESCAPED</span> <span class="keyword">BY</span> ’<span class="built_in">char</span>’ ] ]</span><br><span class="line">[<span class="keyword">LINES</span></span><br><span class="line">[<span class="keyword">STARTING</span> <span class="keyword">BY</span> ’<span class="keyword">string</span>’]</span><br><span class="line">[<span class="keyword">TERMINATED</span> <span class="keyword">BY</span> ’<span class="keyword">string</span>’] ]</span><br><span class="line">[<span class="keyword">IGNORE</span> <span class="built_in">number</span> <span class="keyword">LINES</span>]</span><br><span class="line">[(col_name_or_user_var,...)]</span><br><span class="line">[<span class="keyword">SET</span> col_name = eXPr,...)]</span><br></pre></td></tr></table></figure>
+
+<p>fields 和 lines 在前面,(col_name_or_user_var,…)在后面 如果你使用的时候直接把要写的这些属性放在表名后面,这样是不正确的,一定要写到 fields 和 lines 的后面!</p>
+<p>补充一点，A 表数据 复制到 B 表，B 表不能有自增 ID，如果有自增 ID，则不插入自增</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://swiftist.cn/2020/03/30/springboot/SpringBoot%E7%BC%93%E5%AD%98%E6%B3%A8%E8%A7%A3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Andy Ge">
+      <meta itemprop="description" content="勇于积极进取，步入人生的世外桃源">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="飞雪轩辕">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/03/30/springboot/SpringBoot%E7%BC%93%E5%AD%98%E6%B3%A8%E8%A7%A3/" class="post-title-link" itemprop="url">SpringBoot缓存注解</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-30 22:31:30" itemprop="dateCreated datePublished" datetime="2020-03-30T22:31:30+08:00">2020-03-30</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-31 23:07:39" itemprop="dateModified" datetime="2020-03-31T23:07:39+08:00">2020-03-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/springboot/" itemprop="url" rel="index">
+                    <span itemprop="name">springboot</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/03/30/springboot/SpringBoot%E7%BC%93%E5%AD%98%E6%B3%A8%E8%A7%A3/" class="post-meta-item leancloud_visitors" data-flag-title="SpringBoot缓存注解" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="笔记"><a href="#笔记" class="headerlink" title="笔记"></a>笔记</h1><h2 id="开启缓存注解"><a href="#开启缓存注解" class="headerlink" title="开启缓存注解"></a>开启缓存注解</h2><p>java 类配置：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@EnableCaching</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AppConfig</span> </span>&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="CacheConfig"><a href="#CacheConfig" class="headerlink" title="@CacheConfig"></a>@CacheConfig</h2><p>一个类中可能会有多个缓存操作，而这些缓存操作可能是重复的。这个时候可以使用@CacheConfig。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@CacheConfig</span>(cacheNames = <span class="string">"jgd_hr"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BookRepositoryImpl</span> <span class="keyword">implements</span> <span class="title">BookRepository</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="meta">@Cacheable</span>(key = <span class="string">"#root.targetClass.name+'_'+#root.methodName+'_'+#kind"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> List&lt;TreeNode&gt; <span class="title">getAllByKind</span><span class="params">(String kind)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> codeDictMapper.getAllByKind(kind);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>缓存统一命名为<code>jgd_hr</code>，也可以在@Cacheable 中单独指定，如：<code>@Cacheable(value = &quot;code_dict&quot;, key = &quot;#root.targetClass.name+&#39;_&#39;+#root.methodName+&#39;_&#39;+#kind&quot;)</code>，如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BookRepositoryImpl</span> <span class="keyword">implements</span> <span class="title">BookRepository</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="meta">@Cacheable</span>(value = <span class="string">"code_dict"</span>, key = <span class="string">"#root.targetClass.name+'_'+#root.methodName+'_'+#kind"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> List&lt;TreeNode&gt; <span class="title">getAllByKind</span><span class="params">(String kind)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> codeDictMapper.getAllByKind(kind);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>@CacheConfig 是一个类级别的注解，允许共享缓存的名称、KeyGenerator、CacheManager 和 CacheResolver。 该操作会被覆盖。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://swiftist.cn/2020/03/30/myBatis/association%E4%B8%8Ecollection/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Andy Ge">
+      <meta itemprop="description" content="勇于积极进取，步入人生的世外桃源">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="飞雪轩辕">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/03/30/myBatis/association%E4%B8%8Ecollection/" class="post-title-link" itemprop="url">association与collection</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-30 11:56:35" itemprop="dateCreated datePublished" datetime="2020-03-30T11:56:35+08:00">2020-03-30</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-31 23:07:39" itemprop="dateModified" datetime="2020-03-31T23:07:39+08:00">2020-03-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/mybatis/" itemprop="url" rel="index">
+                    <span itemprop="name">mybatis</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/03/30/myBatis/association%E4%B8%8Ecollection/" class="post-meta-item leancloud_visitors" data-flag-title="association与collection" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="association-与-collection"><a href="#association-与-collection" class="headerlink" title="association 与 collection"></a>association 与 collection</h2><p><strong>association:映射到 JavaBean 的某个复杂类型属性，比如 JavaBean 类。</strong></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 根据角色id获取用户列表 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">"getUserListByRoleId"</span> <span class="attr">parameterType</span>=<span class="string">"Integer"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">resultMap</span>=<span class="string">"userRoleResult"</span>&gt;</span></span><br><span class="line">        select u.*,r.id as r_id,r.roleCode,r.roleName from smbms_user</span><br><span class="line">        u,smbms_role r</span><br><span class="line">        where u.userRole = #&#123;userRole&#125; and u.userRole=r.id</span><br><span class="line">    <span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">resultMap</span> <span class="attr">type</span>=<span class="string">"User"</span> <span class="attr">id</span>=<span class="string">"userRoleResult"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">id</span> <span class="attr">property</span>=<span class="string">"id"</span> <span class="attr">column</span>=<span class="string">"id"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">"userCode"</span> <span class="attr">column</span>=<span class="string">"userCode"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">"userName"</span> <span class="attr">column</span>=<span class="string">"userName"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">"userRole"</span> <span class="attr">column</span>=<span class="string">"userRole"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">association</span> <span class="attr">property</span>=<span class="string">"role"</span> <span class="attr">javaType</span>=<span class="string">"Role"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">id</span> <span class="attr">property</span>=<span class="string">"id"</span> <span class="attr">column</span>=<span class="string">"r_id"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">"roleCode"</span> <span class="attr">column</span>=<span class="string">"roleCode"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">"roleName"</span> <span class="attr">column</span>=<span class="string">"roleName"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">association</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">resultMap</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>为了方便复用，可以把 association 映射代码抽取出来放在一个 resultMap 中，如何设置 association 的 resultMap 属性来引用外部的“addressResult”</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- association外部引用resultMap --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">resultMap</span> <span class="attr">type</span>=<span class="string">"User"</span> <span class="attr">id</span>=<span class="string">"userRoleResult"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">id</span> <span class="attr">property</span>=<span class="string">"id"</span> <span class="attr">column</span>=<span class="string">"id"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">"userCode"</span> <span class="attr">column</span>=<span class="string">"userCode"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">"userName"</span> <span class="attr">column</span>=<span class="string">"userName"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">"userRole"</span> <span class="attr">column</span>=<span class="string">"userRole"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">association</span> <span class="attr">property</span>=<span class="string">"role"</span> <span class="attr">javaType</span>=<span class="string">"Role"</span> <span class="attr">resultMap</span>=<span class="string">"roleResult"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">resultMap</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">resultMap</span> <span class="attr">id</span>=<span class="string">"roleResult"</span> <span class="attr">type</span>=<span class="string">"Role"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">id</span> <span class="attr">property</span>=<span class="string">"id"</span> <span class="attr">column</span>=<span class="string">"r_id"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">"roleCode"</span> <span class="attr">column</span>=<span class="string">"roleCode"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">"roleName"</span> <span class="attr">column</span>=<span class="string">"roleName"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">resultMap</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>collection 元素跟 association 元素的作用差不多，只不过这个属性是一个集合列表。</strong></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 根据用户id获取用户信息及地址列表 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">"getAddressListByUserId"</span> <span class="attr">resultMap</span>=<span class="string">"userAddressResult"</span> <span class="attr">parameterType</span>=<span class="string">"Integer"</span>&gt;</span></span><br><span class="line">        select u.*,a.id as a_id,a.contact,a.addressDesc,a.postCode,a.tel</span><br><span class="line">        from smbms_user u,smbms_address a</span><br><span class="line">        where u.id=a.userId and u.id=#&#123;id&#125;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">resultMap</span> <span class="attr">type</span>=<span class="string">"User"</span> <span class="attr">id</span>=<span class="string">"userAddressResult"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">id</span> <span class="attr">property</span>=<span class="string">"id"</span> <span class="attr">column</span>=<span class="string">"id"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">"userCode"</span> <span class="attr">column</span>=<span class="string">"userCode"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">"userName"</span> <span class="attr">column</span>=<span class="string">"userName"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">collection</span> <span class="attr">property</span>=<span class="string">"addressList"</span> <span class="attr">ofType</span>=<span class="string">"Address"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">id</span> <span class="attr">property</span>=<span class="string">"id"</span> <span class="attr">column</span>=<span class="string">"a_id"</span> /&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">"postCode"</span> <span class="attr">column</span>=<span class="string">"postCode"</span> /&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">"tel"</span> <span class="attr">column</span>=<span class="string">"tel"</span> /&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">"contact"</span> <span class="attr">column</span>=<span class="string">"contact"</span> /&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">"addressDesc"</span> <span class="attr">column</span>=<span class="string">"addressDesc"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">collection</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">resultMap</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>collection 跟 association 引用外部映射文件差不多。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- collection外部引用resultMap --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">resultMap</span> <span class="attr">type</span>=<span class="string">"User"</span> <span class="attr">id</span>=<span class="string">"userAddressResult"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">id</span> <span class="attr">property</span>=<span class="string">"id"</span> <span class="attr">column</span>=<span class="string">"id"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">"userCode"</span> <span class="attr">column</span>=<span class="string">"userCode"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">"userName"</span> <span class="attr">column</span>=<span class="string">"userName"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">collection</span> <span class="attr">property</span>=<span class="string">"addressList"</span> <span class="attr">ofType</span>=<span class="string">"Address"</span> <span class="attr">resultMap</span>=<span class="string">"addressResult"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">resultMap</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">resultMap</span> <span class="attr">type</span>=<span class="string">"Address"</span> <span class="attr">id</span>=<span class="string">"addressResult"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">id</span> <span class="attr">property</span>=<span class="string">"id"</span> <span class="attr">column</span>=<span class="string">"a_id"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">"postCode"</span> <span class="attr">column</span>=<span class="string">"postCode"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">"tel"</span> <span class="attr">column</span>=<span class="string">"tel"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">"contact"</span> <span class="attr">column</span>=<span class="string">"contact"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">"addressDesc"</span> <span class="attr">column</span>=<span class="string">"addressDesc"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">resultMap</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>最后 association 和 collection 的区别是：</strong><br>association 映射的是一个 JavaBean 类，它仅处理一对一的关联关系。<br>collection 则是映射的一个集合列表，它处理的是一对多的关联关系。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://swiftist.cn/2020/03/30/react/React%E2%80%94useRef/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Andy Ge">
+      <meta itemprop="description" content="勇于积极进取，步入人生的世外桃源">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="飞雪轩辕">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/03/30/react/React%E2%80%94useRef/" class="post-title-link" itemprop="url">React—useRef</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-30 00:21:56" itemprop="dateCreated datePublished" datetime="2020-03-30T00:21:56+08:00">2020-03-30</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-31 23:07:39" itemprop="dateModified" datetime="2020-03-31T23:07:39+08:00">2020-03-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/react/" itemprop="url" rel="index">
+                    <span itemprop="name">react</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/03/30/react/React%E2%80%94useRef/" class="post-meta-item leancloud_visitors" data-flag-title="React—useRef" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>相信有过 React 使用经验的人对 ref 都会熟悉，它可以用来获取组件实例对象或者是 DOM 对象。</p>
+<p>而<code>useRef</code>这个 hooks 函数，除了传统的用法之外，<strong>它还可以“跨渲染周期”保存数据</strong>。</p>
+<p>首先来看一下它传统的用法：</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> React, &#123; useState, useEffect, useMemo, useRef &#125; <span class="keyword">from</span> <span class="string">'react'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="function"><span class="keyword">function</span> <span class="title">App</span>(<span class="params">props</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> [count, setCount] = useState(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> doubleCount = useMemo(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">2</span> * count</span><br><span class="line">    &#125;, [count])</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> couterRef = useRef()</span><br><span class="line"></span><br><span class="line">    useEffect(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">        <span class="built_in">document</span>.title = <span class="string">`The value is <span class="subst">$&#123;count&#125;</span>`</span></span><br><span class="line">        <span class="built_in">console</span>.log(couterRef.current)</span><br><span class="line">    &#125;, [count])</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">        &lt;&gt;</span><br><span class="line">            &lt;button</span><br><span class="line">                ref=&#123;couterRef&#125;</span><br><span class="line">                onClick=&#123;() =&gt; &#123;</span><br><span class="line">                    setCount(count + <span class="number">1</span>)</span><br><span class="line">                &#125;&#125;</span><br><span class="line">            &gt;</span><br><span class="line">                Count: &#123;count&#125;, <span class="attr">double</span>: &#123;doubleCount&#125;</span><br><span class="line">            &lt;<span class="regexp">/button&gt;</span></span><br><span class="line"><span class="regexp">        &lt;/</span>&gt;</span><br><span class="line">    )</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>代码中用<code>useRef</code>创建了<code>couterRef</code>对象，并将其赋给了<code>button</code>的<code>ref</code>属性。这样，通过访问<code>couterRef.current</code>就可以访问到<code>button</code>对应的 DOM 对象。</p>
+<p>然后再来看看它保存数据的用法。</p>
+<p>在一个组件中有什么东西可以跨渲染周期，也就是在组件被多次渲染之后依旧不变的属性？第一个想到的应该是<code>state</code>。没错，一个组件的<code>state</code>可以在多次渲染之后依旧不变。<strong>但是，<code>state</code>的问题在于一旦修改了它就会造成组件的重新渲染</strong>。</p>
+<p>那么这个时候就可以使用<code>useRef</code>来跨越渲染周期存储数据，而且对它修改也不会引起组件渲染。</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> React, &#123; useState, useEffect, useMemo, useRef &#125; <span class="keyword">from</span> <span class="string">'react'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="function"><span class="keyword">function</span> <span class="title">App</span>(<span class="params">props</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> [count, setCount] = useState(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> doubleCount = useMemo(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">2</span> * count</span><br><span class="line">    &#125;, [count])</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> timerID = useRef()</span><br><span class="line"></span><br><span class="line">    useEffect(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">        timerID.current = setInterval(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">            setCount(<span class="function"><span class="params">count</span> =&gt;</span> count + <span class="number">1</span>)</span><br><span class="line">        &#125;, <span class="number">1000</span>)</span><br><span class="line">    &#125;, [])</span><br><span class="line"></span><br><span class="line">    useEffect(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (count &gt; <span class="number">10</span>) &#123;</span><br><span class="line">            clearInterval(timerID.current)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">        &lt;&gt;</span><br><span class="line">            &lt;button</span><br><span class="line">                ref=&#123;couterRef&#125;</span><br><span class="line">                onClick=&#123;() =&gt; &#123;</span><br><span class="line">                    setCount(count + <span class="number">1</span>)</span><br><span class="line">                &#125;&#125;</span><br><span class="line">            &gt;</span><br><span class="line">                Count: &#123;count&#125;, <span class="attr">double</span>: &#123;doubleCount&#125;</span><br><span class="line">            &lt;<span class="regexp">/button&gt;</span></span><br><span class="line"><span class="regexp">        &lt;/</span>&gt;</span><br><span class="line">    )</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在上面的例子中，我用<code>ref</code>对象的<code>current</code>属性来存储定时器的 ID，这样便可以在多次渲染之后依旧保存定时器 ID，从而能正常清除定时器。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://swiftist.cn/2020/03/28/myBatis/mybatis%E5%9C%A8%E4%B8%80%E4%B8%AAdelete%E6%A0%87%E7%AD%BE%E5%86%99%E5%A4%9A%E6%9D%A1delete%E8%AF%AD%E5%8F%A5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Andy Ge">
+      <meta itemprop="description" content="勇于积极进取，步入人生的世外桃源">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="飞雪轩辕">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/03/28/myBatis/mybatis%E5%9C%A8%E4%B8%80%E4%B8%AAdelete%E6%A0%87%E7%AD%BE%E5%86%99%E5%A4%9A%E6%9D%A1delete%E8%AF%AD%E5%8F%A5/" class="post-title-link" itemprop="url">mybatis在一个delete标签写多条delete语句</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-28 15:16:02" itemprop="dateCreated datePublished" datetime="2020-03-28T15:16:02+08:00">2020-03-28</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-31 23:07:39" itemprop="dateModified" datetime="2020-03-31T23:07:39+08:00">2020-03-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/mybatis/" itemprop="url" rel="index">
+                    <span itemprop="name">mybatis</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/03/28/myBatis/mybatis%E5%9C%A8%E4%B8%80%E4%B8%AAdelete%E6%A0%87%E7%AD%BE%E5%86%99%E5%A4%9A%E6%9D%A1delete%E8%AF%AD%E5%8F%A5/" class="post-meta-item leancloud_visitors" data-flag-title="mybatis在一个delete标签写多条delete语句" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="整理"><a href="#整理" class="headerlink" title="整理"></a>整理</h1><p>有个常见的场景：删除用户的时候需要先删除用户的外键关联数据，否则会触发规则报错。</p>
+<p>解决办法不外乎有三个：1、多条 sql 分批执行；2、存储过程或函数调用；3、sql 批量执行。</p>
+<h2 id="连接串配置"><a href="#连接串配置" class="headerlink" title="连接串配置"></a>连接串配置</h2><h3 id="修改数据库连接参数加上allowMultiQueries-true"><a href="#修改数据库连接参数加上allowMultiQueries-true" class="headerlink" title="修改数据库连接参数加上allowMultiQueries=true"></a>修改数据库连接参数加上<code>allowMultiQueries=true</code></h3><figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">hikariConfig.security.jdbcUrl</span>=<span class="string">jdbc:mysql://xx.xx.xx:3306/xxxxx?characterEncoding=utf-8&amp;autoReconnect=true&amp;failOverReadOnly=false&amp;allowMultiQueries=true</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="直接写多条语句，用“；”隔开即可"><a href="#直接写多条语句，用“；”隔开即可" class="headerlink" title="直接写多条语句，用“；”隔开即可"></a>直接写多条语句，用“；”隔开即可</h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">delete</span> <span class="attr">id</span>=<span class="string">"deleteComboInfo"</span>&gt;</span></span><br><span class="line">    delete from amb_pairs where id in</span><br><span class="line">    <span class="tag">&lt;<span class="name">foreach</span> <span class="attr">collection</span>=<span class="string">"id.split(',')"</span> <span class="attr">close</span>=<span class="string">")"</span> <span class="attr">open</span>=<span class="string">"("</span> <span class="attr">separator</span>=<span class="string">","</span> <span class="attr">item</span>=<span class="string">"item"</span>&gt;</span></span><br><span class="line">        #&#123;item&#125;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">foreach</span>&gt;</span></span><br><span class="line">    ;</span><br><span class="line"></span><br><span class="line">    delete from amb_pair_detail where pair_id in</span><br><span class="line">    <span class="tag">&lt;<span class="name">foreach</span> <span class="attr">collection</span>=<span class="string">"id.split(',')"</span> <span class="attr">close</span>=<span class="string">")"</span> <span class="attr">open</span>=<span class="string">"("</span> <span class="attr">separator</span>=<span class="string">","</span> <span class="attr">item</span>=<span class="string">"item"</span>&gt;</span></span><br><span class="line">        #&#123;item&#125;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">foreach</span>&gt;</span></span><br><span class="line">    ;</span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">delete</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="druid-额外配置"><a href="#druid-额外配置" class="headerlink" title="druid 额外配置"></a>druid 额外配置</h2><p>如果使用了 druid 连接池，则需要额外的配置：</p>
+<p>violation, multi-statement not allow)</p>
+<h3 id="1、操作"><a href="#1、操作" class="headerlink" title="1、操作"></a>1、操作</h3><p>Spring Boot 配置 druid 连接池，进行批量插入</p>
+<h3 id="2、现象（错误信息）"><a href="#2、现象（错误信息）" class="headerlink" title="2、现象（错误信息）"></a>2、现象（错误信息）</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">Caused by: java.sql.SQLException: sql injection violation, multi-statement not allow :</span><br><span class="line">insert into public_serve(`<span class="built_in">type</span>`,  community_id, result, create_time )</span><br><span class="line">values (?,  ?,  ?, ? ) ;</span><br><span class="line">insert into public_serve(`<span class="built_in">type</span>`,  community_id, result, create_time )</span><br><span class="line">values (?,  ?,  ?, ? ) ;</span><br><span class="line">at com.alibaba.druid.wall.WallFilter.checkInternal(WallFilter.java:800)</span><br><span class="line">	at com.alibaba.druid.wall.WallFilter.connection_prepareStatement(WallFilter.java:251)</span><br><span class="line">	at com.alibaba.druid.filter.FilterChainImpl.connection_prepareStatement(FilterChainImpl.java:568)</span><br><span class="line">	at com.alibaba.druid.filter.FilterAdapter.connection_prepareStatement(FilterAdapter.java:929)</span><br><span class="line">	at com.alibaba.druid.filter.FilterEventAdapter.connection_prepareStatement(FilterEventAdapter.java:122)</span><br><span class="line">	at com.alibaba.druid.filter.FilterChainImpl.connection_prepareStatement(FilterChainImpl.java:568)</span><br><span class="line">	at com.alibaba.druid.proxy.jdbc.ConnectionProxyImpl.prepareStatement(ConnectionProxyImpl.java:342)</span><br><span class="line">	at com.alibaba.druid.pool.DruidPooledConnection.prepareStatement(DruidPooledConnection.java:349)</span><br><span class="line">	at org.apache.ibatis.executor.statement.PreparedStatementHandler.instantiateStatement(PreparedStatementHandler.java:87)</span><br><span class="line">	at org.apache.ibatis.executor.statement.BaseStatementHandler.prepare(BaseStatementHandler.java:88)</span><br><span class="line">	at org.apache.ibatis.executor.statement.RoutingStatementHandler.prepare(RoutingStatementHandler.java:59)</span><br><span class="line">	at org.apache.ibatis.executor.SimpleExecutor.prepareStatement(SimpleExecutor.java:85)</span><br><span class="line">	at org.apache.ibatis.executor.SimpleExecutor.doUpdate(SimpleExecutor.java:49)</span><br><span class="line">	at org.apache.ibatis.executor.BaseExecutor.update(BaseExecutor.java:117)</span><br><span class="line">	at org.apache.ibatis.executor.CachingExecutor.update(CachingExecutor.java:76)</span><br><span class="line">	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)</span><br><span class="line">	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)</span><br><span class="line">	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)</span><br><span class="line">	at java.lang.reflect.Method.invoke(Method.java:498)</span><br><span class="line">	at org.apache.ibatis.plugin.Plugin.invoke(Plugin.java:63)</span><br><span class="line">	at com.sun.proxy.<span class="variable">$Proxy214</span>.update(Unknown Source)</span><br><span class="line">	at org.apache.ibatis.session.defaults.DefaultSqlSession.update(DefaultSqlSession.java:198)</span><br><span class="line">	at org.apache.ibatis.session.defaults.DefaultSqlSession.insert(DefaultSqlSession.java:185)</span><br><span class="line">	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)</span><br><span class="line">	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)</span><br><span class="line">	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)</span><br><span class="line">	at java.lang.reflect.Method.invoke(Method.java:498)</span><br><span class="line">	at org.mybatis.spring.SqlSessionTemplate<span class="variable">$SqlSessionInterceptor</span>.invoke(SqlSessionTemplate.java:433)</span><br><span class="line">	... 56 more</span><br></pre></td></tr></table></figure>
+
+<h3 id="3、原因"><a href="#3、原因" class="headerlink" title="3、原因"></a>3、原因</h3><p>需要设置过滤器<br><mark><strong>WallFilter</strong></mark> 的配置：<br><mark><strong>WallConfig</strong></mark> 的参数<br><mark><strong>multiStatementAllow</strong></mark> 为 true，默认情况下 false 不允许批量操作</p>
+<h3 id="4、解决"><a href="#4、解决" class="headerlink" title="4、解决"></a>4、解决</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.ejudata.platform.config;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.alibaba.druid.filter.Filter;</span><br><span class="line"><span class="keyword">import</span> com.alibaba.druid.pool.DruidDataSource;</span><br><span class="line"><span class="keyword">import</span> com.alibaba.druid.wall.WallConfig;</span><br><span class="line"><span class="keyword">import</span> com.alibaba.druid.wall.WallFilter;</span><br><span class="line"><span class="keyword">import</span> org.springframework.boot.context.properties.ConfigurationProperties;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.Bean;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.Configuration;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.sql.DataSource;</span><br><span class="line"><span class="keyword">import</span> java.util.ArrayList;</span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DruidConfig</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//使用连接池dataSource</span></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="meta">@ConfigurationProperties</span>(prefix = <span class="string">"spring.datasource"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> DataSource <span class="title">druidDataSource</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        DruidDataSource druidDataSource = <span class="keyword">new</span> DruidDataSource();</span><br><span class="line">        List&lt;Filter&gt; filterList = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        filterList.add(wallFilter());</span><br><span class="line">        druidDataSource.setProxyFilters(filterList);</span><br><span class="line">        <span class="keyword">return</span> druidDataSource;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> WallFilter <span class="title">wallFilter</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        WallFilter wallFilter = <span class="keyword">new</span> WallFilter();</span><br><span class="line">        wallFilter.setConfig(wallConfig());</span><br><span class="line">        <span class="keyword">return</span> wallFilter;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> WallConfig <span class="title">wallConfig</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        WallConfig config = <span class="keyword">new</span> WallConfig();</span><br><span class="line">        config.setMultiStatementAllow(<span class="keyword">true</span>);<span class="comment">//允许一次执行多条语句</span></span><br><span class="line">        config.setNoneBaseStatementAllow(<span class="keyword">true</span>);<span class="comment">//允许非基本语句的其他语句</span></span><br><span class="line">        <span class="keyword">return</span> config;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="5、参考"><a href="#5、参考" class="headerlink" title="5、参考"></a>5、参考</h3><p><a href="https://github.com/alibaba/druid/wiki/%E9%85%8D%E7%BD%AE-wallfilter" target="_blank" rel="noopener">https://github.com/alibaba/druid/wiki/配置-wallfilter</a></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://swiftist.cn/2020/03/27/mac/mac-shell-scripts/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Andy Ge">
+      <meta itemprop="description" content="勇于积极进取，步入人生的世外桃源">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="飞雪轩辕">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/03/27/mac/mac-shell-scripts/" class="post-title-link" itemprop="url">mac shell scripts</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-27 10:49:13" itemprop="dateCreated datePublished" datetime="2020-03-27T10:49:13+08:00">2020-03-27</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-31 23:07:39" itemprop="dateModified" datetime="2020-03-31T23:07:39+08:00">2020-03-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/mac/" itemprop="url" rel="index">
+                    <span itemprop="name">mac</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/03/27/mac/mac-shell-scripts/" class="post-meta-item leancloud_visitors" data-flag-title="mac shell scripts" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="脚本集合"><a href="#脚本集合" class="headerlink" title="脚本集合"></a>脚本集合</h1><h2 id="awk-及-for-循环"><a href="#awk-及-for-循环" class="headerlink" title="awk 及 for 循环"></a>awk 及 for 循环</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#! /bin/sh</span></span><br><span class="line">node ./md2code.js</span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">'拷贝java相关代码...'</span></span><br><span class="line"><span class="built_in">cd</span> tmp</span><br><span class="line">cp -R `ls | grep -v ts | xargs` ../../../BackEnd/src/main/java/com/jgd/hr</span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">'切换到后端代码目录'</span></span><br><span class="line"><span class="built_in">cd</span> ../../../BackEnd/src/main/java/com/jgd/hr/</span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">'移动mysql.sql...'</span></span><br><span class="line">mv mysql.sql ../../../../../../db</span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">'移除变动的文件'</span></span><br><span class="line">git s | grep deleted: |  awk <span class="string">'&#123;print "git checkout " $2&#125;'</span> | sh</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> file <span class="keyword">in</span> Permission Role User Dict</span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">    git checkout <span class="string">'service/auth/'</span><span class="variable">$file</span><span class="string">'Service.java'</span></span><br><span class="line">    git checkout <span class="string">'service/impl/auth/'</span><span class="variable">$file</span><span class="string">'ServiceImpl.java'</span></span><br><span class="line">    git checkout <span class="string">'mapper/auth/'</span><span class="variable">$file</span><span class="string">'Mapper.java'</span></span><br><span class="line">    git checkout <span class="string">'mapper/xml/auth/'</span><span class="variable">$file</span><span class="string">'Mapper.xml'</span></span><br><span class="line"><span class="keyword">done</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> file <span class="keyword">in</span> Dict</span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">    git checkout <span class="string">'service/base/'</span><span class="variable">$file</span><span class="string">'Service.java'</span></span><br><span class="line">    git checkout <span class="string">'service/impl/base/'</span><span class="variable">$file</span><span class="string">'ServiceImpl.java'</span></span><br><span class="line">    git checkout <span class="string">'mapper/base/'</span><span class="variable">$file</span><span class="string">'Mapper.java'</span></span><br><span class="line">    git checkout <span class="string">'mapper/xml/base/'</span><span class="variable">$file</span><span class="string">'Mapper.xml'</span></span><br><span class="line"><span class="keyword">done</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">'切换回代码生成目录'</span></span><br><span class="line"><span class="built_in">cd</span> -</span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">'拷贝d.ts到前端项目'</span></span><br><span class="line">cp -R ts/ ../../../FrontEnd/src/types/</span><br><span class="line"></span><br><span class="line"><span class="built_in">cd</span> ../</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://swiftist.cn/2020/03/26/mysql/update-inner-join%E4%BD%BF%E7%94%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Andy Ge">
+      <meta itemprop="description" content="勇于积极进取，步入人生的世外桃源">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="飞雪轩辕">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/03/26/mysql/update-inner-join%E4%BD%BF%E7%94%A8/" class="post-title-link" itemprop="url">update inner join使用</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-26 16:03:44" itemprop="dateCreated datePublished" datetime="2020-03-26T16:03:44+08:00">2020-03-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-31 23:07:39" itemprop="dateModified" datetime="2020-03-31T23:07:39+08:00">2020-03-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/mysql/" itemprop="url" rel="index">
+                    <span itemprop="name">mysql</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/03/26/mysql/update-inner-join%E4%BD%BF%E7%94%A8/" class="post-meta-item leancloud_visitors" data-flag-title="update inner join使用" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="一：需求"><a href="#一：需求" class="headerlink" title="一：需求"></a>一：需求</h1><p>A 表和 B 表的表结构相同，A 表是历史表，B 表是增量数据表；想要根据关联条件更新 A 表中的数据。</p>
+<h1 id="二：表结构"><a href="#二：表结构" class="headerlink" title="二：表结构"></a>二：表结构</h1><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`A`</span> (</span><br><span class="line">  <span class="string">`id`</span> <span class="built_in">bigint</span>(<span class="number">20</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> AUTO_INCREMENT,</span><br><span class="line">  <span class="string">`bid`</span> <span class="built_in">bigint</span>(<span class="number">20</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> ,</span><br><span class="line">  <span class="string">`sid`</span> <span class="built_in">bigint</span>(<span class="number">20</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> ,</span><br><span class="line">  <span class="string">`grid`</span> <span class="built_in">bigint</span>(<span class="number">20</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> ,</span><br><span class="line">  <span class="string">`age`</span> <span class="built_in">bigint</span>(<span class="number">20</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> ,</span><br><span class="line">  <span class="string">`pv`</span> <span class="built_in">bigint</span>(<span class="number">20</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> ,</span><br><span class="line">  <span class="string">`uv`</span> <span class="built_in">bigint</span>(<span class="number">20</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> ,</span><br><span class="line">  <span class="string">`pay_count`</span> <span class="built_in">bigint</span>(<span class="number">20</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`charge_amount`</span> <span class="built_in">bigint</span>(<span class="number">20</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> ,</span><br><span class="line">  <span class="string">`last_pay_count`</span> <span class="built_in">bigint</span>(<span class="number">20</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> ,</span><br><span class="line">  <span class="string">`last_charge_amount`</span> <span class="built_in">bigint</span>(<span class="number">20</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> ,</span><br><span class="line">  <span class="string">`ftime`</span> <span class="built_in">bigint</span>(<span class="number">20</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> ,</span><br><span class="line">  <span class="string">`dtime`</span> <span class="built_in">bigint</span>(<span class="number">20</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">DEFAULT</span> <span class="string">'0'</span> <span class="keyword">COMMENT</span> <span class="string">'详细时间(yyyyMMddHH)'</span></span><br><span class="line">  PRIMARY <span class="keyword">KEY</span> (<span class="string">`id`</span>,<span class="string">`ftime`</span>),</span><br><span class="line">  <span class="keyword">KEY</span> <span class="string">`IX_FTIME`</span> (<span class="string">`ftime`</span>) <span class="keyword">USING</span> BTREE,</span><br><span class="line">  <span class="keyword">KEY</span> <span class="string">`IX_HTIME`</span> (<span class="string">`htime`</span>) <span class="keyword">USING</span> BTREE,</span><br><span class="line">  <span class="keyword">KEY</span> <span class="string">`IX_DTIME`</span> (<span class="string">`dtime`</span>),</span><br><span class="line">  <span class="keyword">KEY</span> <span class="string">`IX_B_F_S_G`</span> (<span class="string">`bid`</span>,<span class="string">`ftime`</span>,<span class="string">`sid`</span>,<span class="string">`grid`</span>),</span><br><span class="line">  <span class="keyword">KEY</span> <span class="string">`IX_B_S_G`</span> (<span class="string">`bid`</span>,<span class="string">`sid`</span>,<span class="string">`grid`</span>),</span><br><span class="line">  <span class="keyword">KEY</span> <span class="string">`IX_B_D_S`</span> (<span class="string">`bid`</span>,<span class="string">`dtime`</span>,<span class="string">`sid`</span>)</span><br><span class="line">) <span class="keyword">ENGINE</span>=<span class="keyword">InnoDB</span>  <span class="keyword">DEFAULT</span> <span class="keyword">CHARSET</span>=utf8;</span><br></pre></td></tr></table></figure>
+
+<p>注意：mysql 只有 2 种索引(BTREE 和 HASH)</p>
+<h1 id="三：注意"><a href="#三：注意" class="headerlink" title="三：注意"></a>三：注意</h1><p>1、只更新 A 表的部分字段：pv、uv 和 pay_amount</p>
+<p>2、确定唯一一条记录的关联字段是：bid、sid、dtime、qrid</p>
+<h1 id="四：实现"><a href="#四：实现" class="headerlink" title="四：实现"></a>四：实现</h1><p>1、使用 inner join 实现</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">UPDATE</span> A <span class="keyword">as</span> aa</span><br><span class="line"><span class="keyword">INNER</span> <span class="keyword">JOIN</span> B <span class="keyword">as</span> bb <span class="keyword">ON</span> bb.bid = aa.bid</span><br><span class="line"><span class="keyword">AND</span> bb.sid=aa.sid</span><br><span class="line"><span class="keyword">AND</span> bb.grid=aa.grid</span><br><span class="line"><span class="keyword">SET</span> aa.pv=bb.pv,</span><br><span class="line">    aa.uv=bb.uv,</span><br><span class="line">    aa.pay_amount=bb.pay_amount</span><br><span class="line"><span class="keyword">WHERE</span> aa.dtime=?</span><br><span class="line"><span class="keyword">AND</span> aa.bid=? ;</span><br></pre></td></tr></table></figure>
+
+<p>2、使用 exists 实现</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">UPDATE</span> A aa</span><br><span class="line"><span class="keyword">SET</span>    aa.pv = (<span class="keyword">SELECT</span> bb.pv</span><br><span class="line">                <span class="keyword">FROM</span>   B bb</span><br><span class="line">                <span class="keyword">WHERE</span>  bb.bid = aa.bid</span><br><span class="line">                       <span class="keyword">AND</span> bb.sid = aa.sid</span><br><span class="line">                       <span class="keyword">AND</span> bb.grid = aa.grid),</span><br><span class="line">       aa.uv = (<span class="keyword">SELECT</span> bb.uv</span><br><span class="line">                <span class="keyword">FROM</span>   B bb</span><br><span class="line">                <span class="keyword">WHERE</span>  bb.bid = aa.bid</span><br><span class="line">                       <span class="keyword">AND</span> bb.sid = aa.sid</span><br><span class="line">                       <span class="keyword">AND</span> bb.grid = aa.grid),</span><br><span class="line">       aa.pay_amount = (<span class="keyword">SELECT</span> bb.pay_amount</span><br><span class="line">                        <span class="keyword">FROM</span>   B bb</span><br><span class="line">                        <span class="keyword">WHERE</span>  bb.bid = aa.bid</span><br><span class="line">                               <span class="keyword">AND</span> bb.sid = aa.sid</span><br><span class="line">                               <span class="keyword">AND</span> bb.grid = aa.grid)</span><br><span class="line"><span class="keyword">WHERE</span>  <span class="keyword">EXISTS</span> (<span class="keyword">SELECT</span> <span class="number">1</span></span><br><span class="line">               <span class="keyword">FROM</span>   B bb</span><br><span class="line">               <span class="keyword">WHERE</span>  bb.bid = aa.bid</span><br><span class="line">                      <span class="keyword">AND</span> bb.sid = aa.sid</span><br><span class="line">                      <span class="keyword">AND</span> bb.grid = aa.grid)</span><br><span class="line">       <span class="keyword">AND</span> aa.dtime = ?</span><br><span class="line">       <span class="keyword">AND</span> aa.bid = ?;</span><br></pre></td></tr></table></figure>
+
+<p>注意：别名中，不要出现 mysql 的关键字！</p>
+<h1 id="五：参考"><a href="#五：参考" class="headerlink" title="五：参考"></a>五：参考</h1><p>1、mysql 关键字：<a href="https://dev.mysql.com/doc/refman/8.0/en/keywords.html" target="_blank" rel="noopener">https://dev.mysql.com/doc/refman/8.0/en/keywords.html</a></p>
+<p>2、update inner join :<a href="https://stackoverflow.com/questions/11709043/mysql-update-column-with-value-from-another-table" target="_blank" rel="noopener">https://stackoverflow.com/questions/11709043/mysql-update-column-with-value-from-another-table</a></p>
+<p>3、mysql 索引类型：<a href="https://dev.mysql.com/doc/refman/8.0/en/mysql-indexes.html" target="_blank" rel="noopener">https://dev.mysql.com/doc/refman/8.0/en/mysql-indexes.html</a></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://swiftist.cn/2020/03/26/mysql/MySql%E5%B0%86%E4%B8%80%E4%B8%AA%E8%A1%A8%E7%9A%84%E6%95%B0%E6%8D%AE%E5%AF%BC%E5%85%A5%E5%88%B0%E5%8F%A6%E4%B8%80%E4%B8%AA%E8%A1%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Andy Ge">
+      <meta itemprop="description" content="勇于积极进取，步入人生的世外桃源">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="飞雪轩辕">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/03/26/mysql/MySql%E5%B0%86%E4%B8%80%E4%B8%AA%E8%A1%A8%E7%9A%84%E6%95%B0%E6%8D%AE%E5%AF%BC%E5%85%A5%E5%88%B0%E5%8F%A6%E4%B8%80%E4%B8%AA%E8%A1%A8/" class="post-title-link" itemprop="url">MySql将一个表的数据导入到另一个表</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-26 15:33:02" itemprop="dateCreated datePublished" datetime="2020-03-26T15:33:02+08:00">2020-03-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-31 23:07:39" itemprop="dateModified" datetime="2020-03-31T23:07:39+08:00">2020-03-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/mysql/" itemprop="url" rel="index">
+                    <span itemprop="name">mysql</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/03/26/mysql/MySql%E5%B0%86%E4%B8%80%E4%B8%AA%E8%A1%A8%E7%9A%84%E6%95%B0%E6%8D%AE%E5%AF%BC%E5%85%A5%E5%88%B0%E5%8F%A6%E4%B8%80%E4%B8%AA%E8%A1%A8/" class="post-meta-item leancloud_visitors" data-flag-title="MySql将一个表的数据导入到另一个表" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>将一个表的数据插入到另外一个表中的几种情况如下</p>
+<h2 id="1-如果-2-张表的字段一致，并且希望插入全部数据，可以用这种方法"><a href="#1-如果-2-张表的字段一致，并且希望插入全部数据，可以用这种方法" class="headerlink" title="1.如果 2 张表的字段一致，并且希望插入全部数据，可以用这种方法"></a>1.如果 2 张表的字段一致，并且希望插入全部数据，可以用这种方法</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> 目标表 <span class="keyword">SELECT</span> * <span class="keyword">FROM</span> 来源表;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 例如：</span></span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> insertTest <span class="keyword">select</span> * frominsertTest2;</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-如果只希望导入指定字段，可以用这种方法"><a href="#2-如果只希望导入指定字段，可以用这种方法" class="headerlink" title="2.如果只希望导入指定字段，可以用这种方法"></a>2.如果只希望导入指定字段，可以用这种方法</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> 目标表 (字段<span class="number">1</span>, 字段<span class="number">2</span>, ...) <span class="keyword">SELECT</span> 字段<span class="number">1</span>, 字段<span class="number">2</span>,... <span class="keyword">FROM</span> 来源表;(这           里的话字段必须保持一致)</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 例如：</span></span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> insertTest2(<span class="keyword">id</span>，<span class="keyword">name</span>) <span class="keyword">select</span> <span class="keyword">id</span>,<span class="keyword">name</span> <span class="keyword">from</span> insertTest2;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>注意：如果目标表与来源表主键值相同则会出现添加错误，主键值不同才能插入</p>
+</blockquote>
+<h2 id="3-如果您需要只导入目标表中不存在的记录，可以使用这种方法"><a href="#3-如果您需要只导入目标表中不存在的记录，可以使用这种方法" class="headerlink" title="3.如果您需要只导入目标表中不存在的记录，可以使用这种方法"></a>3.如果您需要只导入目标表中不存在的记录，可以使用这种方法</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">INSERTINTO 目标表 (字段1, 字段2, ...) <span class="keyword">SELECT</span>字段<span class="number">1</span>, 字段<span class="number">2</span>, ... <span class="keyword">FROM</span>来源表</span><br><span class="line"><span class="keyword">WHERE</span> <span class="keyword">not</span> <span class="keyword">exists</span> (<span class="keyword">select</span> * <span class="keyword">from</span>目标表 <span class="keyword">where</span> 目标表.比较字段 =来源表.比较字段);</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 例如：</span></span><br><span class="line"></span><br><span class="line"><span class="comment">-- 1&gt;.插入多条记录：</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">insert</span> intoinsertTest2(<span class="keyword">id</span>,<span class="keyword">name</span>)<span class="keyword">select</span> <span class="keyword">id</span>,<span class="keyword">name</span> frominsertTest</span><br><span class="line"><span class="keyword">where</span> <span class="keyword">not</span> <span class="keyword">exists</span> (<span class="keyword">select</span> * frominsertTest2 whereinsertTest2.id=insertTest.id);</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 2&gt;.插入一条记录：</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">insert</span> intoinsertTest (<span class="keyword">id</span>, <span class="keyword">name</span>) <span class="keyword">SELECT</span> <span class="number">100</span>,<span class="string">'liudehua'</span>  FROMdual</span><br><span class="line"><span class="keyword">WHERE</span> notexists (<span class="keyword">select</span> * <span class="keyword">from</span> insertTest whereinsertTest.id = <span class="number">100</span>);</span><br></pre></td></tr></table></figure>
+
+<h2 id="4、如果需要导入的目标表字段比来源表的字段多，将来源表的数据导入再加上几个字段组成目标表-的数据"><a href="#4、如果需要导入的目标表字段比来源表的字段多，将来源表的数据导入再加上几个字段组成目标表-的数据" class="headerlink" title="4、如果需要导入的目标表字段比来源表的字段多，将来源表的数据导入再加上几个字段组成目标表 的数据"></a>4、如果需要导入的目标表字段比来源表的字段多，将来源表的数据导入再加上几个字段组成目标表 的数据</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> 目标表 （目标字段 <span class="number">1</span>，目标字段 <span class="number">2</span>，字段 <span class="number">1</span>, 字段 <span class="number">2</span>,...）</span><br><span class="line"><span class="keyword">select</span> 目标字段<span class="number">1</span>，目标字段<span class="number">2</span>，字段<span class="number">1</span>, 字段<span class="number">2</span>,... <span class="keyword">FROM</span> 来源表</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 目标字段 1，目标字段 2：这是目标表比来源表多出的字段</span></span><br><span class="line"></span><br><span class="line"><span class="comment">-- 例如：</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> insertTest2(目标字段<span class="number">1</span>，目标字段<span class="number">2</span>，<span class="keyword">id</span>,<span class="keyword">name</span>) <span class="keyword">select</span> 目标字段<span class="number">1</span>，</span><br><span class="line">目标字段<span class="number">2</span>， <span class="keyword">id</span>,<span class="keyword">name</span> <span class="keyword">from</span> insertTest  whereinsertTest2.id=insertTest.id;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 目标字段1，目标字段2：可以先设占位符，在设置值。也可以直接在语句中赋值</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> insertTest2(目标字段<span class="number">1</span>，目标字段<span class="number">2</span>，<span class="keyword">id</span>,<span class="keyword">name</span>) <span class="keyword">select</span>  a1，</span><br><span class="line">a2， <span class="keyword">id</span>,<span class="keyword">name</span> <span class="keyword">from</span> insertTest  whereinsertTest2.id=insertTest.id;</span><br></pre></td></tr></table></figure>
+
+<p>解析</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> a1， a2， <span class="keyword">id</span>,<span class="keyword">name</span> <span class="keyword">from</span> insertTest</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>这里在表 insertTest 里本身没有 a1,a2 两个字段名，当使用这个查询语句时，会查出 insertTest 表的所有字段值，并在表数据的前面加上了列名为 a1,a2 的字段，并且列名为 a1 的值全为 a1,列名为 a2 的值全为 a2，并且 a1,a2 不能为变量，如果是变量，sql 语句会把它当做表字段，而表中不存在这个字段，会报错</p>
+</blockquote>
+<p><strong>总结：即可以向一个表中查询不存在的列名，这里不存在的列名必须是实际值或占位符，不能是变量</strong></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://swiftist.cn/2020/03/25/mac/mac-osx-tree-%E5%91%BD%E4%BB%A4%E4%B9%B1%E7%A0%81/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Andy Ge">
+      <meta itemprop="description" content="勇于积极进取，步入人生的世外桃源">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="飞雪轩辕">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/03/25/mac/mac-osx-tree-%E5%91%BD%E4%BB%A4%E4%B9%B1%E7%A0%81/" class="post-title-link" itemprop="url">mac osx tree 命令乱码</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-25 12:31:21" itemprop="dateCreated datePublished" datetime="2020-03-25T12:31:21+08:00">2020-03-25</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-31 23:07:39" itemprop="dateModified" datetime="2020-03-31T23:07:39+08:00">2020-03-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/mac/" itemprop="url" rel="index">
+                    <span itemprop="name">mac</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/03/25/mac/mac-osx-tree-%E5%91%BD%E4%BB%A4%E4%B9%B1%E7%A0%81/" class="post-meta-item leancloud_visitors" data-flag-title="mac osx tree 命令乱码" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>直接使用<code>tree .</code>会出现乱码，采用<code>tree . -N</code>即可避免。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+  </div>
+
+  
+  <nav class="pagination">
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/73/">73</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+  </nav>
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Andy Ge</p>
+  <div class="site-description" itemprop="description">勇于积极进取，步入人生的世外桃源</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">728</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">134</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">315</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/andyge" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;andyge" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:geshaofei@126.com" title="E-Mail → mailto:geshaofei@126.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.ruanyifeng.com/" title="http:&#x2F;&#x2F;www.ruanyifeng.com&#x2F;" rel="noopener" target="_blank">阮一峰</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://colobu.com/" title="http:&#x2F;&#x2F;colobu.com&#x2F;" rel="noopener" target="_blank">鸟窝</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.cnblogs.com/hellokuangshen/" title="https:&#x2F;&#x2F;www.cnblogs.com&#x2F;hellokuangshen&#x2F;" rel="noopener" target="_blank">狂神</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://yelog.org/" title="https:&#x2F;&#x2F;yelog.org&#x2F;" rel="noopener" target="_blank">叶落阁</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Andy Ge</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.7.1
+  </div>
+
+        
+
+
+
+
+
+
+  <script>
+  function leancloudSelector(url) {
+    url = encodeURI(url);
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.getAttribute('id'));
+      var title = visitors.getAttribute('data-flag-title');
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .then(() => {
+                leancloudSelector(url).innerText = counter.time + 1;
+              })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              })
+          } else {
+              Counter('post', '/classes/Counter', { title: title, url: url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.getAttribute('id'));
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (let item of results) {
+            let { url, time } = item;
+            leancloudSelector(url).innerText = time;
+          }
+          for (let url of entries) {
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=2TdIb5gRlAVUw24l2W0zWnCj-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method: method,
+          headers: {
+            'X-LC-Id'     : '2TdIb5gRlAVUw24l2W0zWnCj-gzGzoHsz',
+            'X-LC-Key'    : 'cJdJrMLBXsj0ttq0WsL0aA2j',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

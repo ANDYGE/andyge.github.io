@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"swiftist.cn","root":"/","scheme":"Pisces","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"EVBR3H53HW","apiKey":"2abd573a01143a0cc4108fa4d21ae67c","indexName":"swiftist","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="1. 函数式编程1.1. 第一章函数式编程主要基于数学函数和它的思想。 1.1.1. 函数与 js 方法函数是一段可以通过其名称被调用的代码，可以传递参数并返回值。方法是一段必须通过其名称及其关联对象的名称被调用的代码。 123456789101112&#x2F;&#x2F;函数var func &#x3D; a &#x3D;&gt; &amp;#123;    return a&amp;#125;func(5) &#x2F;&#x2F;用其名称调用&#x2F;&#x2F;方法var obj">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JS ES6函数式编程">
+<meta property="og:url" content="https://swiftist.cn/2019/11/05/es/JS-ES6%E5%87%BD%E6%95%B0%E5%BC%8F%E7%BC%96%E7%A8%8B/index.html">
+<meta property="og:site_name" content="飞雪轩辕">
+<meta property="og:description" content="1. 函数式编程1.1. 第一章函数式编程主要基于数学函数和它的思想。 1.1.1. 函数与 js 方法函数是一段可以通过其名称被调用的代码，可以传递参数并返回值。方法是一段必须通过其名称及其关联对象的名称被调用的代码。 123456789101112&#x2F;&#x2F;函数var func &#x3D; a &#x3D;&gt; &amp;#123;    return a&amp;#125;func(5) &#x2F;&#x2F;用其名称调用&#x2F;&#x2F;方法var obj">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://swiftist.cn/images/misc/6555104-72ae3e71406b21c7.webp">
+<meta property="og:image" content="https://swiftist.cn/2019/11/05/images/misc/6555104-833f19388d590b11.webp">
+<meta property="og:image" content="https://swiftist.cn/2019/11/05/images/misc/6555104-5ad8fbff5b0f1058.webp">
+<meta property="og:image" content="https://swiftist.cn/2019/11/05/images/misc/6555104-5131f30d4f9d23d1.webp">
+<meta property="og:image" content="https://swiftist.cn/2019/11/05/images/misc/6555104-cad588b122c16170.webp">
+<meta property="og:image" content="https://swiftist.cn/2019/11/05/images/misc/6555104-15c3429c50355f66.webp">
+<meta property="og:image" content="https://swiftist.cn/2019/11/05/images/misc/6555104-87a77542f203be88.webp">
+<meta property="og:image" content="https://swiftist.cn/2019/11/05/images/misc/6555104-c007adab067916b8.webp">
+<meta property="article:published_time" content="2019-11-05T11:23:02.000Z">
+<meta property="article:modified_time" content="2020-03-31T15:07:39.339Z">
+<meta property="article:author" content="Andy Ge">
+<meta property="article:tag" content="es">
+<meta property="article:tag" content="函数式编程">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://swiftist.cn/images/misc/6555104-72ae3e71406b21c7.webp">
+
+<link rel="canonical" href="https://swiftist.cn/2019/11/05/es/JS-ES6%E5%87%BD%E6%95%B0%E5%BC%8F%E7%BC%96%E7%A8%8B/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>JS ES6函数式编程 | 飞雪轩辕</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="飞雪轩辕" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">飞雪轩辕</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">人生的乐趣在于把梦想变成现实</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-java">
+
+    <a href="/categories/java/" rel="section"><i class="fa fa-fw fa-th-large"></i>java</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://swiftist.cn/2019/11/05/es/JS-ES6%E5%87%BD%E6%95%B0%E5%BC%8F%E7%BC%96%E7%A8%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Andy Ge">
+      <meta itemprop="description" content="勇于积极进取，步入人生的世外桃源">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="飞雪轩辕">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          JS ES6函数式编程
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-11-05 19:23:02" itemprop="dateCreated datePublished" datetime="2019-11-05T19:23:02+08:00">2019-11-05</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-31 23:07:39" itemprop="dateModified" datetime="2020-03-31T23:07:39+08:00">2020-03-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/es/" itemprop="url" rel="index">
+                    <span itemprop="name">es</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span id="/2019/11/05/es/JS-ES6%E5%87%BD%E6%95%B0%E5%BC%8F%E7%BC%96%E7%A8%8B/" class="post-meta-item leancloud_visitors" data-flag-title="JS ES6函数式编程" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="1-函数式编程"><a href="#1-函数式编程" class="headerlink" title="1. 函数式编程"></a>1. 函数式编程</h1><h2 id="1-1-第一章"><a href="#1-1-第一章" class="headerlink" title="1.1. 第一章"></a>1.1. 第一章</h2><p>函数式编程主要基于数学函数和它的思想。</p>
+<h3 id="1-1-1-函数与-js-方法"><a href="#1-1-1-函数与-js-方法" class="headerlink" title="1.1.1. 函数与 js 方法"></a>1.1.1. 函数与 js 方法</h3><p>函数是一段可以通过其名称被调用的代码，可以传递参数并返回值。<br>方法是一段必须通过其名称及其关联对象的名称被调用的代码。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//函数</span></span><br><span class="line"><span class="keyword">var</span> func = <span class="function"><span class="params">a</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> a</span><br><span class="line">&#125;</span><br><span class="line">func(<span class="number">5</span>) <span class="comment">//用其名称调用</span></span><br><span class="line"><span class="comment">//方法</span></span><br><span class="line"><span class="keyword">var</span> obj = &#123;</span><br><span class="line">    simple: <span class="function"><span class="params">a</span> =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> a</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">obj.simple(<span class="number">5</span>) <span class="comment">//用其名称及其关联对象调用</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="1-1-2-引用透明性"><a href="#1-1-2-引用透明性" class="headerlink" title="1.1.2. 引用透明性"></a>1.1.2. 引用透明性</h3><p>所有函数对于相同的输入都将返回相同的值（函数只依赖参数的输入，不依赖于其他全局数据，即函数内部没有全局引用），这使并行代码和缓存（用值直接替换函数的结果）成为可能。</p>
+<h3 id="1-1-3-命令式、声明式与抽象"><a href="#1-1-3-命令式、声明式与抽象" class="headerlink" title="1.1.3. 命令式、声明式与抽象"></a>1.1.3. 命令式、声明式与抽象</h3><p>命令式主张告诉编译器“如何”做</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> array = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; o &lt; array.length; i++) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(array[i])</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>声明式告诉编译器“做什么”，如何做的部分（获得数组长度，循环遍历每一项）被抽象到高阶函数中，forEach 就是这样一个内置函数，本书中我们都将创建这样的内置函数。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> array = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]</span><br><span class="line">array.forEach(<span class="function"><span class="params">elememt</span> =&gt;</span> <span class="built_in">console</span>.log(elememt))</span><br></pre></td></tr></table></figure>
+
+<a id="more"></a>
+
+<h3 id="1-1-4-函数式编程的好处-amp-纯函数"><a href="#1-1-4-函数式编程的好处-amp-纯函数" class="headerlink" title="1.1.4. 函数式编程的好处&amp;纯函数"></a>1.1.4. 函数式编程的好处&amp;纯函数</h3><p>好处就是编写纯函数。纯函数是对相同输入返回相同输出的函数，不依赖（包含）任何外部变量，所以也不会产生改变外部环境变量的副作用。</p>
+<h3 id="1-1-5-并行代码"><a href="#1-1-5-并行代码" class="headerlink" title="1.1.5. 并行代码"></a>1.1.5. 并行代码</h3><p>纯函数允许我们并行执行代码，因为纯函数不会改变它的环境，所以不需要担心同步问题。当然，js 并没有真正的多线程支持并行，但如果你的项目使用了 webworker 来模拟多线程并行执行任务，这种时候就需要用纯函数来代替非纯函数。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> global = <span class="string">'something'</span></span><br><span class="line"><span class="keyword">let</span> function1 = <span class="function"><span class="params">input</span> =&gt;</span> &#123;</span><br><span class="line">    global = <span class="string">'somethingElse'</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> function2 = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (global === <span class="string">'something'</span>) &#123;</span><br><span class="line">        <span class="comment">//业务逻辑</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果我们要两个线程并行执行 function1 和 function2，由于两个函数都依赖全局变量 global，并行执行就会引起不良的影响（两个函数的执行顺序不同会有不同的结果），现在把它们改为纯函数。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> function1 = <span class="function">(<span class="params">input, global</span>) =&gt;</span> &#123;</span><br><span class="line">    global = <span class="string">'somethingElse'</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> function2 = <span class="function"><span class="params">global</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (global === <span class="string">'something'</span>) &#123;</span><br><span class="line">        <span class="comment">//业务逻辑</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们移动了 global 变量，把它作为两个函数的参数，使他们变成纯函数。现在并行执行不会有任何问题，由于函数不依赖于外部环境变量，不必担心线程的执行顺序。</p>
+<h3 id="1-1-6-可缓存"><a href="#1-1-6-可缓存" class="headerlink" title="1.1.6. 可缓存"></a>1.1.6. 可缓存</h3><p>根据纯函数对于给定输入总是返回相同的输出，我们可以缓存函数的输出，减少多次的输入来反复调用函数。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> longRunningFnBookKeeper = &#123;<span class="number">2</span>:<span class="number">3</span>,<span class="number">4</span>:<span class="number">5.</span>..&#125;</span><br><span class="line">longRunningFnBookKeeper.hasOwnProperty(ip)?longRunningFnBookKeeper[ip]:longRunningFunction(ip)</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-1-7-管道与组合"><a href="#1-1-7-管道与组合" class="headerlink" title="1.1.7. 管道与组合"></a>1.1.7. 管道与组合</h3><p>纯函数应该被设计为只做一件事。实现多个功能通过函数的组合来实现。<br>UNIX/LINUX 中，在一个文件中找到一个特定的名称并统计它的出现次数<br><code>cat jsBook | grep -i &quot;composing&quot; | wc</code><br>组合不是命令行特有的，它是函数式编程的核心。</p>
+<h3 id="1-1-8-关于-js"><a href="#1-1-8-关于-js" class="headerlink" title="1.1.8. 关于 js"></a>1.1.8. 关于 js</h3><p>js 是一门面对对象的语言，不是一种纯函数语言，更像是一种多范式语言，但是非常适合函数式编程。</p>
+<h2 id="1-2-第二章-js-函数基础"><a href="#1-2-第二章-js-函数基础" class="headerlink" title="1.2. 第二章 js 函数基础"></a>1.2. 第二章 js 函数基础</h2><p>今天很多浏览器还不支持 ES6，我们可以通过转换编译器 babel，将 ES6 转换为 ES5 代码。</p>
+<p><img src="/images/misc/6555104-72ae3e71406b21c7.webp" alt=""></p>
+<p>箭头函数的 this 经过编译后为 undefined</p>
+<p>可以看到，箭头函数的 this 经过编译后为 undefined，转换后的代码运行在严格模式下，严格模式是 js 的受限变体。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">'use strict'</span></span><br><span class="line">a = <span class="number">1</span> <span class="comment">// -&gt; Uncaught ReferenceError: a is not defined; 此处直接报错</span></span><br></pre></td></tr></table></figure>
+
+<p>在函数内部如果用 var 声明变量和不用时有很大差别，用 var 声明的是局部变量，在函数外部访问这个变量是访问不到的，没 var 声明的是全局变量。在函数外部是可以访问到的。</p>
+<p>如果你不使用 var 命令指定，在全局状态下定一个变量。在严格模式下这段代码会报错，因为全局变量在 js 中非常有害。</p>
+<h2 id="1-3-第三章高阶函数"><a href="#1-3-第三章高阶函数" class="headerlink" title="1.3. 第三章高阶函数"></a>1.3. 第三章高阶函数</h2><p>高阶函数（HOC）</p>
+<ul>
+<li>接收函数作为参数</li>
+<li>返回函数作为输出</li>
+<li>接收函数作为参数且返回函数作为输出</li>
+</ul>
+<p>满足以上三个之一的函数就是高阶函数。</p>
+<h3 id="1-3-1-理解数据"><a href="#1-3-1-理解数据" class="headerlink" title="1.3.1. 理解数据"></a>1.3.1. 理解数据</h3><h4 id="1-3-1-1-js-中函数为一等公民"><a href="#1-3-1-1-js-中函数为一等公民" class="headerlink" title="1.3.1.1. js 中函数为一等公民"></a>1.3.1.1. js 中函数为一等公民</h4><p>因为函数也是 js 中的一种数据类型，可以被赋值给变量，作为参数传递，也可被其他函数返回。</p>
+<h4 id="1-3-1-2-把一个函数存入变量"><a href="#1-3-1-2-把一个函数存入变量" class="headerlink" title="1.3.1.2. 把一个函数存入变量"></a>1.3.1.2. 把一个函数存入变量</h4><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> fn = <span class="function"><span class="params">()</span> =&gt;</span> &#123;&#125; <span class="comment">//fn就是一个指向函数数据类型的变量,即函数的引用</span></span><br><span class="line">fn() <span class="comment">//调用函数，即执行fn指向的函数</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="1-3-1-3-函数作为参数传入"><a href="#1-3-1-3-函数作为参数传入" class="headerlink" title="1.3.1.3. 函数作为参数传入"></a>1.3.1.3. 函数作为参数传入</h4><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> tellType = <span class="function"><span class="params">arg</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">typeof</span> arg === <span class="string">'function'</span>) &#123;</span><br><span class="line">        arg() <span class="comment">//如果传入的是函数就执行</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(arg) <span class="comment">//否则就输出数据</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> fn = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'i am a function'</span>)</span><br><span class="line">&#125;</span><br><span class="line">tellType(fn) <span class="comment">//函数作为参数传入</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="1-3-1-4-返回函数"><a href="#1-3-1-4-返回函数" class="headerlink" title="1.3.1.4. 返回函数"></a>1.3.1.4. 返回函数</h4><p>String 是 js 的内置函数，注意只返回了函数的引用，并没有执行函数</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> crazy = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">String</span></span><br><span class="line">&#125;</span><br><span class="line">crazy() <span class="comment">// String() &#123; [native code] &#125;</span></span><br><span class="line">crazy()(<span class="string">'HOC'</span>) <span class="comment">// "HOC"</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="1-3-2-抽象和高阶函数"><a href="#1-3-2-抽象和高阶函数" class="headerlink" title="1.3.2. 抽象和高阶函数"></a>1.3.2. 抽象和高阶函数</h3><p>高阶函数就是定义抽象</p>
+<h4 id="1-3-2-1-通过高阶函数实现抽象"><a href="#1-3-2-1-通过高阶函数实现抽象" class="headerlink" title="1.3.2.1. 通过高阶函数实现抽象"></a>1.3.2.1. 通过高阶函数实现抽象</h4><p>forEach 实现遍历数组</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> forEach = <span class="function">(<span class="params">array, fn</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; array.length; i++) &#123;</span><br><span class="line">        fn(array[i])</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>forEachObject 实现遍历对象</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> forEachObject = <span class="function">(<span class="params">obj,fn</span>)=&gt;</span>&#123;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">var</span> property <span class="keyword">in</span> obj)&#123;</span><br><span class="line">        <span class="keyword">if</span>(obj.hasOwnProperty(properity)&#123;</span><br><span class="line">            fn(property,obj[property])</span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注意 forEach 和 forEachObject 都是高阶函数，他们使开发者专注于任务，而抽象出遍历的部分。</p>
+<p>unless 函数如果 predicate 为 false，则调用 fn</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> unless = <span class="function">(<span class="params">predicate, fn</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (!predicate) fn()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>查找一个列表中的偶数</strong></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">forEach([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">6</span>, <span class="number">7</span>], number =&gt; &#123;</span><br><span class="line">    unless(number % <span class="number">2</span>, () =&gt; &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(number, <span class="string">'is even'</span>)</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>如果我们操作的是一个 Number 而不是 array</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> times = <span class="function">(<span class="params">time, fn</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; time; i++) &#123;</span><br><span class="line">        fn(i)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">times(<span class="number">100</span>, <span class="function"><span class="keyword">function</span>(<span class="params">n</span>) </span>&#123;</span><br><span class="line">    unless(n % <span class="number">2</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(n, <span class="string">'is even'</span>)</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-3-3-真实的高阶函数"><a href="#1-3-3-真实的高阶函数" class="headerlink" title="1.3.3. 真实的高阶函数"></a>1.3.3. 真实的高阶函数</h3><p><strong>a.every(function(element, index, array))</strong><br>every 是所有函数的每个回调函数都返回 true 的时候才会返回 true，当遇到 false 的时候终止执行，返回 false。</p>
+<p><strong>a.some(function(element, index, array))</strong><br>some 函数是“存在”有一个回调函数返回 true 的时候终止执行并返回 true，否则返回 false<br>在空数组上调用 every 返回 true，some 返回 false。</p>
+<h3 id="1-3-4-every-函数"><a href="#1-3-4-every-函数" class="headerlink" title="1.3.4. every 函数"></a>1.3.4. every 函数</h3><p>every 函数接受两个参数一个数组和一个函数。它使用传入的函数检查数组的所有元素是否为 true, 都为 true 才返回 true</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> every = <span class="function">(<span class="params">arr, fn</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> result = <span class="literal">true</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; arr.length; i++) &#123;</span><br><span class="line">        result = result &amp;&amp; fn(arr[i])</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> result</span><br><span class="line">&#125;</span><br><span class="line">every([<span class="literal">NaN</span>, <span class="literal">NaN</span>, <span class="literal">NaN</span>], <span class="built_in">isNaN</span>)</span><br></pre></td></tr></table></figure>
+
+<p>for..of 循环 ES6 中用于遍历数组元素的方法，重写 every 方法</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> every = <span class="function">(<span class="params">arr, fn</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> result = <span class="literal">true</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">const</span> element <span class="keyword">of</span> arr) &#123;</span><br><span class="line">        result = result &amp;&amp; fn(element)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> result</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-3-5-some-函数"><a href="#1-3-5-some-函数" class="headerlink" title="1.3.5. some 函数"></a>1.3.5. some 函数</h3><p>some 函数接受两个参数一个数组和一个函数。它使用传入的函数检查数组的所有元素是否为 true, 只要有一个为 true 就返回 true</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> some = <span class="function">(<span class="params">arr, fn</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> result = <span class="literal">false</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">const</span> element <span class="keyword">of</span> arr) &#123;</span><br><span class="line">        result = result || fn(element)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> result</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">some([<span class="number">5</span>, <span class="literal">NaN</span>, <span class="literal">NaN</span>], <span class="built_in">isNaN</span>)</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-3-6-sort-函数"><a href="#1-3-6-sort-函数" class="headerlink" title="1.3.6. sort 函数"></a>1.3.6. sort 函数</h3><p>sort 函数是一个高阶函数，它接受一个函数作为参数，该函数帮助 sort 函数决定排序逻辑, 是一个改变原数组的方法。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">arr.sort([compareFunc])</span><br></pre></td></tr></table></figure>
+
+<p>compareFunc 是可选的，如果 compareFunc 未提供，元素将被转换为字符串并按 Unicode 编码点顺序排列。<br>compareFunc 应该实现下面的逻辑</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">compareFunc</span>(<span class="params">a, b</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (根据某种排序标准a &lt; b) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (根据某种排序标准a &gt; b) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>具体例子</strong></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> friends = [</span><br><span class="line">    &#123; <span class="attr">name</span>: <span class="string">'John'</span>, <span class="attr">age</span>: <span class="number">30</span> &#125;,</span><br><span class="line">    &#123; <span class="attr">name</span>: <span class="string">'Ana'</span>, <span class="attr">age</span>: <span class="number">20</span> &#125;,</span><br><span class="line">    &#123; <span class="attr">name</span>: <span class="string">'Chris'</span>, <span class="attr">age</span>: <span class="number">25</span> &#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">compareFunc</span>(<span class="params">a, b</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> a.age &lt; b.age ? <span class="number">-1</span> : a.age &gt; b.age ? <span class="number">1</span> : <span class="number">0</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>写成以下也 ok，按照 age 升序排列</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">compareFunc</span>(<span class="params">a, b</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> a.age &gt; b.age</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">friends.sort(compareFunc)</span><br></pre></td></tr></table></figure>
+
+<p><img src="../../images/misc/6555104-833f19388d590b11.webp" alt=""></p>
+<p>sort 是改变原数组的方法，friends 按照 age 升序排列</p>
+<p>如果要比较不同的属性，我们需要重复编写比较代码。下面新建一个 sortBy 函数，允许用户基于传入的属性对对象数组排序。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> sortBy = <span class="function"><span class="params">property</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="function">(<span class="params">a, b</span>) =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> a[property] &lt; b[property]</span><br><span class="line">            ? <span class="number">-1</span></span><br><span class="line">            : a[property] &gt; b[property]</span><br><span class="line">            ? <span class="number">1</span></span><br><span class="line">            : <span class="number">0</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> friends = [</span><br><span class="line">    &#123; <span class="attr">name</span>: <span class="string">'John'</span>, <span class="attr">age</span>: <span class="number">30</span> &#125;,</span><br><span class="line">    &#123; <span class="attr">name</span>: <span class="string">'Ana'</span>, <span class="attr">age</span>: <span class="number">20</span> &#125;,</span><br><span class="line">    &#123; <span class="attr">name</span>: <span class="string">'Chris'</span>, <span class="attr">age</span>: <span class="number">25</span> &#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">friends.sort(sortBy(<span class="string">'age'</span>))</span><br></pre></td></tr></table></figure>
+
+<p>注意 sortBy 函数接受一个属性冰返回另一个函数，这个返回的函数就作为 compareFunc 传递给 sort 函数，持有 property 参数值的返回函数之所以能够运行是因为 js 支持闭包。</p>
+<h2 id="1-4-第四章高阶函数与闭包"><a href="#1-4-第四章高阶函数与闭包" class="headerlink" title="1.4. 第四章高阶函数与闭包"></a>1.4. 第四章高阶函数与闭包</h2><h3 id="1-4-1-理解闭包"><a href="#1-4-1-理解闭包" class="headerlink" title="1.4.1. 理解闭包"></a>1.4.1. 理解闭包</h3><h4 id="1-4-1-1-什么是闭包"><a href="#1-4-1-1-什么是闭包" class="headerlink" title="1.4.1.1. 什么是闭包"></a>1.4.1.1. 什么是闭包</h4><p>简言之，闭包是一个内部函数，它是在一个函数内部的函数。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">outer</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">inner</span>(<span class="params"></span>) </span>&#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>函数 inner 称为闭包函数，闭包如此强大的原因在于它对作用域链的访问。</p>
+<p><strong>闭包有 3 个可以访问的作用域</strong> 1.闭包函数内声明的变量 2.对全局变量的访问 3.对外部函数变量的访问！！！！</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> global = <span class="string">'global'</span> <span class="comment">//2</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">outer</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> outer = <span class="string">'outer'</span></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">inner</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">let</span> a = <span class="number">5</span> <span class="comment">//1</span></span><br><span class="line">        <span class="built_in">console</span>.log(outer) <span class="comment">//3.闭包能够访问外部函数变量</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> inner</span><br><span class="line">&#125;</span><br><span class="line">outer()() <span class="comment">//"outer"</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="1-4-1-2-闭包可以记住它的上下文"><a href="#1-4-1-2-闭包可以记住它的上下文" class="headerlink" title="1.4.1.2. 闭包可以记住它的上下文"></a>1.4.1.2. 闭包可以记住它的上下文</h4><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> fn = <span class="function"><span class="params">arg</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> outer = <span class="string">'outer'</span></span><br><span class="line">    <span class="keyword">let</span> innerFn = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(outer)</span><br><span class="line">        <span class="built_in">console</span>.log(arg)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> innerFn</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> closeureFn = fn(<span class="number">5</span>)</span><br><span class="line">closeureFn() <span class="comment">//outer 5</span></span><br></pre></td></tr></table></figure>
+
+<p>当执行<code>var closeureFn = fn(5)</code>时，函数 innerFn 被返回，js 执行引擎视 innerFn 为一个闭包，并相应的设置了它的作用域。3 个作用域层级在 innerFn 返回时都被设置了。<br>如此，closeureFn()通过作用域链被调用时就记住了 arg、outer 的值。</p>
+<p>我们回到 sortBy</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> sortBy = <span class="function"><span class="params">property</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="function">(<span class="params">a, b</span>) =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> a[property] &lt; b[property]</span><br><span class="line">            ? <span class="number">-1</span></span><br><span class="line">            : a[property] &gt; b[property]</span><br><span class="line">            ? <span class="number">1</span></span><br><span class="line">            : <span class="number">0</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>当我们以如下形式调用时</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sortBy(<span class="string">'age'</span>)</span><br></pre></td></tr></table></figure>
+
+<p>发生下面的事情<br>sortBy 函数返回了一个接受两个参数的新函数，这个新函数就是一个闭包<br><code>(a,b)=&gt;{/*实现*/}</code><br>根据闭包能访问作用域层级的特点，它能在它的上下文中持有 property 的值，所以它将在合适并且需要的时候使用返回值。</p>
+<h3 id="1-4-2-真实的高阶函数实现"><a href="#1-4-2-真实的高阶函数实现" class="headerlink" title="1.4.2. 真实的高阶函数实现"></a>1.4.2. 真实的高阶函数实现</h3><h4 id="1-4-2-1-once-允许只运行一次给定的函数"><a href="#1-4-2-1-once-允许只运行一次给定的函数" class="headerlink" title="1.4.2.1. once 允许只运行一次给定的函数"></a>1.4.2.1. once 允许只运行一次给定的函数</h4><p>这在开发过程中很常见，例如只想设置一次第三方库，初始化一次支付设置。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> once = <span class="function"><span class="params">fn</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> done = <span class="literal">false</span></span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> done ? <span class="literal">undefined</span> : ((done = <span class="literal">true</span>), fn.apply(<span class="keyword">this</span>, <span class="built_in">arguments</span>))</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> dopayment = once(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'Payment is done'</span>)</span><br><span class="line">&#125;)</span><br><span class="line">dopayment() <span class="comment">//Payment is done</span></span><br><span class="line">dopayment() <span class="comment">//undefined</span></span><br></pre></td></tr></table></figure>
+
+<p>js 中，(exp1,exp2)的含义是执行两个参数并返回第二个表达式的结果。<br>注意 once 函数接受一个参数 fn 并通过调用 fn 的 apply 方法返回结果。我们声明了 done 变量，返回的函数会形成一个覆盖它的闭包作用域，检查 done 是否为 true，如果是则返回 undefined，<br>否则将 done 设为 true，如此就阻止了下一次的执行。</p>
+<h4 id="1-4-2-2-memoized"><a href="#1-4-2-2-memoized" class="headerlink" title="1.4.2.2. memoized"></a>1.4.2.2. memoized</h4><p>用于为每一个输入存储结果，以便于重用函数中的计算结果。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> memoized = <span class="function"><span class="params">fn</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> lookupTable = &#123;&#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="params">arg</span> =&gt;</span> lookupTable[arg] || (lookupTable[arg] = fn(arg))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>有一个名为 lookupTable 的局部变量，它在返回函数的闭包上下文中。返回函数将接受一个参数并检查它是否在 lookupTable 中。<br>如果在，就返回对应的值，否则使用新的输入作为 key，fn(arg)的结果为 value，更新 lookupTable 对象。</p>
+<p>求函数的阶乘（递归法）</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> factorial = <span class="function"><span class="params">n</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (n === <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> n * factorial(n - <span class="number">1</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>现在可以改为把 factorial 函数包裹进一个 memoized 函数来保留它的输出（存储结果法）</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> factorial = memoized(<span class="function"><span class="params">n</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (n === <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> n * factorial(n - <span class="number">1</span>)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>它以同样的方式运行，但是比之前快的多。</p>
+<h2 id="1-5-第五章数组的函数式编程"><a href="#1-5-第五章数组的函数式编程" class="headerlink" title="1.5. 第五章数组的函数式编程"></a>1.5. 第五章数组的函数式编程</h2><p>我们使用数组来存储、操作和查找数据，以及转换（投影）数据格式。本章中使用函数式编程来改进这些操作。</p>
+<h3 id="1-5-1-数组的函数式方法"><a href="#1-5-1-数组的函数式方法" class="headerlink" title="1.5.1. 数组的函数式方法"></a>1.5.1. 数组的函数式方法</h3><p>本节创建的所有函数称为投影函数，把函数应用于一个值并创建一个新值的过程称为投影。</p>
+<h4 id="1-5-1-1-map"><a href="#1-5-1-1-map" class="headerlink" title="1.5.1.1. map"></a>1.5.1.1. map</h4><p>首先来看遍历数组的 forEach 方法</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> forEach = <span class="function">(<span class="params">array, fn</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">const</span> value <span class="keyword">of</span> array) fn(value)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>map 函数的实现代码如下</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> map = <span class="function">(<span class="params">array, fn</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> results = []</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">const</span> value <span class="keyword">of</span> array) results.push(fn(value))</span><br><span class="line">    <span class="keyword">return</span> results</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>map 和 forEach 非常类似，区别是用一个新的数组捕获了结果，并返回了结果。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> apressBooks = [</span><br><span class="line">    &#123;</span><br><span class="line">        id: <span class="number">111</span>,</span><br><span class="line">        title: <span class="string">'c# 6.0'</span>,</span><br><span class="line">        author: <span class="string">'ANDREW JKDKS'</span>,</span><br><span class="line">        rating: [<span class="number">4</span>],</span><br><span class="line">        reviews: [&#123; <span class="attr">good</span>: <span class="number">4</span>, <span class="attr">excellent</span>: <span class="number">12</span> &#125;]</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">        id: <span class="number">222</span>,</span><br><span class="line">        title: <span class="string">'Machine Learning'</span>,</span><br><span class="line">        author: <span class="string">'ANDREW JKDKS'</span>,</span><br><span class="line">        rating: [<span class="number">3</span>],</span><br><span class="line">        reviews: [&#123; <span class="attr">good</span>: <span class="number">4</span>, <span class="attr">excellent</span>: <span class="number">12</span> &#125;]</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">        id: <span class="number">333</span>,</span><br><span class="line">        title: <span class="string">'Angularjs'</span>,</span><br><span class="line">        author: <span class="string">'ANDREW JKDKS'</span>,</span><br><span class="line">        rating: [<span class="number">5</span>],</span><br><span class="line">        reviews: [&#123; <span class="attr">good</span>: <span class="number">4</span>, <span class="attr">excellent</span>: <span class="number">12</span> &#125;]</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">        id: <span class="number">444</span>,</span><br><span class="line">        title: <span class="string">'Pro ASP.NET'</span>,</span><br><span class="line">        author: <span class="string">'ANDREW JKDKS'</span>,</span><br><span class="line">        rating: [<span class="number">4.7</span>],</span><br><span class="line">        reviews: [&#123; <span class="attr">good</span>: <span class="number">4</span>, <span class="attr">excellent</span>: <span class="number">12</span> &#125;]</span><br><span class="line">    &#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<p>假设只需要获取包含 title 和 author 的字段</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">map(apressBooks, book =&gt; &#123;</span><br><span class="line">    <span class="keyword">return</span> &#123; <span class="attr">title</span>: book.title, <span class="attr">author</span>: book.author &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h4 id="1-5-1-2-filter"><a href="#1-5-1-2-filter" class="headerlink" title="1.5.1.2. filter"></a>1.5.1.2. filter</h4><p>有时我们还想过滤数组的内容（例如获取 rating&gt;4.5 的图书列表），再转换为一个新数组，因此我们需要一个类似 map 的函数，它只需要在把结果放入数组前检查一个条件。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> filter = <span class="function">(<span class="params">array, fn</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> results = []</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">const</span> value <span class="keyword">of</span> array) fn(value) ? results.push(value) : <span class="literal">undefined</span></span><br><span class="line">    <span class="keyword">return</span> results</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>调用高阶函数 filter</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">filter(apressBooks, book =&gt; book.rating[<span class="number">0</span>] &gt; <span class="number">4.5</span>)</span><br></pre></td></tr></table></figure>
+
+<p>返回结果</p>
+<p><img src="../../images/misc/6555104-5ad8fbff5b0f1058.webp" alt=""></p>
+<h3 id="1-5-2-连接操作"><a href="#1-5-2-连接操作" class="headerlink" title="1.5.2. 连接操作"></a>1.5.2. 连接操作</h3><p>map 和 filter 都是投影函数，因此它们总是对数组应用转换操作后再返回数据，于是我们能够连接 filter 和 map（注意顺序）来完成任务而不需要额外变量。</p>
+<p>例如从 apressBooks 中获取含有 title 和 author 对象且评级高于 4.5 的对象。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">map(filter(apressBooks, book =&gt; book.rating[<span class="number">0</span>] &gt; <span class="number">4.5</span>), book =&gt; &#123;</span><br><span class="line">    <span class="keyword">return</span> &#123; <span class="attr">title</span>: book.title, <span class="attr">author</span>: book.author &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>我们将后面的章节中国通过<strong>函数组合</strong>来完成同样的事情。</p>
+<h4 id="1-5-2-1-concatAll"><a href="#1-5-2-1-concatAll" class="headerlink" title="1.5.2.1. concatAll"></a>1.5.2.1. concatAll</h4><p>对 apressBooks 对象稍作修改，得到如下数据结构</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> apressBooks = [</span><br><span class="line">    &#123;</span><br><span class="line">        name: <span class="string">'beginners'</span>,</span><br><span class="line">        bookDetails: [</span><br><span class="line">            &#123;</span><br><span class="line">                id: <span class="number">111</span>,</span><br><span class="line">                title: <span class="string">'c# 6.0'</span>,</span><br><span class="line">                author: <span class="string">'ANDREW 1'</span>,</span><br><span class="line">                rating: [<span class="number">4</span>],</span><br><span class="line">                reviews: [&#123; <span class="attr">good</span>: <span class="number">4</span>, <span class="attr">excellent</span>: <span class="number">12</span> &#125;]</span><br><span class="line">            &#125;,</span><br><span class="line">            &#123;</span><br><span class="line">                id: <span class="number">222</span>,</span><br><span class="line">                title: <span class="string">'Machine Learning'</span>,</span><br><span class="line">                author: <span class="string">'ANDREW 2'</span>,</span><br><span class="line">                rating: [<span class="number">3</span>],</span><br><span class="line">                reviews: [&#123; <span class="attr">good</span>: <span class="number">4</span>, <span class="attr">excellent</span>: <span class="number">12</span> &#125;]</span><br><span class="line">            &#125;</span><br><span class="line">        ]</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">        name: <span class="string">'pro'</span>,</span><br><span class="line">        bookDetails: [</span><br><span class="line">            &#123;</span><br><span class="line">                id: <span class="number">333</span>,</span><br><span class="line">                title: <span class="string">'Angularjs'</span>,</span><br><span class="line">                author: <span class="string">'ANDREW 3'</span>,</span><br><span class="line">                rating: [<span class="number">5</span>],</span><br><span class="line">                reviews: [&#123; <span class="attr">good</span>: <span class="number">4</span>, <span class="attr">excellent</span>: <span class="number">12</span> &#125;]</span><br><span class="line">            &#125;,</span><br><span class="line">            &#123;</span><br><span class="line">                id: <span class="number">444</span>,</span><br><span class="line">                title: <span class="string">'Pro ASP.NET'</span>,</span><br><span class="line">                author: <span class="string">'ANDREW 4'</span>,</span><br><span class="line">                rating: [<span class="number">4.7</span>],</span><br><span class="line">                reviews: [&#123; <span class="attr">good</span>: <span class="number">4</span>, <span class="attr">excellent</span>: <span class="number">12</span> &#125;]</span><br><span class="line">            &#125;</span><br><span class="line">        ]</span><br><span class="line">    &#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<p>现在回顾上一节的问题获取含有 title 和 author 字段且评级高于 4.5 的图书。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">map(apressBooks, book =&gt; &#123;</span><br><span class="line">    <span class="keyword">return</span> book.bookDetails</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>得到如下输出</p>
+<p><img src="../../images/misc/6555104-5131f30d4f9d23d1.webp" alt=""></p>
+<p>如上图所示，map 函数返回的数据包含了数组中的数组，如果把上面的数据传给 filter 将会遇到问题，因为 filter 不能在嵌套数组上运行。</p>
+<p>我们定义一个 concatAll 函数把所有嵌套数组连接到一个数组中，也可称 concatAll 为 flatten 方法（嵌套数组平铺）。concatAll 的主要目的是将嵌套数组转换为非嵌套的单一数组。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> concatAll = <span class="function"><span class="params">array</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> results = []</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">const</span> value <span class="keyword">of</span> array) &#123;</span><br><span class="line">        results.push.apply(results, value) <span class="comment">//重点！！</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> results</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>使用 js 的 apply 方法，将 push 的上下文设置为 results</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">concatAll(</span><br><span class="line">    map(apressBooks, book =&gt; &#123;</span><br><span class="line">        <span class="keyword">return</span> book.bookDetails</span><br><span class="line">    &#125;)</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>返回了我们期望的结果（数组平铺）</p>
+<p><img src="../../images/misc/6555104-cad588b122c16170.webp" alt=""></p>
+<p>转换为非嵌套的单一数组后就可以继续使用 filter 啦</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">filter(</span><br><span class="line">    concatAll(</span><br><span class="line">        map(apressBooks, book =&gt; &#123;</span><br><span class="line">            <span class="keyword">return</span> book.bookDetails</span><br><span class="line">        &#125;)</span><br><span class="line">    ),</span><br><span class="line">    book =&gt; book.rating[<span class="number">0</span>] &gt; <span class="number">4.5</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>返回结果</p>
+<p><img src="../../images/misc/6555104-15c3429c50355f66.webp" alt=""></p>
+<p><a href="http://js.jirengu.com/vameluxoji/1/edit" target="_blank" rel="noopener">完整代码</a></p>
+<h4 id="1-5-2-2-flatten-嵌套数组扁平化"><a href="#1-5-2-2-flatten-嵌套数组扁平化" class="headerlink" title="1.5.2.2. flatten 嵌套数组扁平化"></a>1.5.2.2. flatten 嵌套数组扁平化</h4><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> arr = [[<span class="number">1</span>, <span class="number">2</span>, [<span class="number">3</span>, <span class="number">4</span>]], [<span class="number">4</span>, <span class="number">5</span>], <span class="number">77</span>]</span><br></pre></td></tr></table></figure>
+
+<p>遍历每一项，如果仍是数组的话就递归调用 flatten，并将结果与 result concat 一下。如果不是数组就直接 push 该项到 result。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">flatten</span>(<span class="params">array</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> result = []</span><br><span class="line">    <span class="keyword">var</span> toStr = <span class="built_in">Object</span>.prototype.toString</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; array.length; i++) &#123;</span><br><span class="line">        <span class="keyword">var</span> element = array[i]</span><br><span class="line">        <span class="keyword">if</span> (toStr.call(element) === <span class="string">'[object Array]'</span>) &#123;</span><br><span class="line">            <span class="comment">//Array.isArray(element) === true</span></span><br><span class="line">            result = result.concat(flatten(element)) <span class="comment">//[...result,...flatten(element)]</span></span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            result.push(element)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> result</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> results = flatten(arr)</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-5-3-reduce-函数"><a href="#1-5-3-reduce-函数" class="headerlink" title="1.5.3. reduce 函数"></a>1.5.3. reduce 函数</h3><p>reduce 为保持 Javascript 闭包的能力所设计。<br>先来看一个数组求和问题</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> useless = [<span class="number">2</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">1</span>, <span class="number">10</span>]</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> result = <span class="number">0</span></span><br><span class="line">forEach(useless, value =&gt; &#123;</span><br><span class="line">    result += value</span><br><span class="line">&#125;)</span><br><span class="line"><span class="built_in">console</span>.log(result) <span class="comment">//24</span></span><br></pre></td></tr></table></figure>
+
+<p>对于上面的问题，我们将数组归约为一个单一的值，从一个累加器开始（result），在遍历数组时使用它存储求和结果。<br>归约数组设置累加器并遍历数组（记住累加器的上一个值）以生成一个单一元素的过程称为归约数组。</p>
+<p>我们将这种归约操作抽象成 reduce 函数。</p>
+<p>reduce 函数的第一个实现</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> reduce = <span class="function">(<span class="params">array, fn</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> accumlator = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">const</span> value <span class="keyword">of</span> array) &#123;</span><br><span class="line">        accumlator = fn(accumlator, value)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> [accumlator]</span><br><span class="line">&#125;</span><br><span class="line">reduce(useless, (acc, val) =&gt; acc + val) <span class="comment">//[24]</span></span><br></pre></td></tr></table></figure>
+
+<p>但如果我们要求给定数组的乘积，reduce 函数会执行失败，主要是因为我们使用了累加器的值 0。</p>
+<p>我们修改 reduce 函数，让它接受一个为累加器设置初始值的参数。<br>如果没有传递 initialValue 时，则以数组的第一个元素作为累加器的值。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> reduce = <span class="function">(<span class="params">array, fn, initialValue</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> accumlator</span><br><span class="line">    <span class="keyword">if</span> (initialValue != <span class="literal">undefined</span>) accumlator = initialValue</span><br><span class="line">    <span class="keyword">else</span> accumlator = array[<span class="number">0</span>]</span><br><span class="line">    <span class="comment">//当initialValue未定义时，我们需要从第二个元素开始循环数组</span></span><br><span class="line">    <span class="keyword">if</span> (initialValue === <span class="literal">undefined</span>) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">1</span>; i &lt; array.length; i++) &#123;</span><br><span class="line">            accumlator = fn(accumlator, array[i])</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">//如果initialValue由调用者传入，我们就需要遍历整个数组。</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">const</span> value <span class="keyword">of</span> array) &#123;</span><br><span class="line">            accumlator = fn(accumlator, value)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> [accumlator]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>尝试通过 reduce 函数解决乘积问题</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> useless = [<span class="number">2</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">1</span>, <span class="number">10</span>]</span><br><span class="line">reduce(useless, (acc, val) =&gt; acc * val, <span class="number">1</span>) <span class="comment">//[600]</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>reduce 使用举例</strong><br>从 apressBooks 中统计评价为 good 和 excellent 的数量。-&gt;使用 reduce<br>由于 apressBooks 包含数组中的数组，先需要使用 concatAll 把它转化为一个扁平的数组。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">concatAll(</span><br><span class="line">    map(apressBooks, book =&gt; &#123;</span><br><span class="line">        <span class="keyword">return</span> book.bookDetails</span><br><span class="line">    &#125;)</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>我们使用 reduce 解决该问题。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> bookDetails = concatAll(</span><br><span class="line">    map(apressBooks, book =&gt; &#123;</span><br><span class="line">        <span class="keyword">return</span> book.bookDetails</span><br><span class="line">    &#125;)</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">reduce(</span><br><span class="line">    bookDetails,</span><br><span class="line">    (acc, bookDetail) =&gt; &#123;</span><br><span class="line">        <span class="keyword">let</span> goodReviews =</span><br><span class="line">            bookDetail.reviews[<span class="number">0</span>] != <span class="literal">undefined</span> ? bookDetail.reviews[<span class="number">0</span>].good : <span class="number">0</span></span><br><span class="line">        <span class="keyword">let</span> excellentReviews =</span><br><span class="line">            bookDetail.reviews[<span class="number">0</span>] != <span class="literal">undefined</span> ? bookDetail.reviews[<span class="number">0</span>].good : <span class="number">0</span></span><br><span class="line">        <span class="keyword">return</span> &#123;</span><br><span class="line">            good: acc.good + goodReviews,</span><br><span class="line">            excellent: acc.excellent + excellentReviews</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123; <span class="attr">good</span>: <span class="number">0</span>, <span class="attr">excellent</span>: <span class="number">0</span> &#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>在 reduce 函数体中，我们获取 good 和 excellent 的评价详情，将其存储在相应的变量中，名为 goodReviews 和 excellentReviews。<br><a href="http://js.jirengu.com/teduwirivi/2/edit" target="_blank" rel="noopener">完整代码</a></p>
+<h3 id="1-5-4-zip-数组"><a href="#1-5-4-zip-数组" class="headerlink" title="1.5.4. zip 数组"></a>1.5.4. zip 数组</h3><p>再回顾一下之前数据的结构，我们在 apressBooks 的 bookDetails 中获取 reviews，并能轻松的操作它。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> apressBooks = [</span><br><span class="line">    &#123;</span><br><span class="line">        name: <span class="string">'beginners'</span>,</span><br><span class="line">        bookDetails: [</span><br><span class="line">            &#123;</span><br><span class="line">                id: <span class="number">111</span>,</span><br><span class="line">                title: <span class="string">'c# 6.0'</span>,</span><br><span class="line">                author: <span class="string">'ANDREW 1'</span>,</span><br><span class="line">                rating: [<span class="number">4</span>],</span><br><span class="line">                reviews: [&#123; <span class="attr">good</span>: <span class="number">4</span>, <span class="attr">excellent</span>: <span class="number">12</span> &#125;]</span><br><span class="line">            &#125;,</span><br><span class="line">            &#123;</span><br><span class="line">                id: <span class="number">222</span>,</span><br><span class="line">                title: <span class="string">'Machine Learning'</span>,</span><br><span class="line">                author: <span class="string">'ANDREW 2'</span>,</span><br><span class="line">                rating: [<span class="number">3</span>],</span><br><span class="line">                reviews: [&#123; <span class="attr">good</span>: <span class="number">4</span>, <span class="attr">excellent</span>: <span class="number">12</span> &#125;]</span><br><span class="line">            &#125;</span><br><span class="line">        ]</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">        name: <span class="string">'pro'</span>,</span><br><span class="line">        bookDetails: [</span><br><span class="line">            &#123;</span><br><span class="line">                id: <span class="number">333</span>,</span><br><span class="line">                title: <span class="string">'Angularjs'</span>,</span><br><span class="line">                author: <span class="string">'ANDREW 3'</span>,</span><br><span class="line">                rating: [<span class="number">5</span>],</span><br><span class="line">                reviews: [&#123; <span class="attr">good</span>: <span class="number">4</span>, <span class="attr">excellent</span>: <span class="number">12</span> &#125;]</span><br><span class="line">            &#125;,</span><br><span class="line">            &#123;</span><br><span class="line">                id: <span class="number">444</span>,</span><br><span class="line">                title: <span class="string">'Pro ASP.NET'</span>,</span><br><span class="line">                author: <span class="string">'ANDREW 4'</span>,</span><br><span class="line">                rating: [<span class="number">4.7</span>],</span><br><span class="line">                reviews: [&#123; <span class="attr">good</span>: <span class="number">4</span>, <span class="attr">excellent</span>: <span class="number">12</span> &#125;]</span><br><span class="line">            &#125;</span><br><span class="line">        ]</span><br><span class="line">    &#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<p>但是有时候数据可能被分离到不同部分了。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> apressBooks = [</span><br><span class="line">    &#123;</span><br><span class="line">        name: <span class="string">'beginners'</span>,</span><br><span class="line">        bookDetails: [</span><br><span class="line">            &#123;</span><br><span class="line">                id: <span class="number">111</span>,</span><br><span class="line">                title: <span class="string">'c# 6.0'</span>,</span><br><span class="line">                author: <span class="string">'ANDREW 1'</span>,</span><br><span class="line">                rating: [<span class="number">4</span>]</span><br><span class="line">            &#125;,</span><br><span class="line">            &#123;</span><br><span class="line">                id: <span class="number">222</span>,</span><br><span class="line">                title: <span class="string">'Machine Learning'</span>,</span><br><span class="line">                author: <span class="string">'ANDREW 2'</span>,</span><br><span class="line">                rating: [<span class="number">3</span>],</span><br><span class="line">                reviews: []</span><br><span class="line">            &#125;</span><br><span class="line">        ]</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">        name: <span class="string">'pro'</span>,</span><br><span class="line">        bookDetails: [</span><br><span class="line">            &#123;</span><br><span class="line">                id: <span class="number">333</span>,</span><br><span class="line">                title: <span class="string">'Angularjs'</span>,</span><br><span class="line">                author: <span class="string">'ANDREW 3'</span>,</span><br><span class="line">                rating: [<span class="number">5</span>],</span><br><span class="line">                reviews: []</span><br><span class="line">            &#125;,</span><br><span class="line">            &#123;</span><br><span class="line">                id: <span class="number">444</span>,</span><br><span class="line">                title: <span class="string">'Pro ASP.NET'</span>,</span><br><span class="line">                author: <span class="string">'ANDREW 4'</span>,</span><br><span class="line">                rating: [<span class="number">4.7</span>]</span><br><span class="line">            &#125;</span><br><span class="line">        ]</span><br><span class="line">    &#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<p>reviews 被填充到一个单独的数组中。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> reviewDetails = [</span><br><span class="line">    &#123;</span><br><span class="line">        id: <span class="number">111</span>,</span><br><span class="line">        reviews: [&#123; <span class="attr">good</span>: <span class="number">4</span>, <span class="attr">excellent</span>: <span class="number">12</span> &#125;]</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">        id: <span class="number">222</span>,</span><br><span class="line">        reviews: []</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">        id: <span class="number">111</span>,</span><br><span class="line">        reviews: []</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">        id: <span class="number">111</span>,</span><br><span class="line">        reviews: [&#123; <span class="attr">good</span>: <span class="number">4</span>, <span class="attr">excellent</span>: <span class="number">12</span> &#125;]</span><br><span class="line">    &#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<p>zip 函数</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> zip = <span class="function">(<span class="params">leftArr, rightArr, fn</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> index,</span><br><span class="line">        results = []</span><br><span class="line">    <span class="keyword">for</span> (</span><br><span class="line">        index = <span class="number">0</span>;</span><br><span class="line">        index &lt; <span class="built_in">Math</span>.min(leftArr.length, rightArr.length);</span><br><span class="line">        index++</span><br><span class="line">    ) &#123;</span><br><span class="line">        results.push(fn(leftArr[index], rightArr[index]))</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> results</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>zip:我们只需要遍历两个给定的数组，由于要处理两个数组详情，就需要用 Math.min 获取它们的最小长度<code>Math.min(leftArr.length, rightArr.length)</code>，一旦获取了最小长度，我们就能够用当前的 leftArr 值和 rightArr 值调用传入的高阶函数 fn。<br>假设我们要把两个数组的内容相加，可以采用如下方式使用 zip</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">zip([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>], [<span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>], (x, y) =&gt; x + y)</span><br></pre></td></tr></table></figure>
+
+<p>继续解决上一节的问题统计 Apress 出版物评价为 good 和 excellent 的总数。<br>我们接受 bookDetails 和 reviewDetails 数组，检查两个数组元素的 id 是否匹配，如果是，就从 book 中克隆出一个新的对象 clone</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//获取bookDetails</span></span><br><span class="line"><span class="keyword">let</span> bookDetails = concatAll(</span><br><span class="line">    map(apressBooks, book =&gt; &#123;</span><br><span class="line">        <span class="keyword">return</span> book.bookDetails</span><br><span class="line">    &#125;)</span><br><span class="line">)</span><br><span class="line"><span class="comment">//zip results</span></span><br><span class="line"><span class="keyword">let</span> mergedBookDetails = zip(bookDetails, reviewDetails, (book, review) =&gt; &#123;</span><br><span class="line">    <span class="keyword">if</span> (book.id === review.id) &#123;</span><br><span class="line">        <span class="keyword">let</span> clone = <span class="built_in">Object</span>.assign(&#123;&#125;, book)</span><br><span class="line">        clone.ratings = review <span class="comment">//为clone添加一个ratings属性，以review对象作为其值</span></span><br><span class="line">        <span class="keyword">return</span> clone</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p><strong>注意</strong>Object.assign(target, …sources)<br>Object.assign() 方法用于将所有可枚举属性的值从一个或多个源对象复制到目标对象。它将返回目标对象。<br><code>let clone = Object.assign({},book)</code>clone 得到了一份 book 对象的副本，clone 指向了一个独立的引用，为 clone 添加属性或操作不会改变真实的 book 引用。</p>
+<p><img src="../../images/misc/6555104-87a77542f203be88.webp" alt=""></p>
+<p><a href="http://js.jirengu.com/xulusutoti/1/edit?html,js,console,output" target="_blank" rel="noopener">完整代码-请 copy 到浏览器控制台运行</a></p>
+<h2 id="1-6-第六章柯里化与偏应用"><a href="#1-6-第六章柯里化与偏应用" class="headerlink" title="1.6. 第六章柯里化与偏应用"></a>1.6. 第六章柯里化与偏应用</h2><h3 id="1-6-1-一些术语"><a href="#1-6-1-一些术语" class="headerlink" title="1.6.1. 一些术语"></a>1.6.1. 一些术语</h3><h4 id="1-6-1-1-一元函数"><a href="#1-6-1-1-一元函数" class="headerlink" title="1.6.1.1. 一元函数"></a>1.6.1.1. 一元函数</h4><p>只接受一个参数的函数称为一元（unary）函数。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> identity = <span class="function"><span class="params">x</span> =&gt;</span> x</span><br></pre></td></tr></table></figure>
+
+<h4 id="1-6-1-2-二元函数"><a href="#1-6-1-2-二元函数" class="headerlink" title="1.6.1.2. 二元函数"></a>1.6.1.2. 二元函数</h4><p>接受两个参数的函数称为二元（binary）函数。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> add = <span class="function">(<span class="params">x, y</span>) =&gt;</span> x + y</span><br></pre></td></tr></table></figure>
+
+<h4 id="1-6-1-3-变参函数"><a href="#1-6-1-3-变参函数" class="headerlink" title="1.6.1.3. 变参函数"></a>1.6.1.3. 变参函数</h4><p>指函数接受的参数数量是可变的。ES5 中我们通过 arguments 来捕获可变数量的参数。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">variadic</span>(<span class="params">a</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(a)</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="built_in">arguments</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>调用</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">variadic(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>)</span><br><span class="line">;(<span class="number">1</span>)[(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>)]</span><br></pre></td></tr></table></figure>
+
+<p>ES6 中我们使用扩展运算符，获得可变参数</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> variadic = (a,...variadic)&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(a)</span><br><span class="line">    <span class="built_in">console</span>.log(variadic)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>调用</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">variadic(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>)</span><br><span class="line">;(<span class="number">1</span>)[(<span class="number">2</span>, <span class="number">3</span>)]</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-6-2-柯里化"><a href="#1-6-2-柯里化" class="headerlink" title="1.6.2. 柯里化"></a>1.6.2. 柯里化</h3><p>柯里化把一个<strong>多参数函数</strong>转换为<strong>一个嵌套的一元函数</strong>的过程。<br>看个例子，假设有一个名为 add 的函数</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> add = <span class="function">(<span class="params">x, y</span>) =&gt;</span> x + y</span><br></pre></td></tr></table></figure>
+
+<p>我们会如此调用该函数 add(1,1)，得到结果 2。下面是 add 函数的柯里化版本</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> addCurried = <span class="function"><span class="params">x</span> =&gt;</span> <span class="function"><span class="params">y</span> =&gt;</span> x + y</span><br></pre></td></tr></table></figure>
+
+<p>如果我们用一个单一的参数调用 addCurried，</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">addCurried(<span class="number">3</span>)</span><br></pre></td></tr></table></figure>
+
+<p>它返回一个函数，在其中 x 值通过闭包被捕获,<code>fn = y =&gt; 4+y</code> ,因此可以用如下方式调用 addCurried</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">addCurried(<span class="number">3</span>)(<span class="number">4</span>) <span class="comment">//7</span></span><br></pre></td></tr></table></figure>
+
+<p>类似的乘法函数</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> curri = <span class="function"><span class="params">x</span> =&gt;</span> <span class="function"><span class="params">y</span> =&gt;</span> <span class="function"><span class="params">z</span> =&gt;</span> x * y * z</span><br><span class="line">curri(<span class="number">2</span>)(<span class="number">3</span>)(<span class="number">4</span>) <span class="comment">//24</span></span><br></pre></td></tr></table></figure>
+
+<p>下面展示了如何把该处理过程转换为一个名为 curry 的方法， curry 方法将接收到的函数参数 curry 化</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> curry = <span class="function"><span class="params">binaryFn</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params">firstArg</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params">secondArg</span>) </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> binaryFn(firstArg, secondArg)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>调用 curry 函数，curry 化 add。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> add = <span class="function">(<span class="params">x, y</span>) =&gt;</span> x + y</span><br><span class="line"><span class="keyword">let</span> autoCurried = curry(add)</span><br><span class="line">autoCurried(<span class="number">2</span>)(<span class="number">3</span>) <span class="comment">//5</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="1-6-2-1-柯里化用例"><a href="#1-6-2-1-柯里化用例" class="headerlink" title="1.6.2.1. 柯里化用例"></a>1.6.2.1. 柯里化用例</h4><p>假设我们要编写一个创建列表的函数，创建列表 tableOf2、tableOf3、tableOf4 等。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> tableOf2 = <span class="function"><span class="params">y</span> =&gt;</span> <span class="number">2</span> * y</span><br><span class="line"><span class="keyword">const</span> tableOf3 = <span class="function"><span class="params">y</span> =&gt;</span> <span class="number">3</span> * y</span><br><span class="line"><span class="keyword">const</span> tableOf4 = <span class="function"><span class="params">y</span> =&gt;</span> <span class="number">4</span> * y</span><br></pre></td></tr></table></figure>
+
+<p>现在可以把表格的概念概括为一个单独的函数</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> genericTable = <span class="function">(<span class="params">x, y</span>) =&gt;</span> x * y</span><br></pre></td></tr></table></figure>
+
+<p>我们将 genericTable 柯里化，用 2 填充 tableOf2 的第一个参数，用 3 填充 tableOf3 的第一个参数，用 4 填充 tableOf4 的第一个参数。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> tableOf2 = curry(genericTable)(<span class="number">2</span>)</span><br><span class="line"><span class="keyword">const</span> tableOf3 = curry(genericTable)(<span class="number">3</span>)</span><br><span class="line"><span class="keyword">const</span> tableOf4 = curry(genericTable)(<span class="number">4</span>)</span><br></pre></td></tr></table></figure>
+
+<h4 id="1-6-2-2-完整-curry-函数"><a href="#1-6-2-2-完整-curry-函数" class="headerlink" title="1.6.2.2. 完整 curry 函数"></a>1.6.2.2. 完整 curry 函数</h4><p>添加规则，检查如果传入参数不是 function，就会报错。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> curry = <span class="function"><span class="params">fn</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">typeof</span> fn !== <span class="string">'function'</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="built_in">Error</span>(<span class="string">'No function provided'</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果有人为柯里化函数提供了所有的参数，就需要通过传递这些参数执行真正的函数，重点在于返回函数 curriedFn 是一个变参函数。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> curry = <span class="function"><span class="params">fn</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">typeof</span> fn !== <span class="string">'function'</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="built_in">Error</span>(<span class="string">'No function provided'</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> <span class="title">curriedFn</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="comment">//返回函数是一个变参函数</span></span><br><span class="line">        <span class="keyword">return</span> fn(...arguments)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//采用如下写法也ok</span></span><br><span class="line">    <span class="comment">// return function curriedFn(...args)&#123;</span></span><br><span class="line">    <span class="comment">//  return fn(...args)</span></span><br><span class="line">    <span class="comment">// &#125;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果我们有一个名为 multiply 的函数</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> multiply = <span class="function">(<span class="params">x, y, z</span>) =&gt;</span> x * y * z</span><br></pre></td></tr></table></figure>
+
+<p>可以通过如下方式调用，等价于 multiply(1,2,3)</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curry(multiply)(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>) <span class="comment">//6</span></span><br></pre></td></tr></table></figure>
+
+<p>下面回到把多参数函数转换为嵌套的一元函数（柯里化的定义）</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> curry = <span class="function"><span class="params">fn</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">typeof</span> fn !== <span class="string">'function'</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="built_in">Error</span>(<span class="string">'No function provided'</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> <span class="title">curriedFn</span>(<span class="params">...args</span>) </span>&#123;</span><br><span class="line">        <span class="comment">//args是一个数组</span></span><br><span class="line">        <span class="keyword">if</span> (args.length &lt; fn.length) &#123;</span><br><span class="line">            <span class="comment">//检查...args传入的参数长度是否小于函数参数列表的长度</span></span><br><span class="line">            <span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">                args = [...args, ...arguments]</span><br><span class="line">                <span class="keyword">return</span> curriedFn(...args)</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> fn(...args) <span class="comment">//不小于，就和之前一样调用整个函数</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>args.length &lt; fn.length</code><br>检查…args 传入的参数长度是否小于函数参数列表的长度，如果是，就进入 if 代码块，如果不是就如之前一样调用整个函数。<br><code>args = [...args,...arguments]</code>用来连接一次传入的参数，把他们合并进 args，并递归调用 curriedFn。由于我们将所有传入的参数 组合并递归地调用，再下一次调用中将会遇到某一个时刻<code>if(args.length &lt; fn.length)</code>条件失败，说明这时 args 存放的参数列表的长度和函数参数的长度相等，程序就会被调用 fn(…args)。</p>
+<p>调用</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> multiply = <span class="function">(<span class="params">x, y, z</span>) =&gt;</span> x * y * z</span><br><span class="line">curry(multiply)(<span class="number">1</span>)(<span class="number">2</span>)(<span class="number">3</span>) <span class="comment">//6</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="1-6-2-3-日志函数-——-柯里化的应用"><a href="#1-6-2-3-日志函数-——-柯里化的应用" class="headerlink" title="1.6.2.3. 日志函数 —— 柯里化的应用"></a>1.6.2.3. 日志函数 —— 柯里化的应用</h4><p>开发者在写代码时候会在应用的不同阶段编写很多日志。我们编写如下日志函数。</p>
+<h3 id="1-6-3-柯里化实战"><a href="#1-6-3-柯里化实战" class="headerlink" title="1.6.3. 柯里化实战"></a>1.6.3. 柯里化实战</h3><h4 id="1-6-3-1-在数组内容中查找数字"><a href="#1-6-3-1-在数组内容中查找数字" class="headerlink" title="1.6.3.1. 在数组内容中查找数字"></a>1.6.3.1. 在数组内容中查找数字</h4><p>在数组中查找数字，返回包含数字的数组内容。<br>无需柯里化时，我们可以如下实现。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">;[<span class="string">'js'</span>, <span class="string">'number1'</span>].filter(<span class="function"><span class="keyword">function</span>(<span class="params">e</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="regexp">/[0-9]+/</span>.test(e) <span class="comment">//["number1"]</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>采用柯里化的 filter 函数</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> filter = curry(<span class="function">(<span class="params">fn, ary</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> ary.filter(fn)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">filter(<span class="function"><span class="keyword">function</span>(<span class="params">str</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="regexp">/[0-9]+/</span>.test(str)</span><br><span class="line">&#125;)([<span class="string">'js'</span>, <span class="string">'number1'</span>]) <span class="comment">//["number1"]</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="1-6-3-2-求数组的平方"><a href="#1-6-3-2-求数组的平方" class="headerlink" title="1.6.3.2. 求数组的平方"></a>1.6.3.2. 求数组的平方</h4><p>前几章中，我们使用 map 函数传入一个平凡函数来解决问题，此处可以通过 curry 函数以另一种方式解决该问题。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> map = curry(<span class="function"><span class="keyword">function</span>(<span class="params">f, ary</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> ary.map(f)</span><br><span class="line">&#125;)</span><br><span class="line">map(<span class="function"><span class="params">x</span> =&gt;</span> x * x)([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]) <span class="comment">//[1, 4, 9]</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="1-6-4-数据流"><a href="#1-6-4-数据流" class="headerlink" title="1.6.4. 数据流"></a>1.6.4. 数据流</h3><p>我们设计的柯里化函数总在最后接受数组，这是有意而为之。如果我们希望最后接受的参数是位于参数列表的中间某位置呢？curry 就帮不了我们了。</p>
+<h4 id="1-6-4-1-偏应用"><a href="#1-6-4-1-偏应用" class="headerlink" title="1.6.4.1. 偏应用"></a>1.6.4.1. 偏应用</h4><p>偏应用部分地应用函数参数。有时填充函数的前两个参数和最后一个参数会使中间的参数处于一种未知状态，这正是偏应用发挥作用的地方，将未知状态的参数填充为 undefined，之后填入其他参数调用函数。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> <span class="built_in">console</span>.log(<span class="string">'Do X task'</span>), <span class="number">10</span>)</span><br><span class="line">setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> <span class="built_in">console</span>.log(<span class="string">'Do Y task'</span>), <span class="number">10</span>)</span><br></pre></td></tr></table></figure>
+
+<p>我们为每一个 setTimeout 函数都传入了 10，我们希望把 10 作为常量，在代码中把它隐藏。curry 函数并不能帮我们解决这个问题，原因是 curry 函数应用参数列表的顺序是从最左到最右。<br>一个方案是把 setTimeout 封装一下，如此函数参数就会变成最右边的一个。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> setTimeoutWrapper = <span class="function">(<span class="params">time, fn</span>) =&gt;</span> &#123;</span><br><span class="line">    setTimeout(fn, time)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后就能通过 curry 函数来实现一个 10ms 的延迟了</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> delayTenMs = curry(setTimeoutWrapper)(<span class="number">10</span>)</span><br><span class="line">delayTenMs(<span class="function"><span class="params">()</span> =&gt;</span> <span class="built_in">console</span>.log(<span class="string">'Do X task'</span>))</span><br><span class="line">delayTenMs(<span class="function"><span class="params">()</span> =&gt;</span> <span class="built_in">console</span>.log(<span class="string">'Do Y task'</span>))</span><br></pre></td></tr></table></figure>
+
+<p>程序将以我们需要的方式运行，但问题是创建了 setTimeoutWrapper 这个封装器，这是一种开销。</p>
+<h4 id="1-6-4-2-实现偏函数-适用于任何含有多个参数的函数"><a href="#1-6-4-2-实现偏函数-适用于任何含有多个参数的函数" class="headerlink" title="1.6.4.2. 实现偏函数(适用于任何含有多个参数的函数)"></a>1.6.4.2. 实现偏函数(适用于任何含有多个参数的函数)</h4><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> partial = <span class="function"><span class="keyword">function</span>(<span class="params">fn, ...partialArgs</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> args = partialArgs</span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params">...fullArguments</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">let</span> arg = <span class="number">0</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; args.length &amp;&amp; arg &lt; fullArguments.length; i++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (args[i] === <span class="literal">undefined</span>) &#123;</span><br><span class="line">                args[i] = fullArguments[arg++]</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> fn.apply(<span class="literal">null</span>, args)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>使用该偏函数</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> delayTenMs = partial(setTimeout, <span class="literal">undefined</span>, <span class="number">10</span>)</span><br><span class="line">delayTenMs(<span class="function"><span class="params">()</span> =&gt;</span> <span class="built_in">console</span>.log(<span class="string">'Do Y task'</span>))</span><br></pre></td></tr></table></figure>
+
+<p><strong>说明:</strong><br>我们调用<br><code>partial(setTimeout,undefined,10);</code><br>这将产生<br><code>let args = partialArgs = [undefined,10]</code>返回函数将记住 args 的值（闭包）<br>返回函数非常简单，它接受一个名为 fullArguments 的参数。所以传入<code>()=&gt;console.log(&quot;Do Y task&quot;)</code>作为参数，<br>在 for 循环中我们执行遍历并为函数创建必需的参数数组</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (args[i] === <span class="literal">undefined</span>) &#123;</span><br><span class="line">    args[i] = fullArguments[arg++]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>从 i=0 开始，<br>返回函数将记住 args 的值，返回函数非常简单，它接受一个名为 fullArguments 的参数。所以传入<br><code>fullArguments = [()=&gt;console.log(&quot;Do Y task&quot;)]</code><br>在 if 循环内<br><code>args[0]===undefined=&gt;true</code><br><code>args[0]=()=&gt;console.log(&quot;Do Y task&quot;)</code><br>如此 args 就变成<br><code>[()=&gt;console.log(&quot;Do Y task&quot;),10]</code><br>可以看出，args 指向我们期望的 setTimeout 函数调用所需的数组，一旦在 args 中有了必要的参数，就可以通过 fn.apply(null,args)调用函数了。</p>
+<p><strong>partial 应用</strong><br>注意，我们可以将 partial 应用于任何含有多个参数的函数，看下面的例子。js 中使用 JSON.stringify() 方法将一个 JavaScript 值(对象或者数组)转换为一个 JSON 字符串。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">JSON</span>.stringify(value[, replacer[, space]])</span><br></pre></td></tr></table></figure>
+
+<p>value:<br>必需， 要转换的 JavaScript 值（通常为对象或数组）。</p>
+<p>replacer:<br>可选。用于转换结果的函数或数组。<br>如果 replacer 为函数，则 JSON.stringify 将调用该函数，并传入每个成员的键和值。使用返回值而不是原始值。如果此函数返回 undefined，则排除成员。根对象的键是一个空字符串””。<br>如果 replacer 是一个数组，则仅转换该数组中具有键值的成员。成员的转换顺序与键在数组中的顺序一样。</p>
+<p>space:<br>可选，文本添加缩进、空格和换行符，如果 space 是一个数字，则返回值文本在每个级别缩进指定数目的空格，如果 space 大于 10，则文本缩进 10 个空格。space 也可以使用非数字，如\t。</p>
+<p>我们调用下面的函数做 JSON 的美化输出。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> obj = &#123;<span class="attr">obj</span>:<span class="string">"bar"</span>,<span class="attr">bar</span>:<span class="string">"foo"</span>&#125;</span><br><span class="line"><span class="built_in">JSON</span>.stringify(obj,<span class="literal">null</span>,<span class="number">2</span>);</span><br><span class="line">输出</span><br><span class="line"><span class="string">"&#123;</span></span><br><span class="line"><span class="string">  "</span>obj<span class="string">": "</span>bar<span class="string">",</span></span><br><span class="line"><span class="string">  "</span>bar<span class="string">": "</span>foo<span class="string">"</span></span><br><span class="line"><span class="string">&#125;"</span></span><br></pre></td></tr></table></figure>
+
+<p>可以看到 stringify 调用的最后两个参数总是相同的“null,2”，我们可以用 partial 移除样板代码</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> prettyPrintJson = partial(<span class="built_in">JSON</span>.stringify, <span class="literal">undefined</span>, <span class="literal">null</span>, <span class="number">2</span>)</span><br><span class="line">prettyPrintJson(&#123;<span class="attr">obj</span>:<span class="string">"bar"</span>,<span class="attr">bar</span>:<span class="string">"foo"</span>&#125;)</span><br><span class="line">输出</span><br><span class="line"><span class="string">"&#123;</span></span><br><span class="line"><span class="string">  "</span>obj<span class="string">": "</span>bar<span class="string">",</span></span><br><span class="line"><span class="string">  "</span>bar<span class="string">": "</span>foo<span class="string">"</span></span><br><span class="line"><span class="string">&#125;"</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>该偏函数的小 bug</strong><br>如果我们使用一个不同的参数再次调用 prettyPrintJson，它将总是给出第一次调用的结果。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">prettyPrintJson(&#123;<span class="attr">obj</span>:<span class="string">"bar"</span>,<span class="attr">bar</span>:<span class="string">"foo222"</span>&#125;)</span><br><span class="line">输出总是给出第一次调用的结果</span><br><span class="line"><span class="string">"&#123;</span></span><br><span class="line"><span class="string">  "</span>obj<span class="string">": "</span>bar<span class="string">",</span></span><br><span class="line"><span class="string">  "</span>bar<span class="string">": "</span>foo<span class="string">"</span></span><br><span class="line"><span class="string">&#125;"</span></span><br></pre></td></tr></table></figure>
+
+<p>因为我们通过参数替换 undefined 值的方式修改 partialArgs，而数组传递的是引用。</p>
+<h2 id="1-7-第七章组合与管道（compose-pipe）"><a href="#1-7-第七章组合与管道（compose-pipe）" class="headerlink" title="1.7. 第七章组合与管道（compose/pipe）"></a>1.7. 第七章组合与管道（compose/pipe）</h2><h3 id="1-7-1-组合的概念"><a href="#1-7-1-组合的概念" class="headerlink" title="1.7.1. 组合的概念"></a>1.7.1. 组合的概念</h3><p>函数式组合将多个函数组合在一起以便能构建出一个新函数。</p>
+<h4 id="1-7-1-1-Unix-的理念"><a href="#1-7-1-1-Unix-的理念" class="headerlink" title="1.7.1.1. Unix 的理念"></a>1.7.1.1. Unix 的理念</h4><p>1.每个程序只做好一件事情。 2.每个程序的输出应该是另一个尚不可知的程序的输入。</p>
+<h4 id="1-7-1-2-Unix-管道符号"><a href="#1-7-1-2-Unix-管道符号" class="headerlink" title="1.7.1.2. Unix 管道符号|"></a>1.7.1.2. Unix 管道符号<code>|</code></h4><p>使用 Unix 管道符号<code>|</code>，就可以将左侧的函数输出作为右侧函数的输入。<br>如果想计算单词 word 在给定文本文件中的出现次数，该如何实现呢？<br>cat test.txt | grep ‘world’ | wc<br>cat 用于在控制台现实文本文件的内容，它接受一个参数（文件位置）<br>grep 在给定的文本中搜索内容<br>wc 计算单词在给定文本中的数量</p>
+<h3 id="1-7-2-compose-函数"><a href="#1-7-2-compose-函数" class="headerlink" title="1.7.2. compose 函数"></a>1.7.2. compose 函数</h3><p>本节创建第一个 compose 函数，它需要接收一个函数的输出，并将其作为输入传递给另外一个函数。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> compose = <span class="function">(<span class="params">a, b</span>) =&gt;</span> <span class="function"><span class="params">c</span> =&gt;</span> a(b(c))</span><br></pre></td></tr></table></figure>
+
+<p>compose 接收函数 a 、b 作为输入，并返回一个接收参数 c 的函数。当用 c 调用返回函数时，它将用输入 c 调用函数 b，b 的输出作为 a 的输入，这就是 compose 函数的定义。<br>注意函数的调用方向是从右至左的。</p>
+<h3 id="1-7-3-应用-compose-函数"><a href="#1-7-3-应用-compose-函数" class="headerlink" title="1.7.3. 应用 compose 函数"></a>1.7.3. 应用 compose 函数</h3><p><strong>例子 1:</strong>对一个给定的数字四舍五入求和。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> data = <span class="built_in">parseFloat</span>(<span class="string">'3.56'</span>)</span><br><span class="line"><span class="keyword">let</span> number = <span class="built_in">Math</span>.round(data) <span class="comment">//4</span></span><br></pre></td></tr></table></figure>
+
+<p>下面通过 compose 函数解决该问题</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> compose = <span class="function">(<span class="params">a, b</span>) =&gt;</span> <span class="function"><span class="params">c</span> =&gt;</span> a(b(c))</span><br><span class="line"><span class="keyword">let</span> number = compose(</span><br><span class="line">    <span class="built_in">Math</span>.round,</span><br><span class="line">    <span class="built_in">parseFloat</span></span><br><span class="line">)</span><br><span class="line">number(<span class="string">'3.56'</span>) <span class="comment">//4</span></span><br></pre></td></tr></table></figure>
+
+<p>以上就是函数式组合，我们将两个函数（Math.round、parseFloat）组合在一起以便能构造出一个新函数，注意 Math.round 和 parseFloat 知道调用 number 函数时才会执行。</p>
+<p><strong>例子 2:</strong>计算一个字符串中单词的数量<br>已有以下两个函数</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> splitIntoSpaces = <span class="function"><span class="params">str</span> =&gt;</span> str.split(<span class="string">' '</span>)</span><br><span class="line"><span class="keyword">let</span> count = <span class="function"><span class="params">array</span> =&gt;</span> array.length</span><br></pre></td></tr></table></figure>
+
+<p>如果想用这两个函数构建一个新函数，计算一个字符串中单词的数量。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> countWords = compose(</span><br><span class="line">    count,</span><br><span class="line">    splitIntoSpaces</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>调用</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">countWords(<span class="string">"hello what's your name"</span>) <span class="comment">// 4</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="1-7-3-1-引入-curry-和-partial"><a href="#1-7-3-1-引入-curry-和-partial" class="headerlink" title="1.7.3.1. 引入 curry 和 partial"></a>1.7.3.1. 引入 curry 和 partial</h4><p>以上的例子中，仅当函数接收一个参数时，我们才能将两个函数组合。但还存在多参数函数的情况，我们可以通过 curry 和 partial 函数来实现。</p>
+<p>5.2 中，我们通过以下写法从 apressBooks 中获取含有 title 和 author 对象且评级高于 4.5 的对象。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">map(filter(apressBooks, book =&gt; book.rating[<span class="number">0</span>] &gt; <span class="number">4.5</span>), book =&gt; &#123;</span><br><span class="line">    <span class="keyword">return</span> &#123; <span class="attr">title</span>: book.title, <span class="attr">author</span>: book.author &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>本节使用 compose 函数将 map 和 filter 组合起来。<br>compose 只能组合接受一个参数的函数，但是 map 和 filter 都接受两个参数<code>map(array,fn)</code> <code>filter(array,fn)</code>（数组，操作数组的函数），不能直接将他们组合。我们使用 partial 函数部分地应用 map 和 filter 的第二个参数。</p>
+<p>我们定义了过滤图书的小函数 filterGoodBooks 和投影函数 projectTitleAndAuthor</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> filterGoodBooks = <span class="function"><span class="params">book</span> =&gt;</span> book.rating[<span class="number">0</span>] &gt; <span class="number">4.5</span></span><br><span class="line"><span class="keyword">let</span> projectTitleAndAuthor = <span class="function"><span class="params">book</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> &#123; <span class="attr">title</span>: book.title, <span class="attr">author</span>: book.author &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>现在使用 compose 和 partial 实现</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> queryGoodBooks = partial(filter, <span class="literal">undefined</span>, filterGoodBooks)</span><br><span class="line"><span class="keyword">let</span> mapTitleAndAuthor = partial(map, <span class="literal">undefined</span>, projectTitleAndAuthor)</span><br><span class="line"><span class="keyword">let</span> titleAndAuthorForGoodBooks = compose(</span><br><span class="line">    mapTitleAndAuthor,</span><br><span class="line">    queryGoodBooks</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>使用</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">titleAndAuthorForGoodBooks(apressBooks)</span><br><span class="line">输出</span><br><span class="line"><span class="number">0</span>: &#123;<span class="attr">title</span>: <span class="string">"Angularjs"</span>, <span class="attr">author</span>: <span class="string">"ANDREW JKDKS"</span>&#125;</span><br><span class="line"><span class="number">1</span>: &#123;<span class="attr">title</span>: <span class="string">"Pro ASP.NET"</span>, <span class="attr">author</span>: <span class="string">"ANDREW JKDKS"</span>&#125;</span><br></pre></td></tr></table></figure>
+
+<p><a href="http://js.jirengu.com/rukulibisu/1/edit?js,output" target="_blank" rel="noopener">完整代码</a><br><a href="http://js.jirengu.com/fupiwilomu/1/edit" target="_blank" rel="noopener">和之前完整代码</a></p>
+<p>本例子使用 partial 和 compose 解决问题，也可以用 curry 来做同样的事情。<br>提示颠倒 map 和 filter 的参数顺序。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> mapWrap = <span class="function">(<span class="params">fn, array</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> map(array, fn)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><a href="http://js.jirengu.com/luvaretita/1/edit" target="_blank" rel="noopener">curry 和 compose</a></p>
+<h4 id="1-7-3-2-组合多个函数"><a href="#1-7-3-2-组合多个函数" class="headerlink" title="1.7.3.2. 组合多个函数"></a>1.7.3.2. 组合多个函数</h4><p>当前的 compose 只能组合两个给定的函数，我们重写 compose 函数，使它能组合三个、四个、更多函数。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> compose = <span class="function">(<span class="params">...fns</span>) =&gt;</span> <span class="function"><span class="params">value</span> =&gt;</span></span><br><span class="line">    reduce(fns.reverse(), (acc, fn) =&gt; fn(acc), value)</span><br></pre></td></tr></table></figure>
+
+<p>reduce 用于把数组归约为一个单一的值，例如求给定数组的元素乘积，累乘器初始值为 1</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reduce([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>], (acc, val) =&gt; acc * val, <span class="number">1</span>) <span class="comment">//24</span></span><br></pre></td></tr></table></figure>
+
+<p>此处通过 fns.reverse()反转函数数组，(acc, fn) =&gt; fn(acc)以传入的 acc 为参数依次调用每一个函数。累加器的初始值是 value 变量，它作为函数的第一个输入。</p>
+<p>上一节中，我们组合了一个函数用于计算给定字符串的单词数。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> splitIntoSpaces = <span class="function"><span class="params">str</span> =&gt;</span> str.split(<span class="string">' '</span>)</span><br><span class="line"><span class="keyword">let</span> count = <span class="function"><span class="params">array</span> =&gt;</span> array.length</span><br><span class="line"><span class="keyword">const</span> countWords = compose(</span><br><span class="line">    count,</span><br><span class="line">    splitIntoSpaces</span><br><span class="line">)</span><br><span class="line">countWords(<span class="string">"hello what's your name"</span>) <span class="comment">// 4</span></span><br></pre></td></tr></table></figure>
+
+<p>假设我们想知道给定字符串的单词数是基数还是偶数，而我们已经有如下函数</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> oddOrEven = <span class="function"><span class="params">ip</span> =&gt;</span> (ip % <span class="number">2</span> == <span class="number">0</span> ? <span class="string">'even'</span> : <span class="string">'odd'</span>)</span><br></pre></td></tr></table></figure>
+
+<p>通过 compose，将这三个函数组合起来</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> oddOrEvenWords = compose(</span><br><span class="line">    oddOrEven,</span><br><span class="line">    count,</span><br><span class="line">    splitIntoSpaces</span><br><span class="line">)</span><br><span class="line">oddOrEvenWords(<span class="string">"hello what's your name"</span>) <span class="comment">// ["even"]</span></span><br></pre></td></tr></table></figure>
+
+<p><a href="http://js.jirengu.com/manonufuna/1/edit?html,js,output" target="_blank" rel="noopener">oddOrEvenWords 完整代码</a></p>
+<h3 id="1-7-4-管道-序列"><a href="#1-7-4-管道-序列" class="headerlink" title="1.7.4. 管道/序列"></a>1.7.4. 管道/序列</h3><p>compose 的数据流是从右至左的，最右侧的函数会首先执行，将数据传递给下一个函数，以此类推…最左侧的函数最后执行。<br>而当我们进行“|”操作时，Unix 命令的数据流总是从左至右的，本节中，我们将实现<strong>pipe，它和 compose 函数所做的事情相同，只不过交换了数据流方向</strong>。</p>
+<p>管道/序列（pipeline/sequence）从左至右处理数据流的过程称为管道/序列。</p>
+<h3 id="1-7-5-实现-pipe"><a href="#1-7-5-实现-pipe" class="headerlink" title="1.7.5. 实现 pipe"></a>1.7.5. 实现 pipe</h3><p>pipe 是 compose 的复制品，唯一修改的是数据流方向。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> pipe = <span class="function">(<span class="params">...fns</span>) =&gt;</span> <span class="function"><span class="params">value</span> =&gt;</span> reduce(fns, (acc, fn) =&gt; fn(acc), value)</span><br></pre></td></tr></table></figure>
+
+<p>此处没有像 compose 一样调用 fns.reverse()，这意味着我们将按照原有顺序执行函数。<br>调用 pipe 函数。注意，我们改变了调用顺序，先 splitIntoSpaces, 中 count, 最后 oddOrEven。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> oddOrEvenWords = pipe(</span><br><span class="line">    splitIntoSpaces,</span><br><span class="line">    count,</span><br><span class="line">    oddOrEven</span><br><span class="line">)</span><br><span class="line">oddOrEvenWords(<span class="string">"hello what's your name"</span>) <span class="comment">// ["even"]</span></span><br></pre></td></tr></table></figure>
+
+<p><a href="http://js.jirengu.com/ribunoyima/1/edit?html,js,output" target="_blank" rel="noopener">pipe</a></p>
+<h3 id="1-7-6-组合的优势结合律"><a href="#1-7-6-组合的优势结合律" class="headerlink" title="1.7.6. 组合的优势结合律"></a>1.7.6. 组合的优势结合律</h3><p>函数式组合满足结合律</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">compose(</span><br><span class="line">    compose(</span><br><span class="line">        f,</span><br><span class="line">        g</span><br><span class="line">    ),</span><br><span class="line">    h</span><br><span class="line">) ==</span><br><span class="line">    compose(</span><br><span class="line">        f,</span><br><span class="line">        compose(</span><br><span class="line">            g,</span><br><span class="line">            h</span><br><span class="line">        )</span><br><span class="line">    )</span><br></pre></td></tr></table></figure>
+
+<p>看一下上一节的例子</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//compose(compose(f,g),h)</span></span><br><span class="line"><span class="keyword">const</span> oddOrEvenWord1 = compose(</span><br><span class="line">    compose(</span><br><span class="line">        oddOrEven,</span><br><span class="line">        count</span><br><span class="line">    ),</span><br><span class="line">    splitIntoSpaces</span><br><span class="line">)</span><br><span class="line">oddOrEvenWord1(<span class="string">"hello what's your name"</span>) <span class="comment">//["even"]</span></span><br><span class="line"><span class="comment">//compose(f,compose(g,h))</span></span><br><span class="line"><span class="keyword">const</span> oddOrEvenWord2 = compose(</span><br><span class="line">    oddOrEven,</span><br><span class="line">    compose(</span><br><span class="line">        count,</span><br><span class="line">        splitIntoSpaces</span><br><span class="line">    )</span><br><span class="line">)</span><br><span class="line">oddOrEvenWord2(<span class="string">"hello what's your name"</span>) <span class="comment">//["even"]</span></span><br></pre></td></tr></table></figure>
+
+<p>真正的好处把函数组合到各自所需的 compose 函数中，</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> countWords = compose(</span><br><span class="line">    count,</span><br><span class="line">    splitIntoSpaces</span><br><span class="line">)</span><br><span class="line"><span class="keyword">let</span> oddOrEvenWords = compose(</span><br><span class="line">    oddOrEven,</span><br><span class="line">    countWords</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>or</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> countOddOrEven = compose(</span><br><span class="line">    oddOrEven,</span><br><span class="line">    count</span><br><span class="line">)</span><br><span class="line"><span class="keyword">let</span> oddOrEvenWords = compose(</span><br><span class="line">    countOddOrEven,</span><br><span class="line">    splitIntoSpaces</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<h2 id="1-8-第八章函子"><a href="#1-8-第八章函子" class="headerlink" title="1.8. 第八章函子"></a>1.8. 第八章函子</h2><p>函子用一种纯函数式的方式进行错误处理。</p>
+<h3 id="1-8-1-函子是容器"><a href="#1-8-1-函子是容器" class="headerlink" title="1.8.1. 函子是容器"></a>1.8.1. 函子是容器</h3><p>函子是一个实现了 map（遍历每个对象值的时候生成一个新对象）的普通对象（在其他语言中可能是一个类）。简而言之，函子是一个持有值的容器，能够持有任何传给它值，并允许使用当前容器持有的值调用任何函数。</p>
+<p><strong>创建 Container 构造函数</strong></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> Container = <span class="function"><span class="keyword">function</span>(<span class="params">val</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.value = val</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>不使用箭头函数的原因是箭头函数不具备内部方法 Construct 和 prototype 属性，所以不能用 new 来创建一个新对象。</p>
+<p><strong>应用 Container</strong></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> testValue = <span class="keyword">new</span> Container(<span class="number">3</span>) <span class="comment">//Container &#123;value: 3&#125;</span></span><br><span class="line"><span class="keyword">let</span> testObj = <span class="keyword">new</span> Container(&#123; <span class="attr">a</span>: <span class="number">1</span> &#125;) <span class="comment">//Container &#123;value: &#123;a: 1&#125;&#125;</span></span><br><span class="line"><span class="keyword">let</span> testArray = <span class="keyword">new</span> Container([<span class="number">1</span>, <span class="number">2</span>]) <span class="comment">//Container &#123;value: [1,2]&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>我们为 Container 创建一个 of 静态工具方法，用以代替 new 关键词使用</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Container.of = <span class="function"><span class="keyword">function</span>(<span class="params">value</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> Container(value)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>用 of 方法重写上面的代码</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">testValue = Container.of(<span class="number">3</span>)</span><br><span class="line">testObj = Container.of(<span class="number">3</span>)</span><br><span class="line">testArray = Container.of([<span class="number">1</span>, <span class="number">2</span>])</span><br></pre></td></tr></table></figure>
+
+<p>注意 Container 也可以包含嵌套的 Container</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Container.of(Container.of(<span class="number">33</span>))</span><br></pre></td></tr></table></figure>
+
+<p>输出</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Container &#123;</span><br><span class="line">    value: Container &#123;</span><br><span class="line">        value: <span class="number">33</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="1-8-1-1-函子实现了-map-方法"><a href="#1-8-1-1-函子实现了-map-方法" class="headerlink" title="1.8.1.1. 函子实现了 map 方法"></a>1.8.1.1. 函子实现了 map 方法</h4><p>map 方法允许我们使用当前 Container 持有的值调用任何函数。<br>即 map 函数从 Container 中取出值，将传入的函数作用于该值，再将结果放回 Container。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Container.prototype.map = <span class="function"><span class="keyword">function</span>(<span class="params">fn</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> Container.of(fn(<span class="keyword">this</span>.value))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="1-9-第十章使用-Generator"><a href="#1-9-第十章使用-Generator" class="headerlink" title="1.9. 第十章使用 Generator"></a>1.9. 第十章使用 Generator</h2><p>Generator 是 ES6 中关于函数的新规范。它不是一种函数式编程技术，但它是函数的一部分。</p>
+<h3 id="1-9-1-异步代码及其问题（回调地狱）"><a href="#1-9-1-异步代码及其问题（回调地狱）" class="headerlink" title="1.9.1. 异步代码及其问题（回调地狱）"></a>1.9.1. 异步代码及其问题（回调地狱）</h3><h4 id="1-9-1-1-同步-VS-异步"><a href="#1-9-1-1-同步-VS-异步" class="headerlink" title="1.9.1.1. 同步 VS 异步"></a>1.9.1.1. 同步 VS 异步</h4><p>同步函数执行时会阻塞调用者，并在执行完后返回结果。<br>异步在执行时不会阻塞调用者，一旦执行完毕就会返回结果。<br>处理 Ajax 请求时就是在处理异步调用。</p>
+<p><strong>同步函数</strong></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> sync = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">//一些操作</span></span><br><span class="line">    <span class="comment">//返回数据</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> sync2 = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">//一些操作</span></span><br><span class="line">    <span class="comment">//返回数据</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> sync3 = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">//一些操作</span></span><br><span class="line">    <span class="comment">//返回数据</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>同步函数调用</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">result = sync()</span><br><span class="line">result2 = sync2()</span><br><span class="line">result3 = sync3()</span><br></pre></td></tr></table></figure>
+
+<p><strong>异步函数</strong></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="keyword">async</span> = <span class="function"><span class="params">fn</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">//一些异步操作</span></span><br><span class="line">    <span class="comment">//用异步操作调用回调</span></span><br><span class="line">    fn(<span class="comment">/*结果数据*/</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> async2 = <span class="function"><span class="params">fn</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">//一些异步操作</span></span><br><span class="line">    <span class="comment">//用异步操作调用回调</span></span><br><span class="line">    fn(<span class="comment">/*结果数据*/</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> async3 = <span class="function"><span class="params">fn</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">//一些异步操作</span></span><br><span class="line">    <span class="comment">//用异步操作调用回调</span></span><br><span class="line">    fn(<span class="comment">/*结果数据*/</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>异步函数调用</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">async</span>(<span class="function"><span class="keyword">function</span>(<span class="params">x</span>)</span>&#123;</span><br><span class="line">    async2(<span class="function"><span class="keyword">function</span>(<span class="params">y</span>)</span>&#123;</span><br><span class="line">        async3(<span class="function"><span class="keyword">function</span>(<span class="params">z</span>)</span>&#123;</span><br><span class="line">            ...</span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-9-2-Generator-基础"><a href="#1-9-2-Generator-基础" class="headerlink" title="1.9.2. Generator 基础"></a>1.9.2. Generator 基础</h3><p>Generator 是 ES6 规范的一部分，被捆绑在语言层面。</p>
+<h4 id="1-9-2-1-创建-Generator"><a href="#1-9-2-1-创建-Generator" class="headerlink" title="1.9.2.1. 创建 Generator"></a>1.9.2.1. 创建 Generator</h4><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span>* <span class="title">gen</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">'first generator'</span></span><br><span class="line">&#125;</span><br><span class="line">gen()</span><br></pre></td></tr></table></figure>
+
+<p>返回一个 Generator 原始类型的实例</p>
+<p><img src="../../images/misc/6555104-c007adab067916b8.webp" alt=""></p>
+<p>调用实例的 next 函数，从该 Generator 实例中获取值</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">gen().next()</span><br><span class="line">输出</span><br><span class="line">&#123;<span class="attr">value</span>: <span class="string">"first generator"</span>, <span class="attr">done</span>: <span class="literal">true</span>&#125;</span><br><span class="line"></span><br><span class="line">gen().next().value</span><br><span class="line">输出</span><br><span class="line"><span class="string">"first generator"</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="1-9-3-Generator-的注意事项"><a href="#1-9-3-Generator-的注意事项" class="headerlink" title="1.9.3. Generator 的注意事项"></a>1.9.3. Generator 的注意事项</h3><p>一不能无限制地调用 next 从 Generator 中取值</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> genResult = gen()</span><br><span class="line"><span class="comment">//第一次调用</span></span><br><span class="line">genResult.next().value</span><br><span class="line">输出<span class="string">"first generator"</span></span><br><span class="line"><span class="comment">//第二次调用</span></span><br><span class="line">genResult.next().value</span><br><span class="line">输出<span class="literal">undefined</span></span><br></pre></td></tr></table></figure>
+
+<p>原因是 Generator 如同序列，一旦序列中的值被消费，你就不能再次消费它。<br>本例中，genResult 是一个带有”first generator”值的序列，第一次调用 next 后，我们就已经从序列中消费了该值。<br>由于序列已为空，第二次调用它就会返回 undefined。<br>为了能够再次消费该序列，方法是创建另一个 Generator 实例</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> genResult = gen()</span><br><span class="line"><span class="keyword">let</span> genResult2 = gen()</span><br><span class="line"><span class="comment">//第一个序列</span></span><br><span class="line">genResult.next().value</span><br><span class="line">输出<span class="string">"first generator"</span></span><br><span class="line"><span class="comment">//第二个序列</span></span><br><span class="line">genResult2.next().value</span><br><span class="line">输出<span class="string">"first generator"</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="1-9-3-1-yield-关键词"><a href="#1-9-3-1-yield-关键词" class="headerlink" title="1.9.3.1. yield 关键词"></a>1.9.3.1. yield 关键词</h4><p>来看一个简单的 Generator 序列</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span>* <span class="title">generatorSequence</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">yield</span> <span class="string">'first'</span></span><br><span class="line">    <span class="keyword">yield</span> <span class="string">'second'</span></span><br><span class="line">    <span class="keyword">yield</span> <span class="string">'third'</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>创建实例并调用</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> genSequence = generatorSequence()</span><br><span class="line">genSequence.next().value <span class="comment">//"first"</span></span><br><span class="line">genSequence.next().value <span class="comment">//"second"</span></span><br><span class="line">genSequence.next().value <span class="comment">//"third"</span></span><br></pre></td></tr></table></figure>
+
+<p>yield 让 Generator 惰性的生成一个值的序列。（直到调用才会执行）<br>yield 使 Generator 函数暂停了执行并将结果返回给调用者，并且它还准确地记住了暂停的位置。下一次调用时就从中断的地方恢复执行。</p>
+<h4 id="1-9-3-2-done-属性"><a href="#1-9-3-2-done-属性" class="headerlink" title="1.9.3.2. done 属性"></a>1.9.3.2. done 属性</h4><p>done 是一个判断 Generator 序列已经被完全消费的属性。当 done 为 true 时就应该停止调用 Generator 实例的 next。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> genSequence = generatorSequence()</span><br><span class="line">genSequence.next() <span class="comment">//&#123;value: "first", done: false&#125;</span></span><br><span class="line">genSequence.next() <span class="comment">//&#123;value: "second", done: false&#125;</span></span><br><span class="line">genSequence.next() <span class="comment">//&#123;value: "third", done: false&#125;</span></span><br><span class="line">genSequence.next() <span class="comment">//&#123;value: undefined, done: true&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>下面的 for…of 循环用于遍历 Generator</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span>* <span class="title">generatorSequence</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">yield</span> <span class="string">'first'</span></span><br><span class="line">    <span class="keyword">yield</span> <span class="string">'second'</span></span><br><span class="line">    <span class="keyword">yield</span> <span class="string">'third'</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> value <span class="keyword">of</span> generatorSequence()) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(value) <span class="comment">//first second third</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="1-9-3-3-向-Generator-传递数据"><a href="#1-9-3-3-向-Generator-传递数据" class="headerlink" title="1.9.3.3. 向 Generator 传递数据"></a>1.9.3.3. 向 Generator 传递数据</h4><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span>* <span class="title">sayFullName</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">var</span> firstName = <span class="keyword">yield</span>;</span><br><span class="line">    <span class="keyword">var</span> secondName = <span class="keyword">yield</span>;</span><br><span class="line">    <span class="built_in">console</span>.log(firstName+secondName)</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> fullName = sayFullName();</span><br><span class="line">fullName.next()</span><br><span class="line">fullName.next(<span class="string">'xiao '</span>)</span><br><span class="line">fullName.next(<span class="string">'ming'</span>)</span><br><span class="line">输出xiao ming</span><br></pre></td></tr></table></figure>
+
+<p>分析第一次调用<code>fullName.next()</code>时，代码将返回并暂停于<code>var firstName = yield;</code> 第二次调用<code>yield</code>被’xiao ‘替换，暂停在<code>var secondName = yield;</code>，第三次调用 yield 被’ming’替换，不再有 yield。</p>
+<h2 id="1-10-使用-Generator-处理异步调用"><a href="#1-10-使用-Generator-处理异步调用" class="headerlink" title="1.10. 使用 Generator 处理异步调用"></a>1.10. 使用 Generator 处理异步调用</h2><h3 id="1-10-1-简单的异步函数"><a href="#1-10-1-简单的异步函数" class="headerlink" title="1.10.1. 简单的异步函数"></a>1.10.1. 简单的异步函数</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> getDataOne = <span class="function"><span class="params">cb</span> =&gt;</span> &#123;</span><br><span class="line">    setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="comment">//调用函数</span></span><br><span class="line">        cb(<span class="string">'dummy data one'</span>)</span><br><span class="line">    &#125;, <span class="number">1000</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> getDataTwo = <span class="function"><span class="params">cb</span> =&gt;</span> &#123;</span><br><span class="line">    setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="comment">//调用函数</span></span><br><span class="line">        cb(<span class="string">'dummy data two'</span>)</span><br><span class="line">    &#125;, <span class="number">1000</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>调用</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">getDataOne(<span class="function"><span class="params">data</span> =&gt;</span> <span class="built_in">console</span>.log(data)) <span class="comment">//1000毫秒之后打印dummy data one</span></span><br><span class="line">getDataTwo(<span class="function"><span class="params">data</span> =&gt;</span> <span class="built_in">console</span>.log(data)) <span class="comment">//1000毫秒之后打印dummy data two</span></span><br></pre></td></tr></table></figure>
+
+<p>下面改造 getDataOne 和 getDataTwo 函数，使其使用 Generator 实例而不是回调来传送数据</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> generator</span><br><span class="line"><span class="keyword">let</span> getDataOne = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="comment">//调用Generator，通过next传递数据</span></span><br><span class="line">        generator.next(<span class="string">'dummy data one'</span>)</span><br><span class="line">    &#125;, <span class="number">1000</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> getDataTwo = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="comment">//调用Generator，通过next传递数据</span></span><br><span class="line">        generator.next(<span class="string">'dummy data two'</span>)</span><br><span class="line">    &#125;, <span class="number">1000</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>将 getDataOne 和 getDataTwo 调用封装到一个单独的 Generator 函数中</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span>* <span class="title">main</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> dataOne = <span class="keyword">yield</span> getDataOne()</span><br><span class="line">    <span class="keyword">let</span> dataTwo = <span class="keyword">yield</span> getDataTwo()</span><br><span class="line">    <span class="built_in">console</span>.log(dataOne)</span><br><span class="line">    <span class="built_in">console</span>.log(dataTwo)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>用之前声明的 generator 变量为 main 创建一个 Generator 实例。该 Generator 实例被 getDataOne 和 getDataTwo 同时用于向其调用传递数据。<code>generator.next()</code>用于触发整个过程。main 函数开始执行，并遇到了第一个 yield<code>let dataOne = yield getDataOne();</code></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">generator = main()</span><br><span class="line">generator.next()</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">"first be printed"</span>)</span><br><span class="line"></span><br><span class="line">输出</span><br><span class="line">first be printed</span><br><span class="line"><span class="number">1000</span>毫秒之后打印</span><br><span class="line">dummy data one</span><br><span class="line">dummy data two</span><br></pre></td></tr></table></figure>
+
+<p>main 代码看上去是在同步的调用 getDataOne 和 getDataTwo，但其实两个调用都是异步的。<br>有一点需要注意虽然 yield 使语句暂停了，但它不会让调用者阻塞。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">generator.next() <span class="comment">//虽然Generator为异步代码暂停了</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'first be printed'</span>) <span class="comment">//console.log正常执行，说明generator.next不会阻塞执行</span></span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/es/" rel="tag"># es</a>
+              <a href="/tags/%E5%87%BD%E6%95%B0%E5%BC%8F%E7%BC%96%E7%A8%8B/" rel="tag"># 函数式编程</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/11/05/es/%E6%9F%AF%E9%87%8C%E5%8C%96%E5%87%BD%E6%95%B0%E7%9A%84%E5%87%A0%E7%A7%8D%E5%86%99%E6%B3%95/" rel="prev" title="柯里化函数的几种写法">
+      <i class="fa fa-chevron-left"></i> 柯里化函数的几种写法
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/11/08/frontend/Nerv%E6%A1%86%E6%9E%B6/" rel="next" title="Nerv框架">
+      Nerv框架 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-函数式编程"><span class="nav-number">1.</span> <span class="nav-text">1. 函数式编程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-第一章"><span class="nav-number">1.1.</span> <span class="nav-text">1.1. 第一章</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-1-函数与-js-方法"><span class="nav-number">1.1.1.</span> <span class="nav-text">1.1.1. 函数与 js 方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-2-引用透明性"><span class="nav-number">1.1.2.</span> <span class="nav-text">1.1.2. 引用透明性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-3-命令式、声明式与抽象"><span class="nav-number">1.1.3.</span> <span class="nav-text">1.1.3. 命令式、声明式与抽象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-4-函数式编程的好处-amp-纯函数"><span class="nav-number">1.1.4.</span> <span class="nav-text">1.1.4. 函数式编程的好处&amp;纯函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-5-并行代码"><span class="nav-number">1.1.5.</span> <span class="nav-text">1.1.5. 并行代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-6-可缓存"><span class="nav-number">1.1.6.</span> <span class="nav-text">1.1.6. 可缓存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-7-管道与组合"><span class="nav-number">1.1.7.</span> <span class="nav-text">1.1.7. 管道与组合</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-8-关于-js"><span class="nav-number">1.1.8.</span> <span class="nav-text">1.1.8. 关于 js</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-第二章-js-函数基础"><span class="nav-number">1.2.</span> <span class="nav-text">1.2. 第二章 js 函数基础</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-3-第三章高阶函数"><span class="nav-number">1.3.</span> <span class="nav-text">1.3. 第三章高阶函数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-1-理解数据"><span class="nav-number">1.3.1.</span> <span class="nav-text">1.3.1. 理解数据</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-1-1-js-中函数为一等公民"><span class="nav-number">1.3.1.1.</span> <span class="nav-text">1.3.1.1. js 中函数为一等公民</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-1-2-把一个函数存入变量"><span class="nav-number">1.3.1.2.</span> <span class="nav-text">1.3.1.2. 把一个函数存入变量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-1-3-函数作为参数传入"><span class="nav-number">1.3.1.3.</span> <span class="nav-text">1.3.1.3. 函数作为参数传入</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-1-4-返回函数"><span class="nav-number">1.3.1.4.</span> <span class="nav-text">1.3.1.4. 返回函数</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-2-抽象和高阶函数"><span class="nav-number">1.3.2.</span> <span class="nav-text">1.3.2. 抽象和高阶函数</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-2-1-通过高阶函数实现抽象"><span class="nav-number">1.3.2.1.</span> <span class="nav-text">1.3.2.1. 通过高阶函数实现抽象</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-3-真实的高阶函数"><span class="nav-number">1.3.3.</span> <span class="nav-text">1.3.3. 真实的高阶函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-4-every-函数"><span class="nav-number">1.3.4.</span> <span class="nav-text">1.3.4. every 函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-5-some-函数"><span class="nav-number">1.3.5.</span> <span class="nav-text">1.3.5. some 函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-6-sort-函数"><span class="nav-number">1.3.6.</span> <span class="nav-text">1.3.6. sort 函数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-4-第四章高阶函数与闭包"><span class="nav-number">1.4.</span> <span class="nav-text">1.4. 第四章高阶函数与闭包</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-4-1-理解闭包"><span class="nav-number">1.4.1.</span> <span class="nav-text">1.4.1. 理解闭包</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-4-1-1-什么是闭包"><span class="nav-number">1.4.1.1.</span> <span class="nav-text">1.4.1.1. 什么是闭包</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-4-1-2-闭包可以记住它的上下文"><span class="nav-number">1.4.1.2.</span> <span class="nav-text">1.4.1.2. 闭包可以记住它的上下文</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-4-2-真实的高阶函数实现"><span class="nav-number">1.4.2.</span> <span class="nav-text">1.4.2. 真实的高阶函数实现</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-4-2-1-once-允许只运行一次给定的函数"><span class="nav-number">1.4.2.1.</span> <span class="nav-text">1.4.2.1. once 允许只运行一次给定的函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-4-2-2-memoized"><span class="nav-number">1.4.2.2.</span> <span class="nav-text">1.4.2.2. memoized</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-5-第五章数组的函数式编程"><span class="nav-number">1.5.</span> <span class="nav-text">1.5. 第五章数组的函数式编程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-5-1-数组的函数式方法"><span class="nav-number">1.5.1.</span> <span class="nav-text">1.5.1. 数组的函数式方法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-5-1-1-map"><span class="nav-number">1.5.1.1.</span> <span class="nav-text">1.5.1.1. map</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-5-1-2-filter"><span class="nav-number">1.5.1.2.</span> <span class="nav-text">1.5.1.2. filter</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-5-2-连接操作"><span class="nav-number">1.5.2.</span> <span class="nav-text">1.5.2. 连接操作</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-5-2-1-concatAll"><span class="nav-number">1.5.2.1.</span> <span class="nav-text">1.5.2.1. concatAll</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-5-2-2-flatten-嵌套数组扁平化"><span class="nav-number">1.5.2.2.</span> <span class="nav-text">1.5.2.2. flatten 嵌套数组扁平化</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-5-3-reduce-函数"><span class="nav-number">1.5.3.</span> <span class="nav-text">1.5.3. reduce 函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-5-4-zip-数组"><span class="nav-number">1.5.4.</span> <span class="nav-text">1.5.4. zip 数组</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-6-第六章柯里化与偏应用"><span class="nav-number">1.6.</span> <span class="nav-text">1.6. 第六章柯里化与偏应用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-6-1-一些术语"><span class="nav-number">1.6.1.</span> <span class="nav-text">1.6.1. 一些术语</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-6-1-1-一元函数"><span class="nav-number">1.6.1.1.</span> <span class="nav-text">1.6.1.1. 一元函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-6-1-2-二元函数"><span class="nav-number">1.6.1.2.</span> <span class="nav-text">1.6.1.2. 二元函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-6-1-3-变参函数"><span class="nav-number">1.6.1.3.</span> <span class="nav-text">1.6.1.3. 变参函数</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-6-2-柯里化"><span class="nav-number">1.6.2.</span> <span class="nav-text">1.6.2. 柯里化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-6-2-1-柯里化用例"><span class="nav-number">1.6.2.1.</span> <span class="nav-text">1.6.2.1. 柯里化用例</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-6-2-2-完整-curry-函数"><span class="nav-number">1.6.2.2.</span> <span class="nav-text">1.6.2.2. 完整 curry 函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-6-2-3-日志函数-——-柯里化的应用"><span class="nav-number">1.6.2.3.</span> <span class="nav-text">1.6.2.3. 日志函数 —— 柯里化的应用</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-6-3-柯里化实战"><span class="nav-number">1.6.3.</span> <span class="nav-text">1.6.3. 柯里化实战</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-6-3-1-在数组内容中查找数字"><span class="nav-number">1.6.3.1.</span> <span class="nav-text">1.6.3.1. 在数组内容中查找数字</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-6-3-2-求数组的平方"><span class="nav-number">1.6.3.2.</span> <span class="nav-text">1.6.3.2. 求数组的平方</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-6-4-数据流"><span class="nav-number">1.6.4.</span> <span class="nav-text">1.6.4. 数据流</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-6-4-1-偏应用"><span class="nav-number">1.6.4.1.</span> <span class="nav-text">1.6.4.1. 偏应用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-6-4-2-实现偏函数-适用于任何含有多个参数的函数"><span class="nav-number">1.6.4.2.</span> <span class="nav-text">1.6.4.2. 实现偏函数(适用于任何含有多个参数的函数)</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-7-第七章组合与管道（compose-pipe）"><span class="nav-number">1.7.</span> <span class="nav-text">1.7. 第七章组合与管道（compose&#x2F;pipe）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-7-1-组合的概念"><span class="nav-number">1.7.1.</span> <span class="nav-text">1.7.1. 组合的概念</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-7-1-1-Unix-的理念"><span class="nav-number">1.7.1.1.</span> <span class="nav-text">1.7.1.1. Unix 的理念</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-7-1-2-Unix-管道符号"><span class="nav-number">1.7.1.2.</span> <span class="nav-text">1.7.1.2. Unix 管道符号|</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-7-2-compose-函数"><span class="nav-number">1.7.2.</span> <span class="nav-text">1.7.2. compose 函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-7-3-应用-compose-函数"><span class="nav-number">1.7.3.</span> <span class="nav-text">1.7.3. 应用 compose 函数</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-7-3-1-引入-curry-和-partial"><span class="nav-number">1.7.3.1.</span> <span class="nav-text">1.7.3.1. 引入 curry 和 partial</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-7-3-2-组合多个函数"><span class="nav-number">1.7.3.2.</span> <span class="nav-text">1.7.3.2. 组合多个函数</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-7-4-管道-序列"><span class="nav-number">1.7.4.</span> <span class="nav-text">1.7.4. 管道&#x2F;序列</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-7-5-实现-pipe"><span class="nav-number">1.7.5.</span> <span class="nav-text">1.7.5. 实现 pipe</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-7-6-组合的优势结合律"><span class="nav-number">1.7.6.</span> <span class="nav-text">1.7.6. 组合的优势结合律</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-8-第八章函子"><span class="nav-number">1.8.</span> <span class="nav-text">1.8. 第八章函子</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-8-1-函子是容器"><span class="nav-number">1.8.1.</span> <span class="nav-text">1.8.1. 函子是容器</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-8-1-1-函子实现了-map-方法"><span class="nav-number">1.8.1.1.</span> <span class="nav-text">1.8.1.1. 函子实现了 map 方法</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-9-第十章使用-Generator"><span class="nav-number">1.9.</span> <span class="nav-text">1.9. 第十章使用 Generator</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-9-1-异步代码及其问题（回调地狱）"><span class="nav-number">1.9.1.</span> <span class="nav-text">1.9.1. 异步代码及其问题（回调地狱）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-9-1-1-同步-VS-异步"><span class="nav-number">1.9.1.1.</span> <span class="nav-text">1.9.1.1. 同步 VS 异步</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-9-2-Generator-基础"><span class="nav-number">1.9.2.</span> <span class="nav-text">1.9.2. Generator 基础</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-9-2-1-创建-Generator"><span class="nav-number">1.9.2.1.</span> <span class="nav-text">1.9.2.1. 创建 Generator</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-9-3-Generator-的注意事项"><span class="nav-number">1.9.3.</span> <span class="nav-text">1.9.3. Generator 的注意事项</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-9-3-1-yield-关键词"><span class="nav-number">1.9.3.1.</span> <span class="nav-text">1.9.3.1. yield 关键词</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-9-3-2-done-属性"><span class="nav-number">1.9.3.2.</span> <span class="nav-text">1.9.3.2. done 属性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-9-3-3-向-Generator-传递数据"><span class="nav-number">1.9.3.3.</span> <span class="nav-text">1.9.3.3. 向 Generator 传递数据</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-10-使用-Generator-处理异步调用"><span class="nav-number">1.10.</span> <span class="nav-text">1.10. 使用 Generator 处理异步调用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-10-1-简单的异步函数"><span class="nav-number">1.10.1.</span> <span class="nav-text">1.10.1. 简单的异步函数</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Andy Ge</p>
+  <div class="site-description" itemprop="description">勇于积极进取，步入人生的世外桃源</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">728</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">134</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">315</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/andyge" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;andyge" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:geshaofei@126.com" title="E-Mail → mailto:geshaofei@126.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.ruanyifeng.com/" title="http:&#x2F;&#x2F;www.ruanyifeng.com&#x2F;" rel="noopener" target="_blank">阮一峰</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://colobu.com/" title="http:&#x2F;&#x2F;colobu.com&#x2F;" rel="noopener" target="_blank">鸟窝</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.cnblogs.com/hellokuangshen/" title="https:&#x2F;&#x2F;www.cnblogs.com&#x2F;hellokuangshen&#x2F;" rel="noopener" target="_blank">狂神</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://yelog.org/" title="https:&#x2F;&#x2F;yelog.org&#x2F;" rel="noopener" target="_blank">叶落阁</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Andy Ge</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.7.1
+  </div>
+
+        
+
+
+
+
+
+
+  <script>
+  function leancloudSelector(url) {
+    url = encodeURI(url);
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.getAttribute('id'));
+      var title = visitors.getAttribute('data-flag-title');
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .then(() => {
+                leancloudSelector(url).innerText = counter.time + 1;
+              })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              })
+          } else {
+              Counter('post', '/classes/Counter', { title: title, url: url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.getAttribute('id'));
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (let item of results) {
+            let { url, time } = item;
+            leancloudSelector(url).innerText = time;
+          }
+          for (let url of entries) {
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=2TdIb5gRlAVUw24l2W0zWnCj-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method: method,
+          headers: {
+            'X-LC-Id'     : '2TdIb5gRlAVUw24l2W0zWnCj-gzGzoHsz',
+            'X-LC-Key'    : 'cJdJrMLBXsj0ttq0WsL0aA2j',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

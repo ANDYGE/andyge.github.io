@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"swiftist.cn","root":"/","scheme":"Pisces","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"EVBR3H53HW","apiKey":"2abd573a01143a0cc4108fa4d21ae67c","indexName":"swiftist","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="autoauto- [1. 概述](#1-概述)auto- [2. 集合相关方法](#2-集合相关方法)auto    - [2.1. 集合处理](#21-集合处理)auto        - [2.1.1. map](#211-map)auto        - [2.1.2. each](#212-each)auto        - [2.1.3. reduce](#213-reduce)a">
+<meta property="og:type" content="article">
+<meta property="og:title" content="underscore.js">
+<meta property="og:url" content="https://swiftist.cn/2018/09/13/frontend/underscore-js/index.html">
+<meta property="og:site_name" content="飞雪轩辕">
+<meta property="og:description" content="autoauto- [1. 概述](#1-概述)auto- [2. 集合相关方法](#2-集合相关方法)auto    - [2.1. 集合处理](#21-集合处理)auto        - [2.1.1. map](#211-map)auto        - [2.1.2. each](#212-each)auto        - [2.1.3. reduce](#213-reduce)a">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-09-13T09:27:40.000Z">
+<meta property="article:modified_time" content="2020-03-31T15:07:39.346Z">
+<meta property="article:author" content="Andy Ge">
+<meta property="article:tag" content="underscore">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://swiftist.cn/2018/09/13/frontend/underscore-js/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>underscore.js | 飞雪轩辕</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="飞雪轩辕" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">飞雪轩辕</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">人生的乐趣在于把梦想变成现实</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-java">
+
+    <a href="/categories/java/" rel="section"><i class="fa fa-fw fa-th-large"></i>java</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://swiftist.cn/2018/09/13/frontend/underscore-js/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Andy Ge">
+      <meta itemprop="description" content="勇于积极进取，步入人生的世外桃源">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="飞雪轩辕">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          underscore.js
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-09-13 17:27:40" itemprop="dateCreated datePublished" datetime="2018-09-13T17:27:40+08:00">2018-09-13</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-31 23:07:39" itemprop="dateModified" datetime="2020-03-31T23:07:39+08:00">2020-03-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/frontend/" itemprop="url" rel="index">
+                    <span itemprop="name">frontend</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span id="/2018/09/13/frontend/underscore-js/" class="post-meta-item leancloud_visitors" data-flag-title="underscore.js" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <!-- TOC -->autoauto- [1. 概述](#1-概述)auto- [2. 集合相关方法](#2-集合相关方法)auto    - [2.1. 集合处理](#21-集合处理)auto        - [2.1.1. map](#211-map)auto        - [2.1.2. each](#212-each)auto        - [2.1.3. reduce](#213-reduce)auto        - [2.1.4. reduceRight](#214-reduceright)auto        - [2.1.5. shuffle](#215-shuffle)auto        - [2.1.6. invoke](#216-invoke)auto        - [2.1.7. sortBy](#217-sortby)auto        - [2.1.8. indexBy](#218-indexby)auto    - [2.2. 集合特征](#22-集合特征)auto        - [2.2.1. every](#221-every)auto        - [2.2.2. some](#222-some)auto        - [2.2.3. size](#223-size)auto        - [2.2.4. sample](#224-sample)auto    - [2.3. 集合过滤](#23-集合过滤)auto        - [2.3.1. filter](#231-filter)auto        - [2.3.2. reject](#232-reject)auto        - [2.3.3. find](#233-find)auto        - [2.3.4. contains](#234-contains)auto        - [2.3.5. countBy](#235-countby)auto        - [2.3.6. where](#236-where)auto        - [2.3.7. max，min](#237-maxmin)auto    - [2.4. 对象相关方法](#24-对象相关方法)auto        - [2.4.1. toArray](#241-toarray)auto        - [2.4.2. pluck](#242-pluck)auto- [3. 与函数相关的方法](#3-与函数相关的方法)auto    - [3.1. 绑定运行环境和参数](#31-绑定运行环境和参数)auto        - [3.1.1. bind 方法](#311-bind-方法)auto        - [3.1.2. bindall 方法](#312-bindall-方法)auto        - [3.1.3. partial 方法](#313-partial-方法)auto        - [3.1.4. wrap 方法](#314-wrap-方法)auto        - [3.1.5. compose 方法](#315-compose-方法)auto    - [3.2. 函数运行控制](#32-函数运行控制)auto        - [3.2.1. memoize 方法](#321-memoize-方法)auto        - [3.2.2. delay 方法](#322-delay-方法)auto        - [3.2.3. defer 方法](#323-defer-方法)auto        - [3.2.4. throttle 方法](#324-throttle-方法)auto        - [3.2.5. debounce 方法](#325-debounce-方法)auto        - [3.2.6. once 方法](#326-once-方法)auto        - [3.2.7. after 方法](#327-after-方法)auto- [4. 工具方法](#4-工具方法)auto    - [4.1. 链式操作](#41-链式操作)auto    - [4.2. template](#42-template)auto        - [4.2.1. templateString](#421-templatestring)auto        - [4.2.2. data](#422-data)auto- [5. 参考链接](#5-参考链接)autoauto<!-- /TOC -->
+
+<h1 id="1-概述"><a href="#1-概述" class="headerlink" title="1. 概述"></a>1. 概述</h1><p><a href="http://underscorejs.org/" target="_blank" rel="noopener">Underscore.js</a>是一个很精干的库，压缩后只有 4KB。它提供了几十种函数式编程的方法，弥补了标准库的不足，大大方便了 JavaScript 的编程。MVC 框架 Backbone.js 就将这个库作为自己的工具库。除了可以在浏览器环境使用，Underscore.js 还可以用于 Node.js。</p>
+<p>Underscore.js 定义了一个下划线（_）对象，函数库的所有方法都属于这个对象。这些方法大致上可以分成：集合（collection）、数组（array）、函数（function）、对象（object）和工具（utility）五大类。</p>
+<h1 id="2-集合相关方法"><a href="#2-集合相关方法" class="headerlink" title="2. 集合相关方法"></a>2. 集合相关方法</h1><p>Javascript 语言的数据集合，包括两种结构：数组和对象。以下的方法同时适用于这两种结构。</p>
+<h2 id="2-1-集合处理"><a href="#2-1-集合处理" class="headerlink" title="2.1. 集合处理"></a>2.1. 集合处理</h2><p>数组处理指的是对数组元素进行加工。</p>
+<h3 id="2-1-1-map"><a href="#2-1-1-map" class="headerlink" title="2.1.1. map"></a>2.1.1. map</h3><p>map 方法对集合的每个成员依次进行某种操作，将返回的值依次存入一个新的数组。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">_.map([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>], <span class="function"><span class="keyword">function</span>(<span class="params">num</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> num * <span class="number">3</span></span><br><span class="line">&#125;)</span><br><span class="line"><span class="comment">// [3, 6, 9]</span></span><br><span class="line"></span><br><span class="line">_.map(&#123; <span class="attr">one</span>: <span class="number">1</span>, <span class="attr">two</span>: <span class="number">2</span>, <span class="attr">three</span>: <span class="number">3</span> &#125;, <span class="function"><span class="keyword">function</span>(<span class="params">num, key</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> num * <span class="number">3</span></span><br><span class="line">&#125;)</span><br><span class="line"><span class="comment">// [3, 6, 9]</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-1-2-each"><a href="#2-1-2-each" class="headerlink" title="2.1.2. each"></a>2.1.2. each</h3><p>each 方法与 map 类似，依次对数组所有元素进行某种操作，不返回任何值。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">_.each([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>], alert)</span><br><span class="line"></span><br><span class="line">_.each(&#123; <span class="attr">one</span>: <span class="number">1</span>, <span class="attr">two</span>: <span class="number">2</span>, <span class="attr">three</span>: <span class="number">3</span> &#125;, alert)</span><br></pre></td></tr></table></figure>
+
+<a id="more"></a>
+
+<h3 id="2-1-3-reduce"><a href="#2-1-3-reduce" class="headerlink" title="2.1.3. reduce"></a>2.1.3. reduce</h3><p>reduce 方法依次对集合的每个成员进行某种操作，然后将操作结果累计在某一个初始值之上，全部操作结束之后，返回累计的值。该方法接受三个参数。第一个参数是被处理的集合，第二个参数是对每个成员进行操作的函数，第三个参数是累计用的变量。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">_.reduce(</span><br><span class="line">    [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>],</span><br><span class="line">    <span class="function"><span class="keyword">function</span>(<span class="params">memo, num</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> memo + num</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="number">0</span></span><br><span class="line">)</span><br><span class="line"><span class="comment">// 6</span></span><br></pre></td></tr></table></figure>
+
+<p>reduce 方法的第二个参数是操作函数，它本身又接受两个参数，第一个是累计用的变量，第二个是集合每个成员的值。</p>
+<h3 id="2-1-4-reduceRight"><a href="#2-1-4-reduceRight" class="headerlink" title="2.1.4. reduceRight"></a>2.1.4. reduceRight</h3><p>reduceRight 是逆向的 reduce，表示从集合的最后一个元素向前进行处理。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> list = [<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]</span><br><span class="line"><span class="keyword">var</span> flat = _.reduceRight(</span><br><span class="line">    list,</span><br><span class="line">    <span class="function"><span class="keyword">function</span>(<span class="params">a, b</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> a.concat(b)</span><br><span class="line">    &#125;,</span><br><span class="line">    []</span><br><span class="line">)</span><br><span class="line"><span class="comment">// [3,2,1,0]</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> list = [[<span class="number">0</span>, <span class="number">1</span>], [<span class="number">2</span>, <span class="number">3</span>], [<span class="number">4</span>, <span class="number">5</span>]]</span><br><span class="line"><span class="keyword">var</span> flat = _.reduceRight(</span><br><span class="line">    list,</span><br><span class="line">    <span class="function"><span class="keyword">function</span>(<span class="params">a, b</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> a.concat(b)</span><br><span class="line">    &#125;,</span><br><span class="line">    []</span><br><span class="line">)</span><br><span class="line"><span class="comment">// [4, 5, 2, 3, 0, 1]</span></span><br></pre></td></tr></table></figure>
+
+<p>concat 方法将新数组的成员，添加到原数组的尾部，然后返回一个新数组，常用于连接多个数组。</p>
+<h3 id="2-1-5-shuffle"><a href="#2-1-5-shuffle" class="headerlink" title="2.1.5. shuffle"></a>2.1.5. shuffle</h3><p>shuffle 方法返回一个打乱次序的集合。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">_.shuffle([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>])</span><br><span class="line"><span class="comment">// [4, 1, 6, 3, 5, 2]</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-1-6-invoke"><a href="#2-1-6-invoke" class="headerlink" title="2.1.6. invoke"></a>2.1.6. invoke</h3><p>invoke 方法对集合的每个成员执行指定的操作。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">_.invoke(obj, method,args...);</span><br><span class="line"><span class="comment">//args将作为method的参数传入。</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">_.invoke([[<span class="number">5</span>, <span class="number">1</span>, <span class="number">7</span>], [<span class="number">3</span>, <span class="number">2</span>, <span class="number">1</span>]], <span class="string">'sort'</span>)</span><br><span class="line"><span class="comment">// [[1, 5, 7], [1, 2, 3]]</span></span><br><span class="line"><span class="comment">//sort来自Array.prototype.sort</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">_.invoke([[<span class="number">5</span>, <span class="number">1</span>, <span class="number">7</span>], [<span class="number">3</span>, <span class="number">2</span>, <span class="number">1</span>]], <span class="string">'slice'</span>, <span class="number">1</span>)</span><br><span class="line"><span class="comment">// [[1, 7], [2, 1]]</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-1-7-sortBy"><a href="#2-1-7-sortBy" class="headerlink" title="2.1.7. sortBy"></a>2.1.7. sortBy</h3><p>sortBy 方法根据处理函数的返回值，返回一个排序后的集合，以升序排列。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">_.sortBy([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>], <span class="function"><span class="keyword">function</span>(<span class="params">num</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">Math</span>.sin(num)</span><br><span class="line">&#125;)</span><br><span class="line"><span class="comment">// [5, 4, 6, 3, 1, 2]</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-1-8-indexBy"><a href="#2-1-8-indexBy" class="headerlink" title="2.1.8. indexBy"></a>2.1.8. indexBy</h3><p>indexBy 方法返回一个对象，根据指定键名，对集合生成一个索引。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> person = [&#123;<span class="attr">name</span>: <span class="string">'John'</span>, <span class="attr">age</span>: <span class="number">40</span>&#125;, &#123;<span class="attr">name</span>: <span class="string">'larry'</span>, <span class="attr">age</span>: <span class="number">50</span>&#125;, &#123;<span class="attr">name</span>: <span class="string">'curly'</span>, <span class="attr">age</span>: <span class="number">60</span>&#125;];</span><br><span class="line">_.indexBy(person, <span class="string">'age'</span>);</span><br><span class="line"><span class="comment">// &#123; "50": &#123;name: 'larry', age: 50&#125;,</span></span><br><span class="line">     <span class="string">"60"</span>: &#123;<span class="attr">name</span>: <span class="string">'curly'</span>, <span class="attr">age</span>: <span class="number">60</span>&#125; &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-2-集合特征"><a href="#2-2-集合特征" class="headerlink" title="2.2. 集合特征"></a>2.2. 集合特征</h2><p>Underscore.js 提供了一系列方法，判断数组元素的特征。这些方法都返回一个布尔值，表示是否满足条件。</p>
+<h3 id="2-2-1-every"><a href="#2-2-1-every" class="headerlink" title="2.2.1. every"></a>2.2.1. every</h3><p>every 方法判断数组的所有元素是否都满足某个条件。如果都满足则返回 true，否则返回 false。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">_.every([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>], <span class="function"><span class="keyword">function</span>(<span class="params">num</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> num % <span class="number">2</span> == <span class="number">0</span></span><br><span class="line">&#125;)</span><br><span class="line"><span class="comment">// false</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-2-2-some"><a href="#2-2-2-some" class="headerlink" title="2.2.2. some"></a>2.2.2. some</h3><p>some 方法则是只要有一个元素满足，就返回 true，否则返回 false。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">_.some([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>], <span class="function"><span class="keyword">function</span>(<span class="params">num</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> num % <span class="number">2</span> == <span class="number">0</span></span><br><span class="line">&#125;)</span><br><span class="line"><span class="comment">// true</span></span><br><span class="line"></span><br><span class="line">_.some([<span class="literal">null</span>, <span class="number">0</span>, <span class="string">'yes'</span>, <span class="literal">false</span>])</span><br><span class="line"><span class="comment">// true</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-2-3-size"><a href="#2-2-3-size" class="headerlink" title="2.2.3. size"></a>2.2.3. size</h3><p>size 方法返回集合的成员数量。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">_.size(&#123; <span class="attr">one</span>: <span class="number">1</span>, <span class="attr">two</span>: <span class="number">2</span>, <span class="attr">three</span>: <span class="number">3</span> &#125;)</span><br><span class="line"><span class="comment">// 3</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-2-4-sample"><a href="#2-2-4-sample" class="headerlink" title="2.2.4. sample"></a>2.2.4. sample</h3><p>sample 方法用于从集合中随机取样。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">_.sample([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>])</span><br><span class="line"><span class="comment">// 4</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="2-3-集合过滤"><a href="#2-3-集合过滤" class="headerlink" title="2.3. 集合过滤"></a>2.3. 集合过滤</h2><p>Underscore.js 提供了一系列方法，用于过滤数组，找到符合要求的成员。</p>
+<h3 id="2-3-1-filter"><a href="#2-3-1-filter" class="headerlink" title="2.3.1. filter"></a>2.3.1. filter</h3><p>filter 方法依次对集合的每个成员进行某种操作，只返回操作结果为 true 的成员。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">_.filter([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>], <span class="function"><span class="keyword">function</span>(<span class="params">num</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> num % <span class="number">2</span> == <span class="number">0</span></span><br><span class="line">&#125;)</span><br><span class="line"><span class="comment">// [2, 4, 6]</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-3-2-reject"><a href="#2-3-2-reject" class="headerlink" title="2.3.2. reject"></a>2.3.2. reject</h3><p>reject 方法只返回操作结果为 false 的成员。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">_.reject([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>], <span class="function"><span class="keyword">function</span>(<span class="params">num</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> num % <span class="number">2</span> == <span class="number">0</span></span><br><span class="line">&#125;)</span><br><span class="line"><span class="comment">// [1, 3, 5]</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-3-3-find"><a href="#2-3-3-find" class="headerlink" title="2.3.3. find"></a>2.3.3. find</h3><p>find 方法依次对集合的每个成员进行某种操作，返回第一个操作结果为 true 的成员。如果所有成员的操作结果都为 false，则返回 undefined。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">_.find([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>], <span class="function"><span class="keyword">function</span>(<span class="params">num</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> num % <span class="number">2</span> == <span class="number">0</span></span><br><span class="line">&#125;)</span><br><span class="line"><span class="comment">// 2</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-3-4-contains"><a href="#2-3-4-contains" class="headerlink" title="2.3.4. contains"></a>2.3.4. contains</h3><p>contains 方法表示如果某个值在数组内，则返回 true，否则返回 false。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">_.contains([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>], <span class="number">3</span>)</span><br><span class="line"><span class="comment">// true</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-3-5-countBy"><a href="#2-3-5-countBy" class="headerlink" title="2.3.5. countBy"></a>2.3.5. countBy</h3><p>countBy 方法依次对集合的每个成员进行某种操作，将操作结果相同的成员算作一类，最后返回一个对象，表明每种操作结果对应的成员数量。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">_.countBy([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>], <span class="function"><span class="keyword">function</span>(<span class="params">num</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> num % <span class="number">2</span> == <span class="number">0</span> ? <span class="string">'even'</span> : <span class="string">'odd'</span></span><br><span class="line">&#125;)</span><br><span class="line"><span class="comment">// &#123;odd: 3, even: 2&#125;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-3-6-where"><a href="#2-3-6-where" class="headerlink" title="2.3.6. where"></a>2.3.6. where</h3><p>where 方法检查集合中的每个值，返回一个数组，其中的每个成员都包含指定的键值对。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">_.where(listOfPlays, &#123; <span class="attr">author</span>: <span class="string">'Shakespeare'</span>, <span class="attr">year</span>: <span class="number">1611</span> &#125;)</span><br><span class="line"><span class="comment">// [&#123;title: "Cymbeline", author: "Shakespeare", year: 1611&#125;,</span></span><br><span class="line"><span class="comment">//  &#123;title: "The Tempest", author: "Shakespeare", year: 1611&#125;]</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-3-7-max，min"><a href="#2-3-7-max，min" class="headerlink" title="2.3.7. max，min"></a>2.3.7. max，min</h3><p>max 方法返回集合中的最大值。如果提供一个处理函数，则该函数的返回值用作排名标准。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> person = [</span><br><span class="line">    &#123; <span class="attr">name</span>: <span class="string">'John'</span>, <span class="attr">age</span>: <span class="number">40</span> &#125;,</span><br><span class="line">    &#123; <span class="attr">name</span>: <span class="string">'larry'</span>, <span class="attr">age</span>: <span class="number">50</span> &#125;,</span><br><span class="line">    &#123; <span class="attr">name</span>: <span class="string">'curly'</span>, <span class="attr">age</span>: <span class="number">60</span> &#125;</span><br><span class="line">]</span><br><span class="line">_.max(person, <span class="function"><span class="keyword">function</span>(<span class="params">per</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> per.age</span><br><span class="line">&#125;)</span><br><span class="line"><span class="comment">// &#123;name: 'curly', age: 60&#125;;</span></span><br></pre></td></tr></table></figure>
+
+<p>min 方法返回集合中的最小值。如果提供一个处理函数，则该函数的返回值用作排名标准。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> numbers = [<span class="number">10</span>, <span class="number">5</span>, <span class="number">100</span>, <span class="number">2</span>, <span class="number">1000</span>]</span><br><span class="line">_.min(numbers)</span><br><span class="line"><span class="comment">// 2</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="2-4-对象相关方法"><a href="#2-4-对象相关方法" class="headerlink" title="2.4. 对象相关方法"></a>2.4. 对象相关方法</h2><h3 id="2-4-1-toArray"><a href="#2-4-1-toArray" class="headerlink" title="2.4.1. toArray"></a>2.4.1. toArray</h3><p>toArray 方法将对象转为数组，只包含对象成员的值。典型应用是将对类似数组的对象转为真正的数组。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">_.toArray(&#123; <span class="attr">a</span>: <span class="number">0</span>, <span class="attr">b</span>: <span class="number">1</span>, <span class="attr">c</span>: <span class="number">2</span> &#125;)</span><br><span class="line"><span class="comment">// [0, 1, 2]</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-4-2-pluck"><a href="#2-4-2-pluck" class="headerlink" title="2.4.2. pluck"></a>2.4.2. pluck</h3><p>pluck 方法将多个对象的某一个属性的值，提取成一个数组。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> person = [</span><br><span class="line">    &#123; <span class="attr">name</span>: <span class="string">'John'</span>, <span class="attr">age</span>: <span class="number">40</span> &#125;,</span><br><span class="line">    &#123; <span class="attr">name</span>: <span class="string">'larry'</span>, <span class="attr">age</span>: <span class="number">50</span> &#125;,</span><br><span class="line">    &#123; <span class="attr">name</span>: <span class="string">'curly'</span>, <span class="attr">age</span>: <span class="number">60</span> &#125;</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line">_.pluck(person, <span class="string">'name'</span>)</span><br><span class="line"><span class="comment">// ["moe", "larry", "curly"]</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="3-与函数相关的方法"><a href="#3-与函数相关的方法" class="headerlink" title="3. 与函数相关的方法"></a>3. 与函数相关的方法</h1><h2 id="3-1-绑定运行环境和参数"><a href="#3-1-绑定运行环境和参数" class="headerlink" title="3.1. 绑定运行环境和参数"></a>3.1. 绑定运行环境和参数</h2><p>在不同的运行环境下，JavaScript 函数内部的变量所在的上下文是不同的。这种特性会给程序带来不确定性，为了解决这个问题，Underscore.js 提供了两个方法，用来给函数绑定上下文。</p>
+<h3 id="3-1-1-bind-方法"><a href="#3-1-1-bind-方法" class="headerlink" title="3.1.1. bind 方法"></a>3.1.1. bind 方法</h3><p>该方法绑定函数运行时的上下文，返回一个新函数。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> o = &#123;</span><br><span class="line">    p: <span class="number">2</span>,</span><br><span class="line">    m: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="keyword">this</span>.p)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">o.m()</span><br><span class="line"><span class="comment">// 2</span></span><br><span class="line"></span><br><span class="line">_.bind(o.m, &#123; <span class="attr">p</span>: <span class="number">1</span> &#125;)()</span><br><span class="line"><span class="comment">// 1</span></span><br></pre></td></tr></table></figure>
+
+<p>上面代码将 o.m 方法绑定到一个新的对象上面。</p>
+<p>除了前两个参数以外，bind 方法还可以接受更多参数，它们表示函数方法运行时所需的参数。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> add = <span class="function"><span class="keyword">function</span>(<span class="params">n1, n2, n3</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="keyword">this</span>.sum + n1 + n2 + n3)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">_.bind(add, &#123; <span class="attr">sum</span>: <span class="number">1</span> &#125;, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>)()</span><br><span class="line"><span class="comment">// 4</span></span><br></pre></td></tr></table></figure>
+
+<p>上面代码中 bind 方法有 5 个参数，最后那三个是给定 add 方法的运行参数，所以运行结果为 4。</p>
+<h3 id="3-1-2-bindall-方法"><a href="#3-1-2-bindall-方法" class="headerlink" title="3.1.2. bindall 方法"></a>3.1.2. bindall 方法</h3><p>该方法可以一次将多个方法，绑定在某个对象上面。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> o = &#123;</span><br><span class="line">    p1: <span class="string">'123'</span>,</span><br><span class="line">    p2: <span class="string">'456'</span>,</span><br><span class="line">    m1: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="keyword">this</span>.p1)</span><br><span class="line">    &#125;,</span><br><span class="line">    m2: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="keyword">this</span>.p2)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">_.bindAll(o, <span class="string">'m1'</span>, <span class="string">'m2'</span>)</span><br></pre></td></tr></table></figure>
+
+<p>上面代码一次性将两个方法（m1 和 m2）绑定在 o 对象上面。</p>
+<h3 id="3-1-3-partial-方法"><a href="#3-1-3-partial-方法" class="headerlink" title="3.1.3. partial 方法"></a>3.1.3. partial 方法</h3><p>除了绑定上下文，Underscore.js 还允许绑定参数。partial 方法将函数与某个参数绑定，然后作为一个新函数返回。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> add = <span class="function"><span class="keyword">function</span>(<span class="params">a, b</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> a + b</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">add5 = _.partial(add, <span class="number">5</span>)</span><br><span class="line"></span><br><span class="line">add5(<span class="number">10</span>)</span><br><span class="line"><span class="comment">// 15</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="3-1-4-wrap-方法"><a href="#3-1-4-wrap-方法" class="headerlink" title="3.1.4. wrap 方法"></a>3.1.4. wrap 方法</h3><p>该方法将一个函数作为参数，传入另一个函数，最终返回前者的一个新版本。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> hello = <span class="function"><span class="keyword">function</span>(<span class="params">name</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">'hello: '</span> + name</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">hello = _.wrap(hello, <span class="function"><span class="keyword">function</span>(<span class="params">func</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">'before, '</span> + func(<span class="string">'moe'</span>) + <span class="string">', after'</span></span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">hello()</span><br><span class="line"><span class="comment">// 'before, hello: moe, after'</span></span><br></pre></td></tr></table></figure>
+
+<p>上面代码先定义 hello 函数，然后将 hello 传入一个匿名定义，返回一个新版本的 hello 函数。</p>
+<h3 id="3-1-5-compose-方法"><a href="#3-1-5-compose-方法" class="headerlink" title="3.1.5. compose 方法"></a>3.1.5. compose 方法</h3><p>该方法接受一系列函数作为参数，由后向前依次运行，上一个函数的运行结果，作为后一个函数的运行参数。也就是说，将 f(g(),h())的形式转化为 f(g(h()))。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> greet = <span class="function"><span class="keyword">function</span>(<span class="params">name</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">'hi: '</span> + name</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> exclaim = <span class="function"><span class="keyword">function</span>(<span class="params">statement</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> statement + <span class="string">'!'</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> welcome = _.compose(</span><br><span class="line">    exclaim,</span><br><span class="line">    greet</span><br><span class="line">)</span><br><span class="line">welcome(<span class="string">'moe'</span>)</span><br><span class="line"><span class="comment">// 'hi: moe!'</span></span><br></pre></td></tr></table></figure>
+
+<p>上面代码调用 welcome 时，先运行 greet 函数，再运行 exclaim 函数。并且，greet 函数的运行结果是 exclaim 函数运行时的参数。</p>
+<h2 id="3-2-函数运行控制"><a href="#3-2-函数运行控制" class="headerlink" title="3.2. 函数运行控制"></a>3.2. 函数运行控制</h2><p>Underscore.js 允许对函数运行行为进行控制。</p>
+<h3 id="3-2-1-memoize-方法"><a href="#3-2-1-memoize-方法" class="headerlink" title="3.2.1. memoize 方法"></a>3.2.1. memoize 方法</h3><p>该方法缓存一个函数针对某个参数的运行结果。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> fibonacci = _.memoize(<span class="function"><span class="keyword">function</span>(<span class="params">n</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> n &lt; <span class="number">2</span> ? n : fibonacci(n - <span class="number">1</span>) + fibonacci(n - <span class="number">2</span>)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-2-2-delay-方法"><a href="#3-2-2-delay-方法" class="headerlink" title="3.2.2. delay 方法"></a>3.2.2. delay 方法</h3><p>该方法可以将函数推迟指定的时间再运行。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> log = _.bind(<span class="built_in">console</span>.log, <span class="built_in">console</span>)</span><br><span class="line"></span><br><span class="line">_.delay(log, <span class="number">1000</span>, <span class="string">'logged later'</span>)</span><br><span class="line"><span class="comment">// 'logged later'</span></span><br></pre></td></tr></table></figure>
+
+<p>上面代码推迟 1000 毫秒，再运行 console.log 方法，并且指定参数为“logged later”。</p>
+<h3 id="3-2-3-defer-方法"><a href="#3-2-3-defer-方法" class="headerlink" title="3.2.3. defer 方法"></a>3.2.3. defer 方法</h3><p>该方法可以将函数推迟到待运行的任务数为 0 时再运行，类似于 setTimeout 推迟 0 秒运行的效果。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">_.defer(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    alert(<span class="string">'deferred'</span>)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-2-4-throttle-方法"><a href="#3-2-4-throttle-方法" class="headerlink" title="3.2.4. throttle 方法"></a>3.2.4. throttle 方法</h3><p>该方法返回一个函数的新版本。连续调用这个新版本的函数时，必须等待一定时间才会触发下一次执行。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 返回updatePosition函数的新版本</span></span><br><span class="line"><span class="keyword">var</span> throttled = _.throttle(updatePosition, <span class="number">100</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 新版本的函数每过100毫秒才会触发一次</span></span><br><span class="line">$(<span class="built_in">window</span>).scroll(throttled)</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-2-5-debounce-方法"><a href="#3-2-5-debounce-方法" class="headerlink" title="3.2.5. debounce 方法"></a>3.2.5. debounce 方法</h3><p>该方法返回的新函数有调用的时间限制，每次调用必须与上一次调用间隔一定的时间，否则就无效。它的典型应用是防止用户双击某个按钮，导致两次提交表单。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$(<span class="string">'button'</span>).on(<span class="string">'click'</span>, _.debounce(submitForm, <span class="number">1000</span>, <span class="literal">true</span>))</span><br></pre></td></tr></table></figure>
+
+<p>上面代码表示 click 事件发生后，调用函数 submitForm 的新版本。该版本的两次运行时间，必须间隔 1000 毫秒以上，否则第二次调用无效。最后那个参数 true，表示 click 事件发生后，立刻触发第一次 submitForm 函数，否则就是等 1000 毫秒再触发。</p>
+<h3 id="3-2-6-once-方法"><a href="#3-2-6-once-方法" class="headerlink" title="3.2.6. once 方法"></a>3.2.6. once 方法</h3><p>该方法返回一个只能运行一次的新函数。该方法主要用于对象的初始化。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> initialize = _.once(createApplication)</span><br><span class="line">initialize()</span><br><span class="line">initialize()</span><br><span class="line"><span class="comment">// Application只被创造一次</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="3-2-7-after-方法"><a href="#3-2-7-after-方法" class="headerlink" title="3.2.7. after 方法"></a>3.2.7. after 方法</h3><p>该方法返回的新版本函数，只有在被调用一定次数后才会运行，主要用于确认一组操作全部完成后，再做出反应。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> renderNotes = _.after(notes.length, render)</span><br><span class="line"></span><br><span class="line">_.each(notes, <span class="function"><span class="keyword">function</span>(<span class="params">note</span>) </span>&#123;</span><br><span class="line">    note.asyncSave(&#123; <span class="attr">success</span>: renderNotes &#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>上面代码表示，函数 renderNotes 是函数 render 的新版本，只有调用 notes.length 次以后才会运行。所以，后面就可以放心地等到 notes 的每个成员都处理完，才会运行一次 renderNotes。</p>
+<h1 id="4-工具方法"><a href="#4-工具方法" class="headerlink" title="4. 工具方法"></a>4. 工具方法</h1><h2 id="4-1-链式操作"><a href="#4-1-链式操作" class="headerlink" title="4.1. 链式操作"></a>4.1. 链式操作</h2><p>Underscore.js 允许将多个操作写成链式的形式。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">_.(users)</span><br><span class="line">.filter(<span class="function"><span class="keyword">function</span>(<span class="params">user</span>) </span>&#123; <span class="keyword">return</span> user.name === name &#125;)</span><br><span class="line">.sortBy(<span class="function"><span class="keyword">function</span>(<span class="params">user</span>) </span>&#123; <span class="keyword">return</span> user.karma &#125;)</span><br><span class="line">.first()</span><br><span class="line">.value()</span><br></pre></td></tr></table></figure>
+
+<h2 id="4-2-template"><a href="#4-2-template" class="headerlink" title="4.2. template"></a>4.2. template</h2><p>该方法用于编译 HTML 模板。它接受三个参数。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">_.template(templateString, [data], [settings])</span><br></pre></td></tr></table></figure>
+
+<p>三个参数的含义如下：</p>
+<ul>
+<li>templateString：模板字符串</li>
+<li>data：输入模板的数据</li>
+<li>settings：设置</li>
+</ul>
+<h3 id="4-2-1-templateString"><a href="#4-2-1-templateString" class="headerlink" title="4.2.1. templateString"></a>4.2.1. templateString</h3><p>模板字符串 templateString 就是普通的 HTML 语言，其中的变量使用&lt;%= … %&gt;的形式插入；data 对象负责提供变量的值。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> txt = <span class="string">'&lt;h2&gt;&lt;%= word %&gt;&lt;/h2&gt;'</span></span><br><span class="line"></span><br><span class="line">_.template(txt, &#123; <span class="attr">word</span>: <span class="string">'Hello World'</span> &#125;)</span><br><span class="line"><span class="comment">// "&lt;h2&gt;Hello World&lt;/h2&gt;"</span></span><br></pre></td></tr></table></figure>
+
+<p>如果变量的值包含五个特殊字符（&amp; &lt; &gt; “ ‘ /），就需要用&lt;%- … %&gt;转义。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> txt = <span class="string">'&lt;h2&gt;&lt;%- word %&gt;&lt;/h2&gt;'</span></span><br><span class="line"></span><br><span class="line">_.template(txt, &#123; <span class="attr">word</span>: <span class="string">'H &amp; W'</span> &#125;)</span><br><span class="line"><span class="comment">// &lt;h2&gt;H &amp;amp; W&lt;/h2&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>JavaScript 命令可以采用&lt;% … %&gt;的形式插入。下面是判断语句的例子。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> txt = <span class="string">'&lt;% var i = 0; if (i&lt;1)&#123; %&gt;'</span> + <span class="string">'&lt;%= word %&gt;'</span> + <span class="string">'&lt;% &#125; %&gt;'</span></span><br><span class="line"></span><br><span class="line">_.template(txt, &#123; <span class="attr">word</span>: <span class="string">'Hello World'</span> &#125;)</span><br><span class="line"><span class="comment">// Hello World</span></span><br></pre></td></tr></table></figure>
+
+<p>常见的用法还有循环语句。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> list =</span><br><span class="line">    <span class="string">'&lt;% _.each(people, function(name) &#123; %&gt; &lt;li&gt;&lt;%= name %&gt;&lt;/li&gt; &lt;% &#125;); %&gt;'</span></span><br><span class="line"></span><br><span class="line">_.template(list, &#123; <span class="attr">people</span>: [<span class="string">'moe'</span>, <span class="string">'curly'</span>, <span class="string">'larry'</span>] &#125;)</span><br><span class="line"><span class="comment">// "&lt;li&gt;moe&lt;/li&gt;&lt;li&gt;curly&lt;/li&gt;&lt;li&gt;larry&lt;/li&gt;"</span></span><br></pre></td></tr></table></figure>
+
+<p>如果 template 方法只有第一个参数 templateString，省略第二个参数，那么会返回一个函数，以后可以向这个函数输入数据。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> t1 = _.template(<span class="string">'Hello &lt;%=user%&gt;!'</span>)</span><br><span class="line"></span><br><span class="line">t1(&#123; <span class="attr">user</span>: <span class="string">'&lt;Jane&gt;'</span> &#125;)</span><br><span class="line"><span class="comment">// 'Hello &lt;Jane&gt;!'</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="4-2-2-data"><a href="#4-2-2-data" class="headerlink" title="4.2.2. data"></a>4.2.2. data</h3><p>templateString 中的所有变量，在内部都是 obj 对象的属性，而 obj 对象就是指第二个参数 data 对象。下面两句语句是等同的。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">_.template(<span class="string">'Hello &lt;%=user%&gt;!'</span>, &#123; <span class="attr">user</span>: <span class="string">'&lt;Jane&gt;'</span> &#125;)</span><br><span class="line">_.template(<span class="string">'Hello &lt;%=obj.user%&gt;!'</span>, &#123; <span class="attr">user</span>: <span class="string">'&lt;Jane&gt;'</span> &#125;)</span><br></pre></td></tr></table></figure>
+
+<p>如果要改变 obj 这个对象的名字，需要在第三个参数中设定。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">_.template(<span class="string">'&lt;%if (data.title) &#123; %&gt;Title: &lt;%= title %&gt;&lt;% &#125; %&gt;'</span>, <span class="literal">null</span>, &#123;</span><br><span class="line">    variable: <span class="string">'data'</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>因为 template 在变量替换时，内部使用 with 语句，所以上面这样的做法，运行速度会比较快。</p>
+<h1 id="5-参考链接"><a href="#5-参考链接" class="headerlink" title="5. 参考链接"></a>5. 参考链接</h1><ul>
+<li>Amy Lee, <a href="http://eng.wealthfront.com/2012/12/using-underscorejss-debounce-to-filter.html" target="_blank" rel="noopener">Using Underscore.js’s debounce() to filter double-clicks</a></li>
+<li>Axel Rauschmayer, <a href="http://www.2ality.com/2012/06/underscore-templates.html" target="_blank" rel="noopener">A closer look at Underscore templates</a></li>
+<li>Jules Boussekeyt, <a href="http://jules.boussekeyt.org/2012/underscorejs.html" target="_blank" rel="noopener">Write concise code with UnderscoreJS</a></li>
+</ul>
+<blockquote>
+<p>使用示例请阅读<a href="http://www.cnblogs.com/52fhy/p/4823377.html" target="_blank" rel="noopener">Underscore.js 使用</a></p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/underscore/" rel="tag"># underscore</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/09/13/aspnet/asp-net-%E4%BD%BF%E7%94%A8%E5%B0%8F%E8%AE%A1/" rel="prev" title="asp.net 使用小计">
+      <i class="fa fa-chevron-left"></i> asp.net 使用小计
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/09/13/markdown/markdown-%E4%BD%BF%E7%94%A8%E5%B0%8F%E8%AE%A1/" rel="next" title="markdown 使用小计">
+      markdown 使用小计 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-概述"><span class="nav-number">1.</span> <span class="nav-text">1. 概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-集合相关方法"><span class="nav-number">2.</span> <span class="nav-text">2. 集合相关方法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-集合处理"><span class="nav-number">2.1.</span> <span class="nav-text">2.1. 集合处理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-1-map"><span class="nav-number">2.1.1.</span> <span class="nav-text">2.1.1. map</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-2-each"><span class="nav-number">2.1.2.</span> <span class="nav-text">2.1.2. each</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-3-reduce"><span class="nav-number">2.1.3.</span> <span class="nav-text">2.1.3. reduce</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-4-reduceRight"><span class="nav-number">2.1.4.</span> <span class="nav-text">2.1.4. reduceRight</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-5-shuffle"><span class="nav-number">2.1.5.</span> <span class="nav-text">2.1.5. shuffle</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-6-invoke"><span class="nav-number">2.1.6.</span> <span class="nav-text">2.1.6. invoke</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-7-sortBy"><span class="nav-number">2.1.7.</span> <span class="nav-text">2.1.7. sortBy</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-8-indexBy"><span class="nav-number">2.1.8.</span> <span class="nav-text">2.1.8. indexBy</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-集合特征"><span class="nav-number">2.2.</span> <span class="nav-text">2.2. 集合特征</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-1-every"><span class="nav-number">2.2.1.</span> <span class="nav-text">2.2.1. every</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-2-some"><span class="nav-number">2.2.2.</span> <span class="nav-text">2.2.2. some</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-3-size"><span class="nav-number">2.2.3.</span> <span class="nav-text">2.2.3. size</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-4-sample"><span class="nav-number">2.2.4.</span> <span class="nav-text">2.2.4. sample</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-集合过滤"><span class="nav-number">2.3.</span> <span class="nav-text">2.3. 集合过滤</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-1-filter"><span class="nav-number">2.3.1.</span> <span class="nav-text">2.3.1. filter</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-2-reject"><span class="nav-number">2.3.2.</span> <span class="nav-text">2.3.2. reject</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-3-find"><span class="nav-number">2.3.3.</span> <span class="nav-text">2.3.3. find</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-4-contains"><span class="nav-number">2.3.4.</span> <span class="nav-text">2.3.4. contains</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-5-countBy"><span class="nav-number">2.3.5.</span> <span class="nav-text">2.3.5. countBy</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-6-where"><span class="nav-number">2.3.6.</span> <span class="nav-text">2.3.6. where</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-7-max，min"><span class="nav-number">2.3.7.</span> <span class="nav-text">2.3.7. max，min</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-4-对象相关方法"><span class="nav-number">2.4.</span> <span class="nav-text">2.4. 对象相关方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-1-toArray"><span class="nav-number">2.4.1.</span> <span class="nav-text">2.4.1. toArray</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-2-pluck"><span class="nav-number">2.4.2.</span> <span class="nav-text">2.4.2. pluck</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-与函数相关的方法"><span class="nav-number">3.</span> <span class="nav-text">3. 与函数相关的方法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-绑定运行环境和参数"><span class="nav-number">3.1.</span> <span class="nav-text">3.1. 绑定运行环境和参数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-1-bind-方法"><span class="nav-number">3.1.1.</span> <span class="nav-text">3.1.1. bind 方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-2-bindall-方法"><span class="nav-number">3.1.2.</span> <span class="nav-text">3.1.2. bindall 方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-3-partial-方法"><span class="nav-number">3.1.3.</span> <span class="nav-text">3.1.3. partial 方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-4-wrap-方法"><span class="nav-number">3.1.4.</span> <span class="nav-text">3.1.4. wrap 方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-5-compose-方法"><span class="nav-number">3.1.5.</span> <span class="nav-text">3.1.5. compose 方法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-函数运行控制"><span class="nav-number">3.2.</span> <span class="nav-text">3.2. 函数运行控制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-1-memoize-方法"><span class="nav-number">3.2.1.</span> <span class="nav-text">3.2.1. memoize 方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-2-delay-方法"><span class="nav-number">3.2.2.</span> <span class="nav-text">3.2.2. delay 方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-3-defer-方法"><span class="nav-number">3.2.3.</span> <span class="nav-text">3.2.3. defer 方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-4-throttle-方法"><span class="nav-number">3.2.4.</span> <span class="nav-text">3.2.4. throttle 方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-5-debounce-方法"><span class="nav-number">3.2.5.</span> <span class="nav-text">3.2.5. debounce 方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-6-once-方法"><span class="nav-number">3.2.6.</span> <span class="nav-text">3.2.6. once 方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-7-after-方法"><span class="nav-number">3.2.7.</span> <span class="nav-text">3.2.7. after 方法</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-工具方法"><span class="nav-number">4.</span> <span class="nav-text">4. 工具方法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#4-1-链式操作"><span class="nav-number">4.1.</span> <span class="nav-text">4.1. 链式操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-2-template"><span class="nav-number">4.2.</span> <span class="nav-text">4.2. template</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-1-templateString"><span class="nav-number">4.2.1.</span> <span class="nav-text">4.2.1. templateString</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-2-data"><span class="nav-number">4.2.2.</span> <span class="nav-text">4.2.2. data</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-参考链接"><span class="nav-number">5.</span> <span class="nav-text">5. 参考链接</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Andy Ge</p>
+  <div class="site-description" itemprop="description">勇于积极进取，步入人生的世外桃源</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">728</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">134</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">315</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/andyge" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;andyge" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:geshaofei@126.com" title="E-Mail → mailto:geshaofei@126.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.ruanyifeng.com/" title="http:&#x2F;&#x2F;www.ruanyifeng.com&#x2F;" rel="noopener" target="_blank">阮一峰</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://colobu.com/" title="http:&#x2F;&#x2F;colobu.com&#x2F;" rel="noopener" target="_blank">鸟窝</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.cnblogs.com/hellokuangshen/" title="https:&#x2F;&#x2F;www.cnblogs.com&#x2F;hellokuangshen&#x2F;" rel="noopener" target="_blank">狂神</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://yelog.org/" title="https:&#x2F;&#x2F;yelog.org&#x2F;" rel="noopener" target="_blank">叶落阁</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Andy Ge</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.7.1
+  </div>
+
+        
+
+
+
+
+
+
+  <script>
+  function leancloudSelector(url) {
+    url = encodeURI(url);
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.getAttribute('id'));
+      var title = visitors.getAttribute('data-flag-title');
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .then(() => {
+                leancloudSelector(url).innerText = counter.time + 1;
+              })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              })
+          } else {
+              Counter('post', '/classes/Counter', { title: title, url: url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.getAttribute('id'));
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (let item of results) {
+            let { url, time } = item;
+            leancloudSelector(url).innerText = time;
+          }
+          for (let url of entries) {
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=2TdIb5gRlAVUw24l2W0zWnCj-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method: method,
+          headers: {
+            'X-LC-Id'     : '2TdIb5gRlAVUw24l2W0zWnCj-gzGzoHsz',
+            'X-LC-Key'    : 'cJdJrMLBXsj0ttq0WsL0aA2j',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

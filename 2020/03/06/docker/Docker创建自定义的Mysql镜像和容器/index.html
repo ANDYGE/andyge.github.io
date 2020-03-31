@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"swiftist.cn","root":"/","scheme":"Pisces","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"EVBR3H53HW","apiKey":"2abd573a01143a0cc4108fa4d21ae67c","indexName":"swiftist","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="一、编写配置文件准备1.准备创建数据的脚本文件本实例准备了一个创建数据的脚本文件，包含了创建表，没有初始化数据的内容。  脚本名称：aa.sql 脚本内容：  12345678910111213CREATE DATABASE IF NOT EXISTS &#96;dev_yxywg&#96;;USE &#96;dev_yxywg&#96;;DROP TABLE IF EXISTS &#96;aa&#96;;CREATE TABLE &#96;aa&#96; (">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Docker创建自定义的Mysql镜像和容器">
+<meta property="og:url" content="https://swiftist.cn/2020/03/06/docker/Docker%E5%88%9B%E5%BB%BA%E8%87%AA%E5%AE%9A%E4%B9%89%E7%9A%84Mysql%E9%95%9C%E5%83%8F%E5%92%8C%E5%AE%B9%E5%99%A8/index.html">
+<meta property="og:site_name" content="飞雪轩辕">
+<meta property="og:description" content="一、编写配置文件准备1.准备创建数据的脚本文件本实例准备了一个创建数据的脚本文件，包含了创建表，没有初始化数据的内容。  脚本名称：aa.sql 脚本内容：  12345678910111213CREATE DATABASE IF NOT EXISTS &#96;dev_yxywg&#96;;USE &#96;dev_yxywg&#96;;DROP TABLE IF EXISTS &#96;aa&#96;;CREATE TABLE &#96;aa&#96; (">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-03-05T23:15:51.000Z">
+<meta property="article:modified_time" content="2020-03-31T15:07:39.332Z">
+<meta property="article:author" content="Andy Ge">
+<meta property="article:tag" content="docker">
+<meta property="article:tag" content="mysql">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://swiftist.cn/2020/03/06/docker/Docker%E5%88%9B%E5%BB%BA%E8%87%AA%E5%AE%9A%E4%B9%89%E7%9A%84Mysql%E9%95%9C%E5%83%8F%E5%92%8C%E5%AE%B9%E5%99%A8/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>Docker创建自定义的Mysql镜像和容器 | 飞雪轩辕</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="飞雪轩辕" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">飞雪轩辕</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">人生的乐趣在于把梦想变成现实</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-java">
+
+    <a href="/categories/java/" rel="section"><i class="fa fa-fw fa-th-large"></i>java</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://swiftist.cn/2020/03/06/docker/Docker%E5%88%9B%E5%BB%BA%E8%87%AA%E5%AE%9A%E4%B9%89%E7%9A%84Mysql%E9%95%9C%E5%83%8F%E5%92%8C%E5%AE%B9%E5%99%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Andy Ge">
+      <meta itemprop="description" content="勇于积极进取，步入人生的世外桃源">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="飞雪轩辕">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Docker创建自定义的Mysql镜像和容器
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-06 07:15:51" itemprop="dateCreated datePublished" datetime="2020-03-06T07:15:51+08:00">2020-03-06</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-31 23:07:39" itemprop="dateModified" datetime="2020-03-31T23:07:39+08:00">2020-03-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/docker/" itemprop="url" rel="index">
+                    <span itemprop="name">docker</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/03/06/docker/Docker%E5%88%9B%E5%BB%BA%E8%87%AA%E5%AE%9A%E4%B9%89%E7%9A%84Mysql%E9%95%9C%E5%83%8F%E5%92%8C%E5%AE%B9%E5%99%A8/" class="post-meta-item leancloud_visitors" data-flag-title="Docker创建自定义的Mysql镜像和容器" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="一、编写配置文件准备"><a href="#一、编写配置文件准备" class="headerlink" title="一、编写配置文件准备"></a>一、编写配置文件准备</h2><h3 id="1-准备创建数据的脚本文件"><a href="#1-准备创建数据的脚本文件" class="headerlink" title="1.准备创建数据的脚本文件"></a>1.准备创建数据的脚本文件</h3><p>本实例准备了一个创建数据的脚本文件，包含了创建表，没有初始化数据的内容。</p>
+<ul>
+<li>脚本名称：aa.sql</li>
+<li>脚本内容：</li>
+</ul>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">CREATE DATABASE IF NOT EXISTS `dev_yxywg`;</span><br><span class="line">USE `dev_yxywg`;</span><br><span class="line">DROP TABLE IF EXISTS `aa`;</span><br><span class="line">CREATE TABLE `aa` (</span><br><span class="line">  `sync_pk` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL ,</span><br><span class="line">  `hos_code` varchar(64) COLLATE utf8mb4_unicode_ci DEFAULT NULL ,</span><br><span class="line">  `create_time` varchar(19) COLLATE utf8mb4_unicode_ci DEFAULT NULL ,</span><br><span class="line">  `study_iuid` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL ,</span><br><span class="line">  `study_content` mediumtext COLLATE utf8mb4_unicode_ci ,</span><br><span class="line">  `study_state` int(255) DEFAULT NULL</span><br><span class="line">  `remark` varchar(1024) COLLATE utf8mb4_unicode_ci DEFAULT NULL ,</span><br><span class="line">  PRIMARY KEY (`sync_pk`)</span><br><span class="line">) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-编写一个-Shell-脚本"><a href="#2-编写一个-Shell-脚本" class="headerlink" title="2.编写一个 Shell 脚本"></a>2.编写一个 Shell 脚本</h3><p>这个脚本主要实现初始化创建数据库，表结构 SQL 文件的读取</p>
+<ul>
+<li>脚本名称：install_data.sh</li>
+<li>脚本内容：</li>
+</ul>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line">mysql -uroot -p<span class="variable">$MYSQL_ROOT_PASSWORD</span> &lt;&lt;EOF</span><br><span class="line"><span class="built_in">source</span> <span class="variable">$WORK_PATH</span>/<span class="variable">$FILE_0</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-编写构造镜像的-Dockerfile"><a href="#3-编写构造镜像的-Dockerfile" class="headerlink" title="3.编写构造镜像的 Dockerfile"></a>3.编写构造镜像的 Dockerfile</h3><p>-文件名称：Dockerfile<br>-文件内容：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"># Docker image of image-gateway mariaDB</span><br><span class="line"># VERSION 0.0.1</span><br><span class="line"># Author: zhangyongliang</span><br><span class="line"></span><br><span class="line">#基础镜像使用mariaDB最新版</span><br><span class="line">FROM mariadb:latest</span><br><span class="line"></span><br><span class="line">#作者</span><br><span class="line">MAINTAINER ZhangYongliang &lt;zhangyongliang1231@163.com&gt;</span><br><span class="line"></span><br><span class="line">#定义工作目录</span><br><span class="line">ENV WORK_PATH &#x2F;usr&#x2F;local&#x2F;work</span><br><span class="line"></span><br><span class="line">#定义会被容器自动执行的目录</span><br><span class="line">ENV AUTO_RUN_DIR &#x2F;docker-entrypoint-initdb.d</span><br><span class="line"></span><br><span class="line">#定义sql文件名</span><br><span class="line">ENV FILE_0 aa.sql</span><br><span class="line"></span><br><span class="line">#定义shell文件名</span><br><span class="line">ENV INSTALL_DATA_SHELL install_data.sh</span><br><span class="line"></span><br><span class="line">#创建文件夹</span><br><span class="line">RUN mkdir -p $WORK_PATH</span><br><span class="line"></span><br><span class="line">#把数据库初始化数据的文件复制到工作目录下</span><br><span class="line">COPY .&#x2F;$FILE_0 $WORK_PATH&#x2F;</span><br><span class="line"></span><br><span class="line">#把要执行的shell文件放到&#x2F;docker-entrypoint-initdb.d&#x2F;目录下，容器会自动执行这个shell</span><br><span class="line">COPY .&#x2F;$INSTALL_DATA_SHELL $AUTO_RUN_DIR&#x2F;</span><br><span class="line"></span><br><span class="line">#给执行文件增加可执行权限</span><br><span class="line">RUN chmod a+x $AUTO_RUN_DIR&#x2F;$INSTALL_DATA_SHELL</span><br></pre></td></tr></table></figure>
+
+<h2 id="二、-构造镜像"><a href="#二、-构造镜像" class="headerlink" title="二、 构造镜像"></a>二、 构造镜像</h2><h3 id="1-执行构造镜像"><a href="#1-执行构造镜像" class="headerlink" title="1.执行构造镜像"></a>1.执行构造镜像</h3><p>将上述的文件上传到具有 Docker 服务的服务器，定位到上传目录下执行如下命令：<br>命令如下：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker build -t gatewaydb:0.0.1 .</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>TIPS:<br>上述命令：0.0.1 后面有一个空格，空格后面有个点号，注意书写格式，否则构建不成功，<br>gatewaydb 是你构建后的命名名称，可自定义</p>
+</blockquote>
+<p>看到 SuccessFully，则表明你的镜像构建成功。</p>
+<h2 id="三、容器检查"><a href="#三、容器检查" class="headerlink" title="三、容器检查"></a>三、容器检查</h2><h3 id="1-启动容器"><a href="#1-启动容器" class="headerlink" title="1.启动容器"></a>1.启动容器</h3><p>执行如下命令，启动容器：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run --name imagedb -p 3307:3306 -e MYSQL_ROOT_PASSWORD=123456 -idt gatewaydb:0.0.1 --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-查看容器执行日志"><a href="#2-查看容器执行日志" class="headerlink" title="2.查看容器执行日志"></a>2.查看容器执行日志</h3><p>使用以下命令来查看容器是否启动，是否执行了数据库初始化的脚本</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker logs -f imagedb</span><br></pre></td></tr></table></figure>
+
+<p><strong>imagedb 为你的新建的容器名称</strong></p>
+<p>如果看到实时打印日志显示：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">/usr/<span class="built_in">local</span>/bin/docker-entrypoint.sh: running /docker-entrypoint-initdb.d/install_data.sh</span><br><span class="line">/docker-entrypoint-initdb.d/install_data.sh: line 3: warning: here-document at line 2 delimited by end-of-file (wanted `EOF<span class="string">')</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">2018-11-20 11:58:45 0 [Note] mysqld (initiated by: unknown): Normal shutdown</span></span><br><span class="line"><span class="string">2018-11-20 11:58:45 0 [Note] Event Scheduler: Purging the queue. 0 events</span></span><br><span class="line"><span class="string">2018-11-20 11:58:45 0 [Note] InnoDB: FTS optimize thread exiting.</span></span><br><span class="line"><span class="string">2018-11-20 11:58:45 0 [Note] InnoDB: Starting shutdown...</span></span><br><span class="line"><span class="string">2018-11-20 11:58:45 0 [Note] InnoDB: Dumping buffer pool(s) to /var/lib/mysql/ib_buffer_pool</span></span><br><span class="line"><span class="string">2018-11-20 11:58:45 0 [Note] InnoDB: Buffer pool(s) dump completed at 181120 11:58:45</span></span><br><span class="line"><span class="string">2018-11-20 11:58:47 0 [Note] InnoDB: Shutdown completed; log sequence number 1711647; transaction id 78</span></span><br><span class="line"><span class="string">2018-11-20 11:58:47 0 [Note] InnoDB: Removed temporary tablespace data file: "ibtmp1"</span></span><br><span class="line"><span class="string">2018-11-20 11:58:47 0 [Note] mysqld: Shutdown complete</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">MySQL init process done. Ready for start up.</span></span><br></pre></td></tr></table></figure>
+
+<p>则表明你的数据库脚本被正确执行且初始化完成了数据库的创建</p>
+<h3 id="3-进入容器数据库查看库表建立情况"><a href="#3-进入容器数据库查看库表建立情况" class="headerlink" title="3.进入容器数据库查看库表建立情况"></a>3.进入容器数据库查看库表建立情况</h3><ul>
+<li>使用以下命令进入容器</li>
+</ul>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker <span class="built_in">exec</span> -it imagedb /bin/bash</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>进入容器后，登录数据库：</li>
+</ul>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">root@d13ef2b2d18e:/<span class="comment"># mysql -uroot -p</span></span><br><span class="line">Enter password:</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>查看数据库初始化情况</li>
+</ul>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">MariaDB [(none)]&gt; show databases;</span><br><span class="line">+--------------------+</span><br><span class="line">| Database           |</span><br><span class="line">+--------------------+</span><br><span class="line">| dev_yxywg          |</span><br><span class="line">| information_schema |</span><br><span class="line">| mysql              |</span><br><span class="line">| performance_schema |</span><br><span class="line">+--------------------+</span><br><span class="line">4 rows <span class="keyword">in</span> <span class="built_in">set</span> (0.000 sec)</span><br><span class="line"></span><br><span class="line">MariaDB [(none)]&gt; use dev_yxywg</span><br><span class="line">Reading table information <span class="keyword">for</span> completion of table and column names</span><br><span class="line">You can turn off this feature to get a quicker startup with -A</span><br><span class="line"></span><br><span class="line">Database changed</span><br><span class="line">MariaDB [dev_yxywg]&gt; show tables;</span><br><span class="line">+---------------------+</span><br><span class="line">| Tables_in_dev_yxywg |</span><br><span class="line">+---------------------+</span><br><span class="line">| aa   |</span><br><span class="line">+---------------------+</span><br><span class="line">1 rows <span class="keyword">in</span> <span class="built_in">set</span> (0.001 sec)</span><br><span class="line"></span><br><span class="line">MariaDB [dev_yxywg]&gt;</span><br></pre></td></tr></table></figure>
+
+<p>可以看到数据已经在容器建立就完成了数据库的初始化。</p>
+<h2 id="四、-镜像仓库管理"><a href="#四、-镜像仓库管理" class="headerlink" title="四、 镜像仓库管理"></a>四、 镜像仓库管理</h2><h3 id="1-安装-Jq"><a href="#1-安装-Jq" class="headerlink" title="1.安装 Jq"></a>1.安装 Jq</h3><p>jq 为 json 格式化工具，添加 epel 源</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">wget http://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm</span><br><span class="line"></span><br><span class="line">rpm -ivh epel-release-latest-7.noarch.rpm</span><br><span class="line"></span><br><span class="line">yum repolist</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-安装-jq"><a href="#2-安装-jq" class="headerlink" title="2.安装 jq"></a>2.安装 jq</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install jq</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-编写镜像管理脚本"><a href="#3-编写镜像管理脚本" class="headerlink" title="3.编写镜像管理脚本"></a>3.编写镜像管理脚本</h3><p>编写一个 shell 脚本用于镜像管理</p>
+<p>脚本名称：img_registry.sh</p>
+<p>脚本内容：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"><span class="comment">#cnetos7,docker-ce v17.12.0,registry v2.6.2</span></span><br><span class="line"><span class="comment">#Docker registry 私有仓库镜像查询、删除、上传、下载</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#Author  Elven &lt;elven89@qq.com&gt;</span></span><br><span class="line"><span class="comment">#Blog    http://www.cnblogs.com/elvi/p/8384675.html</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#root</span></span><br><span class="line">[[ <span class="variable">$UID</span> -ne 0 ]] &amp;&amp; &#123; <span class="built_in">echo</span> <span class="string">"Run in root user !"</span>;<span class="built_in">exit</span>; &#125;</span><br><span class="line"><span class="comment">#need jq ,get json data</span></span><br><span class="line">[[ -f /usr/bin/jq ]] || &#123; <span class="built_in">echo</span> <span class="string">'install jq'</span>;yum install -y jq &amp;&gt;/dev/null; &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">#参数 variable</span></span><br><span class="line"><span class="comment">#registry容器名称,默认registry</span></span><br><span class="line">RN=<span class="variable">$&#123;RN:-registry&#125;</span></span><br><span class="line"><span class="comment">#访问网址,默认localhost:5000  请修改HUB信息为私有残仓库IP</span></span><br><span class="line">HUB=<span class="variable">$&#123;HUB:-localhost:5000&#125;</span></span><br><span class="line">HUB=10.18.33.90:5000</span><br><span class="line"></span><br><span class="line"><span class="comment">#检测 check</span></span><br><span class="line"><span class="keyword">function</span> <span class="function"><span class="title">Check_hub</span></span>() &#123;</span><br><span class="line">[[ `curl -s <span class="variable">$HUB</span>/v2/_catalog` == <span class="string">"Failed connect"</span> ]] &amp;&amp; &#123; <span class="built_in">echo</span> -e <span class="string">"\033[31m<span class="variable">$HUB</span> 访问失败\033[0m"</span>;<span class="built_in">exit</span>;  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">#查询images</span></span><br><span class="line"><span class="keyword">function</span> <span class="function"><span class="title">Select_img</span></span>() &#123;</span><br><span class="line">IMG=$(curl -s <span class="variable">$HUB</span>/v2/_catalog |jq .repositories |awk -F<span class="string">'"'</span> <span class="string">'&#123;for(i=1;i&lt;=NF;i+=2)$i=""&#125;&#123;print $0&#125;'</span>)</span><br><span class="line">[[ <span class="variable">$IMG</span> = <span class="string">""</span> ]] &amp;&amp; &#123; <span class="built_in">echo</span> -e <span class="string">"\033[31m<span class="variable">$HUB</span> 没有docker镜像\033[0m"</span>;<span class="built_in">exit</span>; &#125;</span><br><span class="line"><span class="comment">#echo "$HUB Docker镜像："</span></span><br><span class="line"><span class="keyword">for</span> n <span class="keyword">in</span> <span class="variable">$IMG</span>;</span><br><span class="line">  <span class="keyword">do</span></span><br><span class="line">  TAG=$(curl -s http://<span class="variable">$HUB</span>/v2/<span class="variable">$n</span>/tags/list |jq .tags |awk -F<span class="string">'"'</span> <span class="string">'&#123;for(i=1;i&lt;=NF;i+=2)$i=""&#125;&#123;print $0&#125;'</span>)</span><br><span class="line">    <span class="keyword">for</span> t <span class="keyword">in</span> <span class="variable">$TAG</span>;</span><br><span class="line">    <span class="keyword">do</span></span><br><span class="line">      <span class="built_in">echo</span> <span class="string">"<span class="variable">$n</span>:<span class="variable">$t</span>"</span>;</span><br><span class="line">    <span class="keyword">done</span></span><br><span class="line"><span class="keyword">done</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">#删除images</span></span><br><span class="line"><span class="keyword">function</span> <span class="function"><span class="title">Delete_img</span></span>() &#123;</span><br><span class="line"><span class="keyword">for</span> n <span class="keyword">in</span> <span class="variable">$IMGS</span>;</span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">  IMG=<span class="variable">$&#123;n%%:*&#125;</span></span><br><span class="line">  TAG=<span class="variable">$&#123;n##*:&#125;</span></span><br><span class="line">  i=1</span><br><span class="line">  [[ <span class="string">"<span class="variable">$IMG</span>"</span> == <span class="string">"<span class="variable">$TAG</span>"</span> ]] &amp;&amp; &#123; TAG=latest; n=<span class="string">"<span class="variable">$n</span>:latest"</span>; &#125;</span><br><span class="line">  Digest=`curl  --header <span class="string">"Accept: application/vnd.docker.distribution.manifest.v2+json"</span> -Is  <span class="variable">$&#123;HUB&#125;</span>/v2/<span class="variable">$&#123;IMG&#125;</span>/manifests/<span class="variable">$&#123;TAG&#125;</span> |awk <span class="string">'/Digest/ &#123;print $NF&#125;'</span>`</span><br><span class="line">  [[ -z <span class="string">"<span class="variable">$Digest</span>"</span> ]] &amp;&amp; &#123; <span class="built_in">echo</span> -e <span class="string">"\033[31m<span class="variable">$IMG</span>:<span class="variable">$TAG</span>  镜像不存在\033[0m"</span>;&#125; || &#123;</span><br><span class="line">    URL=<span class="string">"<span class="variable">$&#123;HUB&#125;</span>/v2/<span class="variable">$&#123;IMG&#125;</span>/manifests/<span class="variable">$&#123;Digest&#125;</span>"</span></span><br><span class="line">    Rs=$(curl -Is -X DELETE <span class="variable">$&#123;URL%?&#125;</span>|awk <span class="string">'/HTTP/ &#123;print $2&#125;'</span>)</span><br><span class="line">    [[ <span class="variable">$Rs</span> -eq 202 ]] &amp;&amp; &#123; <span class="built_in">let</span> i++;<span class="built_in">echo</span> <span class="string">"<span class="variable">$n</span>  删除成功"</span>; &#125; || &#123; <span class="built_in">echo</span> -e <span class="string">"\033[31m<span class="variable">$n</span>  删除失败\033[0m"</span>; &#125; &#125;</span><br><span class="line"><span class="keyword">done</span></span><br><span class="line"><span class="comment">#registry垃圾回收 RN=registry</span></span><br><span class="line">[[ <span class="string">"<span class="variable">$i</span>"</span> -gt 1 ]] &amp;&amp; &#123; <span class="built_in">echo</span> <span class="string">"Clean..."</span>;docker <span class="built_in">exec</span> <span class="variable">$&#123;RN&#125;</span> /bin/registry garbage-collect /etc/docker/registry/config.yml &amp;&gt;/dev/null;docker restart <span class="variable">$&#123;RN&#125;</span> &amp;&gt;/dev/null; &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">#删除镜像所在目录(清除所有 -dd .* )</span></span><br><span class="line"><span class="comment">#简单高效,删库跑路，必备技能</span></span><br><span class="line"><span class="keyword">function</span> <span class="function"><span class="title">Delete_img_a</span></span>() &#123;</span><br><span class="line">[[ -f /usr/bin/docker ]] || <span class="built_in">echo</span> <span class="string">'No docker !'</span></span><br><span class="line">[[ -z $(docker ps |awk <span class="string">'/'</span><span class="variable">$RN</span><span class="string">'/ &#123;print $NF&#125;'</span>) ]] &amp;&amp; &#123; <span class="built_in">echo</span> <span class="string">"<span class="variable">$RN</span>容器不存在!"</span>;<span class="built_in">exit</span>; &#125;</span><br><span class="line"><span class="keyword">for</span> n <span class="keyword">in</span> <span class="variable">$IMGS</span>;</span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">  IMG=<span class="string">"<span class="variable">$&#123;n%%:*&#125;</span>"</span></span><br><span class="line">  docker <span class="built_in">exec</span> <span class="variable">$RN</span> rm -rf /var/lib/registry/docker/registry/v2/repositories/<span class="variable">$IMG</span></span><br><span class="line"><span class="keyword">done</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">'清理 Clean ...'</span></span><br><span class="line">docker <span class="built_in">exec</span> <span class="variable">$RN</span> bin/registry garbage-collect /etc/docker/registry/config.yml &amp;&gt;/dev/null</span><br><span class="line">docker restart <span class="variable">$RN</span> &amp;&gt;/dev/null</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">#上传 push</span></span><br><span class="line"><span class="keyword">function</span> <span class="function"><span class="title">Push</span></span>() &#123;</span><br><span class="line"><span class="keyword">for</span> IMG <span class="keyword">in</span> <span class="variable">$IMGS</span>;</span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">  <span class="built_in">echo</span> -e <span class="string">"\033[33m docker push <span class="variable">$IMG</span> to <span class="variable">$HUB</span> \033[0m"</span></span><br><span class="line">  docker tag <span class="variable">$IMG</span> <span class="variable">$HUB</span>/<span class="variable">$IMG</span></span><br><span class="line">  docker push <span class="variable">$HUB</span>/<span class="variable">$IMG</span></span><br><span class="line">  docker rmi <span class="variable">$HUB</span>/<span class="variable">$IMG</span> &amp;&gt;/dev/null</span><br><span class="line"><span class="keyword">done</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">#下载 pull</span></span><br><span class="line"><span class="keyword">function</span> <span class="function"><span class="title">Pull</span></span>() &#123;</span><br><span class="line"><span class="keyword">for</span> IMG <span class="keyword">in</span> <span class="variable">$IMGS</span>;</span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">  <span class="built_in">echo</span> -e <span class="string">"\033[33m dokcer pull <span class="variable">$IMG</span> from <span class="variable">$HUB</span> \033[0m"</span></span><br><span class="line">  docker pull <span class="variable">$HUB</span>/<span class="variable">$IMG</span></span><br><span class="line">  docker tag <span class="variable">$HUB</span>/<span class="variable">$IMG</span> <span class="variable">$IMG</span></span><br><span class="line">  docker rmi <span class="variable">$HUB</span>/<span class="variable">$IMG</span> &amp;&gt;/dev/null</span><br><span class="line"><span class="keyword">done</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">case</span> <span class="string">"<span class="variable">$1</span>"</span> <span class="keyword">in</span></span><br><span class="line">  <span class="string">"-h"</span>)</span><br><span class="line">  <span class="built_in">echo</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">"#默认查询images"</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">"sh <span class="variable">$0</span> -h #帮助 -d #删除 -dd #清理空间"</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">"    -pull img1 img2 #下载 -push #上传"</span></span><br><span class="line">  <span class="built_in">echo</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">"#示例：删除 nginx:1.1 nginx:1.2 (镜像名:版本)"</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">"sh <span class="variable">$0</span> -d nginx:1.1 nginx:1.2 "</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">"sh <span class="variable">$0</span> -dd nginx #删除nginx所有版本"</span></span><br><span class="line">  <span class="built_in">echo</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">"#定义仓库url地址hub.test.com:5000(默认 localhost:5000)"</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">"env HUB=hub.test.com:5000 /bin/sh <span class="variable">$0</span> -d nginx:1.1 "</span></span><br><span class="line">  <span class="built_in">echo</span></span><br><span class="line">;;</span><br><span class="line">  <span class="string">"-d"</span>)</span><br><span class="line">  Check_hub</span><br><span class="line">  IMGS=<span class="variable">$&#123;*/-dd/&#125;</span></span><br><span class="line">  IMGS=<span class="variable">$&#123;IMGS/-d/&#125;</span></span><br><span class="line">  Delete_img</span><br><span class="line">;;</span><br><span class="line">  <span class="string">"-dd"</span>)</span><br><span class="line">  Check_hub</span><br><span class="line">  IMGS=<span class="variable">$&#123;*/-dd/&#125;</span></span><br><span class="line">  IMGS=<span class="variable">$&#123;IMGS/-d/&#125;</span></span><br><span class="line">  Delete_img_a</span><br><span class="line">;;</span><br><span class="line">  <span class="string">"-pull"</span>)</span><br><span class="line">  IMGS=<span class="variable">$&#123;*/-pull/&#125;</span></span><br><span class="line">  Pull</span><br><span class="line">;;</span><br><span class="line">  <span class="string">"-push"</span>)</span><br><span class="line">  IMGS=<span class="variable">$&#123;*/-push/&#125;</span></span><br><span class="line">  Push</span><br><span class="line">;;</span><br><span class="line">  *)</span><br><span class="line">  Check_hub</span><br><span class="line">  Select_img</span><br><span class="line">;;</span><br><span class="line"><span class="keyword">esac</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="4-配置信息"><a href="#4-配置信息" class="headerlink" title="4.配置信息"></a>4.配置信息</h3><p>将脚本内容的 HUB=10.18.33.90:5000 修改为 docker 镜像仓库的 IP</p>
+<h3 id="5-镜像使用"><a href="#5-镜像使用" class="headerlink" title="5.镜像使用"></a>5.镜像使用</h3><p>使用脚本执行功能如下：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sh img_registry.sh  <span class="comment"># 镜像名称</span></span><br><span class="line">sh img_registry.sh -dd 镜像名   <span class="comment"># 删除所有镜像</span></span><br><span class="line">示例：</span><br><span class="line">sh img_registry.sh -dd nginx <span class="comment">#删除nginx所有版本"</span></span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/docker/" rel="tag"># docker</a>
+              <a href="/tags/mysql/" rel="tag"># mysql</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/03/05/docker/Dockerfile%E6%9E%84%E5%BB%BAmysql%E9%95%9C%E5%83%8F%EF%BC%8C%E5%B9%B6%E5%88%9D%E5%A7%8B%E5%8C%96%E6%95%B0%E6%8D%AE%E5%BA%93%E6%95%B0%E6%8D%AE/" rel="prev" title="Dockerfile构建mysql镜像，并初始化数据库数据">
+      <i class="fa fa-chevron-left"></i> Dockerfile构建mysql镜像，并初始化数据库数据
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/03/06/k8s/k8s%E5%B8%B8%E8%A7%81%E5%91%BD%E4%BB%A4/" rel="next" title="k8s常见命令">
+      k8s常见命令 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、编写配置文件准备"><span class="nav-number">1.</span> <span class="nav-text">一、编写配置文件准备</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-准备创建数据的脚本文件"><span class="nav-number">1.1.</span> <span class="nav-text">1.准备创建数据的脚本文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-编写一个-Shell-脚本"><span class="nav-number">1.2.</span> <span class="nav-text">2.编写一个 Shell 脚本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-编写构造镜像的-Dockerfile"><span class="nav-number">1.3.</span> <span class="nav-text">3.编写构造镜像的 Dockerfile</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、-构造镜像"><span class="nav-number">2.</span> <span class="nav-text">二、 构造镜像</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-执行构造镜像"><span class="nav-number">2.1.</span> <span class="nav-text">1.执行构造镜像</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、容器检查"><span class="nav-number">3.</span> <span class="nav-text">三、容器检查</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-启动容器"><span class="nav-number">3.1.</span> <span class="nav-text">1.启动容器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-查看容器执行日志"><span class="nav-number">3.2.</span> <span class="nav-text">2.查看容器执行日志</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-进入容器数据库查看库表建立情况"><span class="nav-number">3.3.</span> <span class="nav-text">3.进入容器数据库查看库表建立情况</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四、-镜像仓库管理"><span class="nav-number">4.</span> <span class="nav-text">四、 镜像仓库管理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-安装-Jq"><span class="nav-number">4.1.</span> <span class="nav-text">1.安装 Jq</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-安装-jq"><span class="nav-number">4.2.</span> <span class="nav-text">2.安装 jq</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-编写镜像管理脚本"><span class="nav-number">4.3.</span> <span class="nav-text">3.编写镜像管理脚本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-配置信息"><span class="nav-number">4.4.</span> <span class="nav-text">4.配置信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-镜像使用"><span class="nav-number">4.5.</span> <span class="nav-text">5.镜像使用</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Andy Ge</p>
+  <div class="site-description" itemprop="description">勇于积极进取，步入人生的世外桃源</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">728</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">134</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">315</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/andyge" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;andyge" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:geshaofei@126.com" title="E-Mail → mailto:geshaofei@126.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.ruanyifeng.com/" title="http:&#x2F;&#x2F;www.ruanyifeng.com&#x2F;" rel="noopener" target="_blank">阮一峰</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://colobu.com/" title="http:&#x2F;&#x2F;colobu.com&#x2F;" rel="noopener" target="_blank">鸟窝</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.cnblogs.com/hellokuangshen/" title="https:&#x2F;&#x2F;www.cnblogs.com&#x2F;hellokuangshen&#x2F;" rel="noopener" target="_blank">狂神</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://yelog.org/" title="https:&#x2F;&#x2F;yelog.org&#x2F;" rel="noopener" target="_blank">叶落阁</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Andy Ge</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.7.1
+  </div>
+
+        
+
+
+
+
+
+
+  <script>
+  function leancloudSelector(url) {
+    url = encodeURI(url);
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.getAttribute('id'));
+      var title = visitors.getAttribute('data-flag-title');
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .then(() => {
+                leancloudSelector(url).innerText = counter.time + 1;
+              })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              })
+          } else {
+              Counter('post', '/classes/Counter', { title: title, url: url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.getAttribute('id'));
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (let item of results) {
+            let { url, time } = item;
+            leancloudSelector(url).innerText = time;
+          }
+          for (let url of entries) {
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=2TdIb5gRlAVUw24l2W0zWnCj-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method: method,
+          headers: {
+            'X-LC-Id'     : '2TdIb5gRlAVUw24l2W0zWnCj-gzGzoHsz',
+            'X-LC-Key'    : 'cJdJrMLBXsj0ttq0WsL0aA2j',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"swiftist.cn","root":"/","scheme":"Pisces","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"EVBR3H53HW","apiKey":"2abd573a01143a0cc4108fa4d21ae67c","indexName":"swiftist","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="ICONFONT 1. 什么是 iconfont icon font ，图标字体，也叫字体图标，顾名思义，就是字体做的图标。受到近些年 扁平化设计 的影响，越来越多的图标都开始使用 icon font  优点：  自由的变化大小，且不会模糊 比图片小，加载快 可以任意改变颜色   缺点：  只能被渲染成单色或者 CSS3 的渐变色 创作自已的字体图标很费时间，重构人员后期维护的成本偏高。  1.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="解密 Iconfont">
+<meta property="og:url" content="https://swiftist.cn/2019/03/04/css/%E8%A7%A3%E5%AF%86Iconfont/index.html">
+<meta property="og:site_name" content="飞雪轩辕">
+<meta property="og:description" content="ICONFONT 1. 什么是 iconfont icon font ，图标字体，也叫字体图标，顾名思义，就是字体做的图标。受到近些年 扁平化设计 的影响，越来越多的图标都开始使用 icon font  优点：  自由的变化大小，且不会模糊 比图片小，加载快 可以任意改变颜色   缺点：  只能被渲染成单色或者 CSS3 的渐变色 创作自已的字体图标很费时间，重构人员后期维护的成本偏高。  1.">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://swiftist.cn/images/owl/4853363-0e38d9bbc822cbfb.webp">
+<meta property="og:image" content="https://swiftist.cn/2019/03/04/images/owl/4853363-38bb5112588af58b.webp">
+<meta property="og:image" content="https://swiftist.cn/2019/03/04/images/owl/4853363-75fc7994da1200d7.webp">
+<meta property="og:image" content="https://swiftist.cn/2019/03/04/images/owl/4853363-384703a5704a91f1.webp">
+<meta property="og:image" content="https://swiftist.cn/2019/03/04/images/owl/4853363-a9dca122b9d4fed5.webp">
+<meta property="og:image" content="https://swiftist.cn/2019/03/04/images/owl/4853363-3b12cee3adb9b9f7.webp">
+<meta property="og:image" content="https://swiftist.cn/2019/03/04/images/owl/4853363-05546e919ea2ee29.webp">
+<meta property="og:image" content="https://swiftist.cn/2019/03/04/images/owl/4853363-f54bbfdec0c06940.webp">
+<meta property="og:image" content="https://swiftist.cn/2019/03/04/images/owl/4853363-677716d4806a01fc.webp">
+<meta property="og:image" content="https://swiftist.cn/2019/03/04/images/owl/4853363-bc3366400f699a32.webp">
+<meta property="og:image" content="https://swiftist.cn/2019/03/04/images/owl/4853363-87866a61f8cd5443.webp">
+<meta property="og:image" content="https://swiftist.cn/2019/03/04/images/owl/4853363-a447c88b73b62670.webp">
+<meta property="og:image" content="https://swiftist.cn/2019/03/04/images/owl/4853363-37837ebacd7ab777.webp">
+<meta property="og:image" content="https://swiftist.cn/2019/03/04/images/owl/4853363-628c6312a5faaa28.webp">
+<meta property="og:image" content="https://swiftist.cn/2019/03/04/images/owl/4853363-047efa88f301e4ab.webp">
+<meta property="og:image" content="https://swiftist.cn/2019/03/04/images/owl/4853363-fc0df56b80b8fa8b.webp">
+<meta property="og:image" content="https://swiftist.cn/2019/03/04/images/owl/4853363-d70192be5d9c87b7.webp">
+<meta property="og:image" content="https://swiftist.cn/2019/03/04/images/owl/4853363-69a7b276f04c1cea.webp">
+<meta property="og:image" content="https://swiftist.cn/2019/03/04/images/owl/4853363-aa0c4ee7c0cd78c8.webp">
+<meta property="article:published_time" content="2019-03-04T14:30:33.000Z">
+<meta property="article:modified_time" content="2020-03-31T15:07:39.331Z">
+<meta property="article:author" content="Andy Ge">
+<meta property="article:tag" content="css">
+<meta property="article:tag" content="iconfont">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://swiftist.cn/images/owl/4853363-0e38d9bbc822cbfb.webp">
+
+<link rel="canonical" href="https://swiftist.cn/2019/03/04/css/%E8%A7%A3%E5%AF%86Iconfont/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>解密 Iconfont | 飞雪轩辕</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="飞雪轩辕" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">飞雪轩辕</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">人生的乐趣在于把梦想变成现实</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-java">
+
+    <a href="/categories/java/" rel="section"><i class="fa fa-fw fa-th-large"></i>java</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://swiftist.cn/2019/03/04/css/%E8%A7%A3%E5%AF%86Iconfont/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Andy Ge">
+      <meta itemprop="description" content="勇于积极进取，步入人生的世外桃源">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="飞雪轩辕">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          解密 Iconfont
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-03-04 22:30:33" itemprop="dateCreated datePublished" datetime="2019-03-04T22:30:33+08:00">2019-03-04</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-31 23:07:39" itemprop="dateModified" datetime="2020-03-31T23:07:39+08:00">2020-03-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/css/" itemprop="url" rel="index">
+                    <span itemprop="name">css</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span id="/2019/03/04/css/%E8%A7%A3%E5%AF%86Iconfont/" class="post-meta-item leancloud_visitors" data-flag-title="解密 Iconfont" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><img src="/images/owl/4853363-0e38d9bbc822cbfb.webp" alt="img"></p>
+<p>ICONFONT</p>
+<h1 id="1-什么是-iconfont"><a href="#1-什么是-iconfont" class="headerlink" title="1. 什么是 iconfont"></a>1. 什么是 iconfont</h1><blockquote>
+<p><strong>icon font</strong> ，图标字体，也叫字体图标，顾名思义，就是字体做的图标。受到近些年 <strong>扁平化设计</strong> 的影响，越来越多的图标都开始使用 <strong>icon font</strong></p>
+</blockquote>
+<p><strong>优点：</strong></p>
+<ol>
+<li>自由的变化大小，且不会模糊</li>
+<li>比图片小，加载快</li>
+<li>可以任意改变颜色</li>
+</ol>
+<hr>
+<p><strong>缺点：</strong></p>
+<ol>
+<li>只能被渲染成单色或者 CSS3 的渐变色</li>
+<li>创作自已的字体图标很费时间，重构人员后期维护的成本偏高。</li>
+</ol>
+<h2 id="1-1-了解-iconfont-之前我们先看看-WebFont"><a href="#1-1-了解-iconfont-之前我们先看看-WebFont" class="headerlink" title="1.1. 了解 iconfont 之前我们先看看 WebFont"></a>1.1. 了解 iconfont 之前我们先看看 WebFont</h2><blockquote>
+<p>我们都知道，在网页制作中，会经常用到不同的字体，常用的有 <strong>微软雅黑</strong>、<strong>宋体</strong>、<strong>Aria</strong> 等等。在我们写 css 的样式的时候，通过 <strong>font-family</strong> 可以指定元素的字体名称。</p>
+<p>如果是 <strong>特殊字体</strong> ，因为我们的电脑没有安装那个字体，所以在网页中显示不出来，所以我们通过 <strong>@font-face</strong> 来引入特殊字体。</p>
+</blockquote>
+<p>看看 <strong>@font-face</strong> 的语法规则：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">@font-face</span> &#123;</span><br><span class="line">    <span class="attribute">font-family</span>: &lt;YourWebFontName&gt;;</span><br><span class="line">    <span class="attribute">src</span>: &lt;source&gt; [&lt;format&gt;][,&lt;source&gt; [&lt;format&gt;]]*;</span><br><span class="line">    [font-weight: &lt;weight&gt;];</span><br><span class="line">    <span class="selector-attr">[font-style: &lt;style&gt;]</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>取值说明：</strong></p>
+<ul>
+<li>YourWebFontName：字体名称，他将被引用到元素中的 <strong>font-family</strong> 上</li>
+<li>source：字体的存放路径，跟 css 引用图片一样；</li>
+<li>format：字体的格式，主要用来帮助浏览器识别，其值主要有以下几种类型：<strong>truetype</strong> , <strong>opentype</strong> , <strong>truetype-aat</strong> , <strong>embedded-opentype</strong> , <strong>svg</strong> 等；</li>
+<li>weight 和 style：这两个值大家一定很熟悉，weight 定义字体是否为粗体，style 主要定义字体样式，如斜体。</li>
+</ul>
+<p><strong>关于 @font-face 的浏览器兼容性：</strong></p>
+<p><img src="../../images/owl/4853363-38bb5112588af58b.webp" alt="img"></p>
+<p>浏览器兼容性</p>
+<h3 id="1-1-1-其实-font-face-这个功能早在-IE4-就支持了，我们看看兼容写法"><a href="#1-1-1-其实-font-face-这个功能早在-IE4-就支持了，我们看看兼容写法" class="headerlink" title="1.1.1. 其实 @font-face 这个功能早在 IE4 就支持了，我们看看兼容写法"></a>1.1.1. 其实 <strong>@font-face</strong> 这个功能早在 IE4 就支持了，我们看看兼容写法</h3><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">@font-face</span> &#123;</span><br><span class="line">    <span class="attribute">font-family</span>: <span class="string">'YourWebFontName'</span>;</span><br><span class="line">    <span class="attribute">src</span>: <span class="built_in">url</span>(<span class="string">'YourWebFontName.eot'</span>); <span class="comment">/* IE9 Compat Modes */</span></span><br><span class="line">    <span class="attribute">src</span>: <span class="built_in">url</span>(<span class="string">'YourWebFontName.eot?#iefix'</span>) <span class="built_in">format</span>(<span class="string">'embedded-opentype'</span>), <span class="comment">/* IE6-IE8 */</span></span><br><span class="line">            <span class="built_in">url</span>(<span class="string">'YourWebFontName.woff'</span>) <span class="built_in">format</span>(<span class="string">'woff'</span>),</span><br><span class="line">        <span class="comment">/* Modern Browsers */</span> <span class="built_in">url</span>(<span class="string">'YourWebFontName.ttf'</span>) <span class="built_in">format</span>(<span class="string">'truetype'</span>), <span class="comment">/* Safari, Android, iOS */</span></span><br><span class="line">            <span class="built_in">url</span>(<span class="string">'YourWebFontName.svg#YourWebFontName'</span>) <span class="built_in">format</span>(<span class="string">'svg'</span>); <span class="comment">/* Legacy iOS */</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>TrueType(.ttf)</strong> 格式：<br><strong>.ttf</strong> 字体是 <strong>Windows</strong> 和 <strong>Mac</strong> 的最常见的字体，是一种 <strong>RAW</strong> 格式，因此他不为网站优化,支持这种字体的浏览器有 <strong>【IE9+ , Firefox3.5+ , Chrome4+ , Safari3+ , Opera10+ , iOS Mobile Safari4.2+】</strong></li>
+<li><strong>OpenType(.otf)</strong> 格式：<br><strong>.otf</strong> 字体被认为是一种原始的字体格式，其内置在 <strong>TureType</strong> 的基础上，所以也提供了更多的功能,支持这种字体的浏览器有<strong>【Firefox3.5+ , Chrome4.0+ , Safari3.1+ , Opera10.0+ , iOS Mobile Safari4.2+】</strong></li>
+<li><strong>Web Open Font Format(.woff)</strong> 格式：<br><strong>.woff</strong> 字体是 Web 字体中最佳格式，他是一个开放的 <strong>TrueType/OpenType</strong> 的压缩版本，同时也支持元数据包的分离,支持这种字体的浏览器有<strong>【IE9+ , Firefox3.5+ , Chrome6+ , Safari3.6+ , Opera11.1+】</strong></li>
+<li><strong>Embedded Open Type(.eot)</strong> 格式：<br><strong>.eot</strong> 字体是 IE 专用字体，可以从<strong>TrueType</strong> 创建此格式字体,支持这种字体的浏览器有 <strong>【IE4+】</strong></li>
+</ul>
+<hr>
+<blockquote>
+<p><strong>WebFont</strong> 技术可以让网页使用在线字体，在国外，<strong>WebFont</strong> 已经非常流行了，大量的网站使用了 <strong>WebFont</strong> 技术，而业界大佬 Google 也顺势推出的免费 <strong>WebFont</strong> 云托管服务，这一切均带动了国外字体制作行业的高速发展。</p>
+<p>为什么是国外呢，那是因为中文字体比较尴尬，英文字体只有 26 个字母，一套字体不过几十 <strong>KB</strong> ，而汉字却有数万个，导致字体文件通常有好几 <strong>MB</strong> 大小，再加上国内的网络环境，显然不现实。</p>
+<p>所以中文的 <strong>特殊字体</strong> 必须经过压缩才能使用，怎么压缩呢，请看 <strong>腾讯 ISUX</strong> 开发的 <a href="http://font-spider.org/" target="_blank" rel="noopener">中文字体压缩器–字蛛（FontSpider）</a> 。</p>
+<p>因为这篇主要讲的是 <strong>iconfont</strong> ，所以我就不详细的讲 <a href="http://font-spider.org/" target="_blank" rel="noopener">字蛛</a> 的使用方法了， <a href="http://font-spider.org/" target="_blank" rel="noopener">字蛛</a> 官网很详细。</p>
+</blockquote>
+<h2 id="1-2-说说-iconfont-的原理"><a href="#1-2-说说-iconfont-的原理" class="headerlink" title="1.2. 说说 iconfont 的原理"></a>1.2. 说说 iconfont 的原理</h2><blockquote>
+<p>每种字体在相同的字都是不一样的，比如 <strong>宋体</strong> 跟 <strong>微软雅黑</strong> ，相同的字 ，由于调用的不同的字体，浏览器显示明显是有区别的。</p>
+<p>在我们还不识字的时候，每个字都是一个图案，所以老师会告诉你哪个图案念什么 ，是什么字，<strong>iconfont</strong> 同理，我认为 <strong>三角形</strong> 是 <strong>a</strong>，那对于我来说，只要是 <strong>a</strong> ，就应该是个 <strong>三角形</strong>。</p>
+<p>在电脑上，我给电脑规定 <strong>a</strong> 的样子是个 <strong>三角形</strong>，那么当显示 <strong>a</strong> 的时候，他就显示个三角形。</p>
+<p>当我把网页上的所有图标都对应一个字符的时候，你在代码里输入某个字符，那这个字符就显示你规定的形状，这就是 <strong>iconfont</strong> 图标。</p>
+<p>把所有的图标都放在一个字体里面，就是一个字体库了，然后按照正常字体库（本来就是正常的字体库）调用就行了。</p>
+</blockquote>
+<h2 id="1-3-iconfont-的制作"><a href="#1-3-iconfont-的制作" class="headerlink" title="1.3. iconfont 的制作"></a>1.3. iconfont 的制作</h2><blockquote>
+<p>最初制作 <strong>iconfont</strong> 都是在字体制作软件里面制作，比如 <strong>FontLab</strong>、<strong>TypeTool</strong>、<strong>FontCreator</strong>之类的专业软件，我最开始的时候是使用的 <strong>FontCreator</strong> 来制作，我现在简单的给大家演示一下。</p>
+</blockquote>
+<h3 id="1-3-1-先新建一个字体文件"><a href="#1-3-1-先新建一个字体文件" class="headerlink" title="1.3.1. 先新建一个字体文件"></a>1.3.1. 先新建一个字体文件</h3><p><img src="../../images/owl/4853363-75fc7994da1200d7.webp" alt="img"></p>
+<p>新建文件</p>
+<h3 id="1-3-2-随便打开一个字体，选中某个字符，ctrl-c-复制，然后选中新建的字体的某个字符，ctrl-v-粘贴。右键这个字符，编辑。"><a href="#1-3-2-随便打开一个字体，选中某个字符，ctrl-c-复制，然后选中新建的字体的某个字符，ctrl-v-粘贴。右键这个字符，编辑。" class="headerlink" title="1.3.2. 随便打开一个字体，选中某个字符，ctrl+c 复制，然后选中新建的字体的某个字符，ctrl+v 粘贴。右键这个字符，编辑。"></a>1.3.2. 随便打开一个字体，选中某个字符，<strong>ctrl+c</strong> 复制，然后选中新建的字体的某个字符，<strong>ctrl+v</strong> 粘贴。右键这个字符，<strong>编辑</strong>。</h3><p><img src="../../images/owl/4853363-384703a5704a91f1.webp" alt="img"></p>
+<p>编辑文件</p>
+<h3 id="1-3-3-我们可以大概知道字体区域，我们做的图标也大概在这个区域"><a href="#1-3-3-我们可以大概知道字体区域，我们做的图标也大概在这个区域" class="headerlink" title="1.3.3. 我们可以大概知道字体区域，我们做的图标也大概在这个区域"></a>1.3.3. 我们可以大概知道字体区域，我们做的图标也大概在这个区域</h3><p><img src="../../images/owl/4853363-a9dca122b9d4fed5.webp" alt="img"></p>
+<p>字体区域</p>
+<h3 id="1-3-4-随便找张图，比如中国移动的图标"><a href="#1-3-4-随便找张图，比如中国移动的图标" class="headerlink" title="1.3.4. 随便找张图，比如中国移动的图标"></a>1.3.4. 随便找张图，比如中国移动的图标</h3><p><img src="../../images/owl/4853363-3b12cee3adb9b9f7.webp" alt="img"></p>
+<p>中国移动的图标</p>
+<h3 id="1-3-5-把这张图导入到刚在的字体中"><a href="#1-3-5-把这张图导入到刚在的字体中" class="headerlink" title="1.3.5. 把这张图导入到刚在的字体中"></a>1.3.5. 把这张图导入到刚在的字体中</h3><p><img src="../../images/owl/4853363-05546e919ea2ee29.webp" alt="img"></p>
+<p>导入到刚在的字体中</p>
+<h3 id="1-3-6-调整图片的位置，把原先的图形选中，delete-删掉，保存"><a href="#1-3-6-调整图片的位置，把原先的图形选中，delete-删掉，保存" class="headerlink" title="1.3.6. 调整图片的位置，把原先的图形选中，delete 删掉，保存"></a>1.3.6. 调整图片的位置，把原先的图形选中，<strong>delete</strong> 删掉，保存</h3><p><img src="../../images/owl/4853363-f54bbfdec0c06940.webp" alt="img"></p>
+<p>把原先的图形删掉</p>
+<h3 id="1-3-7-看看在网页中"><a href="#1-3-7-看看在网页中" class="headerlink" title="1.3.7. 看看在网页中"></a>1.3.7. 看看在网页中</h3><p><img src="../../images/owl/4853363-677716d4806a01fc.webp" alt="img"></p>
+<p>代码</p>
+<p><img src="../../images/owl/4853363-bc3366400f699a32.webp" alt="img"></p>
+<p>浏览器显示</p>
+<h3 id="1-3-8-一个-icon-就做好了，然后其他的也是这种方法"><a href="#1-3-8-一个-icon-就做好了，然后其他的也是这种方法" class="headerlink" title="1.3.8. 一个 icon 就做好了，然后其他的也是这种方法"></a>1.3.8. 一个 <strong>icon</strong> 就做好了，然后其他的也是这种方法</h3><h2 id="1-4-因为为了兼容，必须转换成四种格式，本地转换的工具很少，只能在线转，这是国外的几个地址："><a href="#1-4-因为为了兼容，必须转换成四种格式，本地转换的工具很少，只能在线转，这是国外的几个地址：" class="headerlink" title="1.4. 因为为了兼容，必须转换成四种格式，本地转换的工具很少，只能在线转，这是国外的几个地址："></a>1.4. 因为为了兼容，必须转换成四种格式，本地转换的工具很少，只能在线转，这是国外的几个地址：</h2><ul>
+<li><a href="https://www.fontsquirrel.com/tools/webfont-generator" target="_blank" rel="noopener">fontsquirrel</a></li>
+<li><a href="http://www.freefontconverter.com/" target="_blank" rel="noopener">freefontconverter</a></li>
+<li><a href="http://www.font2web.com/" target="_blank" rel="noopener">font2web</a></li>
+</ul>
+<blockquote>
+<p>这样用字体软件做图标会很麻烦，有没有简单的办法呢？答案是肯定的，由 <strong>阿里妈妈 UED</strong> 开发的 <a href="http://www.iconfont.cn/" target="_blank" rel="noopener">Iconfont-阿里巴巴矢量图标库</a> 会帮大家快速的生成 <strong>iconfont</strong>。具体的制作方法请查看 <a href="http://www.iconfont.cn/" target="_blank" rel="noopener">Iconfont.cn</a> 提供的 <a href="http://www.iconfont.cn/help/iconmake.html?spm=a313x.7781069.0.0.DY1v1s" target="_blank" rel="noopener">图标制作说明</a>。</p>
+<p><a href="http://www.iconfont.cn/" target="_blank" rel="noopener">Iconfont.cn</a> 上有大量的 <strong>iconfont</strong> 图标，可以快速的搜索，然后加到自己的项目中，网站可以用你的 <strong>新浪微博</strong> 登录。</p>
+</blockquote>
+<h2 id="1-5-扒别的网站的字体文件"><a href="#1-5-扒别的网站的字体文件" class="headerlink" title="1.5. 扒别的网站的字体文件"></a>1.5. 扒别的网站的字体文件</h2><blockquote>
+<p>在火狐里打开你要扒的网站，以天猫为例：</p>
+</blockquote>
+<h3 id="1-5-1-打开浏览器自带的-firebug-，用箭头指到那个图标"><a href="#1-5-1-打开浏览器自带的-firebug-，用箭头指到那个图标" class="headerlink" title="1.5.1. 打开浏览器自带的 firebug ，用箭头指到那个图标"></a>1.5.1. 打开浏览器自带的 <strong>firebug</strong> ，用箭头指到那个图标</h3><p><img src="../../images/owl/4853363-87866a61f8cd5443.webp" alt="img"></p>
+<p>找到图标</p>
+<h3 id="1-5-2-选择字体，然后选择远程的那个地址，ctrl-a-全选，ctrl-c-复制"><a href="#1-5-2-选择字体，然后选择远程的那个地址，ctrl-a-全选，ctrl-c-复制" class="headerlink" title="1.5.2. 选择字体，然后选择远程的那个地址，ctrl+a 全选，ctrl+c 复制"></a>1.5.2. 选择字体，然后选择远程的那个地址，<strong>ctrl+a</strong> 全选，<strong>ctrl+c</strong> 复制</h3><p><img src="../../images/owl/4853363-a447c88b73b62670.webp" alt="img"></p>
+<p>找到字体地址</p>
+<h3 id="1-5-3-把复制的地址粘贴到浏览器地址栏，然后把-woff-改为-ttf-，回车"><a href="#1-5-3-把复制的地址粘贴到浏览器地址栏，然后把-woff-改为-ttf-，回车" class="headerlink" title="1.5.3. 把复制的地址粘贴到浏览器地址栏，然后把 .woff 改为 .ttf ，回车"></a>1.5.3. 把复制的地址粘贴到浏览器地址栏，然后把 <strong>.woff</strong> 改为 <strong>.ttf</strong> ，回车</h3><p><img src="../../images/owl/4853363-37837ebacd7ab777.webp" alt="img"></p>
+<p>修改格式并保存</p>
+<h3 id="1-5-4-保存到本地"><a href="#1-5-4-保存到本地" class="headerlink" title="1.5.4. 保存到本地"></a>1.5.4. 保存到本地</h3><p><img src="../../images/owl/4853363-628c6312a5faaa28.webp" alt="img"></p>
+<p>保存到本地</p>
+<h3 id="1-5-5-为了兼容，一共要下载四个格式，分别是-woff、-ttf、-eot、-svg-，只需把最后的格式改了，回车保存就好了"><a href="#1-5-5-为了兼容，一共要下载四个格式，分别是-woff、-ttf、-eot、-svg-，只需把最后的格式改了，回车保存就好了" class="headerlink" title="1.5.5. 为了兼容，一共要下载四个格式，分别是 .woff、.ttf、.eot、.svg ，只需把最后的格式改了，回车保存就好了"></a>1.5.5. 为了兼容，一共要下载四个格式，分别是 <strong>.woff</strong>、<strong>.ttf</strong>、<strong>.eot</strong>、<strong>.svg</strong> ，只需把最后的格式改了，回车保存就好了</h3><h2 id="1-6-查看字体库的所有图标"><a href="#1-6-查看字体库的所有图标" class="headerlink" title="1.6. 查看字体库的所有图标"></a>1.6. 查看字体库的所有图标</h2><blockquote>
+<p>既然是字体，肯定能用字体编辑软件查看，这里我推荐 <a href="http://pan.baidu.com/s/1nv6aKlF" target="_blank" rel="noopener">TypeTool</a> ，来看使用方法：</p>
+</blockquote>
+<p><strong>先看安装：</strong></p>
+<h3 id="1-6-1-下载-TypeTool-，然后解压"><a href="#1-6-1-下载-TypeTool-，然后解压" class="headerlink" title="1.6.1. 下载 TypeTool ，然后解压"></a>1.6.1. 下载 <a href="http://pan.baidu.com/s/1nv6aKlF" target="_blank" rel="noopener">TypeTool</a> ，然后解压</h3><p><img src="../../images/owl/4853363-047efa88f301e4ab.webp" alt="img"></p>
+<p>TypeTool 文件</p>
+<ol>
+<li>先运行 <strong>TT3WinFull.exe</strong> 安装程序进行安装原版程序!</li>
+<li>安装完成后记得先不要运行程序！</li>
+<li>复制压缩包中的 <strong>fontlab.typetool.v3.1.2.build.4868-patch.exe</strong> 程序到安装目录！</li>
+<li>运行 <strong>fontlab.typetool.v3.1.2.build.4868-patch.exe</strong> ，点击 <strong>Patch</strong> 按钮对源程序打补丁即可。（切记，打补丁时一定要关闭软件，否则会失败的！）</li>
+<li>完成</li>
+</ol>
+<h2 id="1-7-查看图标"><a href="#1-7-查看图标" class="headerlink" title="1.7. 查看图标"></a>1.7. 查看图标</h2><blockquote>
+<p>以刚才下载的天猫字体为例</p>
+</blockquote>
+<h3 id="1-7-1-打开软件，打开字体文件"><a href="#1-7-1-打开软件，打开字体文件" class="headerlink" title="1.7.1. 打开软件，打开字体文件"></a>1.7.1. 打开软件，打开字体文件</h3><p><img src="../../images/owl/4853363-fc0df56b80b8fa8b.webp" alt="img"></p>
+<p>打开字体文件</p>
+<h3 id="1-7-2-打开之后可以看到所有的图标，选中某一个图标，可以看到图标对应的-unicode-码"><a href="#1-7-2-打开之后可以看到所有的图标，选中某一个图标，可以看到图标对应的-unicode-码" class="headerlink" title="1.7.2. 打开之后可以看到所有的图标，选中某一个图标，可以看到图标对应的 unicode 码"></a>1.7.2. 打开之后可以看到所有的图标，选中某一个图标，可以看到图标对应的 <strong>unicode 码</strong></h3><p><img src="../../images/owl/4853363-d70192be5d9c87b7.webp" alt="img"></p>
+<p>查看 unicode 码</p>
+<h3 id="1-7-3-把找到的-e60d-前面加-amp-x-变为-，直接写在-html-里面就可以了"><a href="#1-7-3-把找到的-e60d-前面加-amp-x-变为-，直接写在-html-里面就可以了" class="headerlink" title="1.7.3. 把找到的 e60d 前面加 &amp;#x 变为 ，直接写在 html 里面就可以了"></a>1.7.3. 把找到的 <strong>e60d</strong> 前面加 <strong>&amp;#x</strong> 变为 <strong></strong>，直接写在 <strong>html</strong> 里面就可以了</h3><p><img src="../../images/owl/4853363-69a7b276f04c1cea.webp" alt="img"></p>
+<p>代码</p>
+<p><img src="../../images/owl/4853363-aa0c4ee7c0cd78c8.webp" alt="img"></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/css/" rel="tag"># css</a>
+              <a href="/tags/iconfont/" rel="tag"># iconfont</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/03/04/vue/vue-wepy-wechat%E5%BC%80%E5%8F%91%E5%B7%AE%E5%BC%82%E6%80%A7/" rel="prev" title="vue,wepy,wechat小程序开发差异性">
+      <i class="fa fa-chevron-left"></i> vue,wepy,wechat小程序开发差异性
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/03/04/echarts/vue%E5%9B%BE%E8%A1%A8/" rel="next" title="vue图表">
+      vue图表 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-什么是-iconfont"><span class="nav-number">1.</span> <span class="nav-text">1. 什么是 iconfont</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-了解-iconfont-之前我们先看看-WebFont"><span class="nav-number">1.1.</span> <span class="nav-text">1.1. 了解 iconfont 之前我们先看看 WebFont</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-1-其实-font-face-这个功能早在-IE4-就支持了，我们看看兼容写法"><span class="nav-number">1.1.1.</span> <span class="nav-text">1.1.1. 其实 @font-face 这个功能早在 IE4 就支持了，我们看看兼容写法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-说说-iconfont-的原理"><span class="nav-number">1.2.</span> <span class="nav-text">1.2. 说说 iconfont 的原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-3-iconfont-的制作"><span class="nav-number">1.3.</span> <span class="nav-text">1.3. iconfont 的制作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-1-先新建一个字体文件"><span class="nav-number">1.3.1.</span> <span class="nav-text">1.3.1. 先新建一个字体文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-2-随便打开一个字体，选中某个字符，ctrl-c-复制，然后选中新建的字体的某个字符，ctrl-v-粘贴。右键这个字符，编辑。"><span class="nav-number">1.3.2.</span> <span class="nav-text">1.3.2. 随便打开一个字体，选中某个字符，ctrl+c 复制，然后选中新建的字体的某个字符，ctrl+v 粘贴。右键这个字符，编辑。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-3-我们可以大概知道字体区域，我们做的图标也大概在这个区域"><span class="nav-number">1.3.3.</span> <span class="nav-text">1.3.3. 我们可以大概知道字体区域，我们做的图标也大概在这个区域</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-4-随便找张图，比如中国移动的图标"><span class="nav-number">1.3.4.</span> <span class="nav-text">1.3.4. 随便找张图，比如中国移动的图标</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-5-把这张图导入到刚在的字体中"><span class="nav-number">1.3.5.</span> <span class="nav-text">1.3.5. 把这张图导入到刚在的字体中</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-6-调整图片的位置，把原先的图形选中，delete-删掉，保存"><span class="nav-number">1.3.6.</span> <span class="nav-text">1.3.6. 调整图片的位置，把原先的图形选中，delete 删掉，保存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-7-看看在网页中"><span class="nav-number">1.3.7.</span> <span class="nav-text">1.3.7. 看看在网页中</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-8-一个-icon-就做好了，然后其他的也是这种方法"><span class="nav-number">1.3.8.</span> <span class="nav-text">1.3.8. 一个 icon 就做好了，然后其他的也是这种方法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-4-因为为了兼容，必须转换成四种格式，本地转换的工具很少，只能在线转，这是国外的几个地址："><span class="nav-number">1.4.</span> <span class="nav-text">1.4. 因为为了兼容，必须转换成四种格式，本地转换的工具很少，只能在线转，这是国外的几个地址：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-5-扒别的网站的字体文件"><span class="nav-number">1.5.</span> <span class="nav-text">1.5. 扒别的网站的字体文件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-5-1-打开浏览器自带的-firebug-，用箭头指到那个图标"><span class="nav-number">1.5.1.</span> <span class="nav-text">1.5.1. 打开浏览器自带的 firebug ，用箭头指到那个图标</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-5-2-选择字体，然后选择远程的那个地址，ctrl-a-全选，ctrl-c-复制"><span class="nav-number">1.5.2.</span> <span class="nav-text">1.5.2. 选择字体，然后选择远程的那个地址，ctrl+a 全选，ctrl+c 复制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-5-3-把复制的地址粘贴到浏览器地址栏，然后把-woff-改为-ttf-，回车"><span class="nav-number">1.5.3.</span> <span class="nav-text">1.5.3. 把复制的地址粘贴到浏览器地址栏，然后把 .woff 改为 .ttf ，回车</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-5-4-保存到本地"><span class="nav-number">1.5.4.</span> <span class="nav-text">1.5.4. 保存到本地</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-5-5-为了兼容，一共要下载四个格式，分别是-woff、-ttf、-eot、-svg-，只需把最后的格式改了，回车保存就好了"><span class="nav-number">1.5.5.</span> <span class="nav-text">1.5.5. 为了兼容，一共要下载四个格式，分别是 .woff、.ttf、.eot、.svg ，只需把最后的格式改了，回车保存就好了</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-6-查看字体库的所有图标"><span class="nav-number">1.6.</span> <span class="nav-text">1.6. 查看字体库的所有图标</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-6-1-下载-TypeTool-，然后解压"><span class="nav-number">1.6.1.</span> <span class="nav-text">1.6.1. 下载 TypeTool ，然后解压</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-7-查看图标"><span class="nav-number">1.7.</span> <span class="nav-text">1.7. 查看图标</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-7-1-打开软件，打开字体文件"><span class="nav-number">1.7.1.</span> <span class="nav-text">1.7.1. 打开软件，打开字体文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-7-2-打开之后可以看到所有的图标，选中某一个图标，可以看到图标对应的-unicode-码"><span class="nav-number">1.7.2.</span> <span class="nav-text">1.7.2. 打开之后可以看到所有的图标，选中某一个图标，可以看到图标对应的 unicode 码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-7-3-把找到的-e60d-前面加-amp-x-变为-，直接写在-html-里面就可以了"><span class="nav-number">1.7.3.</span> <span class="nav-text">1.7.3. 把找到的 e60d 前面加 &amp;#x 变为 ，直接写在 html 里面就可以了</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Andy Ge</p>
+  <div class="site-description" itemprop="description">勇于积极进取，步入人生的世外桃源</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">728</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">134</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">315</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/andyge" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;andyge" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:geshaofei@126.com" title="E-Mail → mailto:geshaofei@126.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.ruanyifeng.com/" title="http:&#x2F;&#x2F;www.ruanyifeng.com&#x2F;" rel="noopener" target="_blank">阮一峰</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://colobu.com/" title="http:&#x2F;&#x2F;colobu.com&#x2F;" rel="noopener" target="_blank">鸟窝</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.cnblogs.com/hellokuangshen/" title="https:&#x2F;&#x2F;www.cnblogs.com&#x2F;hellokuangshen&#x2F;" rel="noopener" target="_blank">狂神</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://yelog.org/" title="https:&#x2F;&#x2F;yelog.org&#x2F;" rel="noopener" target="_blank">叶落阁</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Andy Ge</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.7.1
+  </div>
+
+        
+
+
+
+
+
+
+  <script>
+  function leancloudSelector(url) {
+    url = encodeURI(url);
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.getAttribute('id'));
+      var title = visitors.getAttribute('data-flag-title');
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .then(() => {
+                leancloudSelector(url).innerText = counter.time + 1;
+              })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              })
+          } else {
+              Counter('post', '/classes/Counter', { title: title, url: url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.getAttribute('id'));
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (let item of results) {
+            let { url, time } = item;
+            leancloudSelector(url).innerText = time;
+          }
+          for (let url of entries) {
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=2TdIb5gRlAVUw24l2W0zWnCj-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method: method,
+          headers: {
+            'X-LC-Id'     : '2TdIb5gRlAVUw24l2W0zWnCj-gzGzoHsz',
+            'X-LC-Key'    : 'cJdJrMLBXsj0ttq0WsL0aA2j',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

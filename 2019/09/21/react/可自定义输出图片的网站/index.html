@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"swiftist.cn","root":"/","scheme":"Pisces","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"EVBR3H53HW","apiKey":"2abd573a01143a0cc4108fa4d21ae67c","indexName":"swiftist","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="要点官网：https:&#x2F;&#x2F;dummyimage.com&#x2F; Sizewidth x height  Height is optional, if no height is specified the image will be a square. Example: https:&#x2F;&#x2F;dummyimage.com&#x2F;300 Must be the first option in the url You c">
+<meta property="og:type" content="article">
+<meta property="og:title" content="可自定义输出图片的网站">
+<meta property="og:url" content="https://swiftist.cn/2019/09/21/react/%E5%8F%AF%E8%87%AA%E5%AE%9A%E4%B9%89%E8%BE%93%E5%87%BA%E5%9B%BE%E7%89%87%E7%9A%84%E7%BD%91%E7%AB%99/index.html">
+<meta property="og:site_name" content="飞雪轩辕">
+<meta property="og:description" content="要点官网：https:&#x2F;&#x2F;dummyimage.com&#x2F; Sizewidth x height  Height is optional, if no height is specified the image will be a square. Example: https:&#x2F;&#x2F;dummyimage.com&#x2F;300 Must be the first option in the url You c">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-09-20T22:02:08.000Z">
+<meta property="article:modified_time" content="2020-03-31T15:07:39.422Z">
+<meta property="article:author" content="Andy Ge">
+<meta property="article:tag" content="react">
+<meta property="article:tag" content="mock">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://swiftist.cn/2019/09/21/react/%E5%8F%AF%E8%87%AA%E5%AE%9A%E4%B9%89%E8%BE%93%E5%87%BA%E5%9B%BE%E7%89%87%E7%9A%84%E7%BD%91%E7%AB%99/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>可自定义输出图片的网站 | 飞雪轩辕</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="飞雪轩辕" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">飞雪轩辕</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">人生的乐趣在于把梦想变成现实</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-java">
+
+    <a href="/categories/java/" rel="section"><i class="fa fa-fw fa-th-large"></i>java</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://swiftist.cn/2019/09/21/react/%E5%8F%AF%E8%87%AA%E5%AE%9A%E4%B9%89%E8%BE%93%E5%87%BA%E5%9B%BE%E7%89%87%E7%9A%84%E7%BD%91%E7%AB%99/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Andy Ge">
+      <meta itemprop="description" content="勇于积极进取，步入人生的世外桃源">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="飞雪轩辕">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          可自定义输出图片的网站
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-09-21 06:02:08" itemprop="dateCreated datePublished" datetime="2019-09-21T06:02:08+08:00">2019-09-21</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-31 23:07:39" itemprop="dateModified" datetime="2020-03-31T23:07:39+08:00">2020-03-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/react/" itemprop="url" rel="index">
+                    <span itemprop="name">react</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span id="/2019/09/21/react/%E5%8F%AF%E8%87%AA%E5%AE%9A%E4%B9%89%E8%BE%93%E5%87%BA%E5%9B%BE%E7%89%87%E7%9A%84%E7%BD%91%E7%AB%99/" class="post-meta-item leancloud_visitors" data-flag-title="可自定义输出图片的网站" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="要点"><a href="#要点" class="headerlink" title="要点"></a>要点</h1><p>官网：<a href="https://dummyimage.com/" target="_blank" rel="noopener">https://dummyimage.com/</a></p>
+<h2 id="Size"><a href="#Size" class="headerlink" title="Size"></a>Size</h2><p>width x height</p>
+<ul>
+<li>Height is optional, if no height is specified the image will be a square. Example: <a href="https://dummyimage.com/300" target="_blank" rel="noopener">https://dummyimage.com/300</a></li>
+<li><strong>Must</strong> be the first option in the url</li>
+<li>You can specify one dimension and a ratio and dummyimage will calculate the right value. Example: <a href="https://dummyimage.com/640x4:3/" target="_blank" rel="noopener">https://dummyimage.com/640x4:3</a> or <a href="https://dummyimage.com/16:9x1080/" target="_blank" rel="noopener">https://dummyimage.com/16:9x1080</a></li>
+</ul>
+<a id="more"></a>
+
+<h2 id="Colors"><a href="#Colors" class="headerlink" title="Colors"></a>Colors</h2><p>background color / text color</p>
+<ul>
+<li><p>Colors are represented as hex codes (#ffffff is white)</p>
+</li>
+<li><p>Colors always follow the dimensions, <a href="https://dummyimage.com/250/ffffff/000000" target="_blank" rel="noopener">https://dummyimage.com/250/ffffff/000000</a> not <a href="https://dummyimage.com/ffffff/250/000000" target="_blank" rel="noopener">https://dummyimage.com/ffffff/250/000000</a></p>
+</li>
+<li><p>The first color is always the background color and the second color is the text color.</p>
+</li>
+<li><p>The background color is optional and defaults to gray (#cccccc)</p>
+</li>
+<li><p>The text color is optional and defaults to black (#000000)</p>
+</li>
+<li><p>There are shortcuts for colors</p>
+<ul>
+<li>3 digits will be expanded to 6, 09f becomes 0099ff</li>
+<li>2 digits will be expanded to 6, ef becomes efefef</li>
+<li>1 digit will be repeated 6 times, c becomes cccccc Note: a single 0 will not work, use 00 instead.</li>
+</ul>
+</li>
+<li><p>Standard image sizes are also available. See the <a href="https://dummyimage.com/#standards" target="_blank" rel="noopener">complete list</a>.</p>
+<ul>
+<li><a href="https://dummyimage.com/qvga" target="_blank" rel="noopener">https://dummyimage.com/qvga</a></li>
+<li><a href="https://dummyimage.com/skyscraper/f0f/f" target="_blank" rel="noopener">https://dummyimage.com/skyscraper/f0f/f</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="Image-Formats"><a href="#Image-Formats" class="headerlink" title="Image Formats"></a>Image Formats</h2><p>.gif, .jpg, .png</p>
+<ul>
+<li><p>Adding an image file extension will render the image in the proper format</p>
+</li>
+<li><p>Image format is optional and the default is a gif</p>
+</li>
+<li><p>jpg and jpeg are the same</p>
+</li>
+<li><p>The image extension can go at the end of any option in the url</p>
+<ul>
+<li><a href="https://dummyimage.com/300.png/09f/fff" target="_blank" rel="noopener">https://dummyimage.com/300.png/09f/fff</a></li>
+<li><a href="https://dummyimage.com/300/09f.png/fff" target="_blank" rel="noopener">https://dummyimage.com/300/09f.png/fff</a></li>
+<li><a href="https://dummyimage.com/300/09f/fff.png" target="_blank" rel="noopener">https://dummyimage.com/300/09f/fff.png</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="Custom-Text"><a href="#Custom-Text" class="headerlink" title="Custom Text"></a>Custom Text</h2><p>&amp;text=Hello+World</p>
+<ul>
+<li><p>Custom text can be entered using a query string at the very end of the url.</p>
+</li>
+<li><p>This is optional, default is the image dimensions (300×250)</p>
+</li>
+<li><p>a-z (upper and lowercase), numbers, and most symbols will work just fine.</p>
+</li>
+<li><p>Spaces become +</p>
+<ul>
+<li><a href="https://dummyimage.com/200x300&amp;text=dummyimage.com+rocks" target="_blank" rel="noopener">https://dummyimage.com/200x300&amp;text=dummyimage.com+rocks</a>!</li>
+</ul>
+</li>
+<li><p>The font used is from the freely available <a href="http://mplus-fonts.sourceforge.jp/" target="_blank" rel="noopener">M+ Font Project</a></p>
+</li>
+</ul>
+<p>The following characters need to be encoded using the UTF-8 Hex version in order to be renederd properly.</p>
+<table>
+<thead>
+<tr>
+<th>Character</th>
+<th>UTF-8 Hex Equivalent</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>+</td>
+<td><a href="https://dummyimage.com/480&text=Plus+Sign=0x2B" target="_blank" rel="noopener">0x2B</a></td>
+</tr>
+<tr>
+<td>#</td>
+<td><a href="https://dummyimage.com/480&text=Number+sign+(Octothorp)=0x23" target="_blank" rel="noopener">0x23</a></td>
+</tr>
+<tr>
+<td>%</td>
+<td><a href="https://dummyimage.com/480&text=Percent+symbol=0x25" target="_blank" rel="noopener">0x25</a></td>
+</tr>
+<tr>
+<td>&amp;</td>
+<td><a href="https://dummyimage.com/480&text=Ampersand=0x26" target="_blank" rel="noopener">0x26</a></td>
+</tr>
+</tbody></table>
+<p>You’ll run into problems trying to manually enter a dimension as text if the numbers use the UTf-8 Hex values above, like <a href="https://dummyimage.com/480&text=400x250" target="_blank" rel="noopener">&amp;text=400x250</a>. Use a multiplication symbol, × instead (not an x character) to get around this, <a href="https://dummyimage.com/480&text=400%C3%97250" target="_blank" rel="noopener">&amp;text=400×250</a>.</p>
+<p>If you need to use other unicode characters, look up their UTF-8 Hex version at <a href="http://www.fileformat.info/info/unicode/char/search.htm" target="_blank" rel="noopener">http://www.fileformat.info/info/unicode/char/search.htm</a></p>
+<h2 id="Standard-Image-Sizes"><a href="#Standard-Image-Sizes" class="headerlink" title="Standard Image Sizes"></a>Standard Image Sizes</h2><p>Several standard dimensions are included in dummyimage.com including <a href="http://www.iab.net/iab_products_and_industry_services/1421/1443/1452" target="_blank" rel="noopener">ad sizes</a> and <a href="http://en.wikipedia.org/wiki/File:Vector_Video_Standards2.svg" target="_blank" rel="noopener">screen resolution sizes</a>.</p>
+<h3 id="Ad-Sizes"><a href="#Ad-Sizes" class="headerlink" title="Ad Sizes"></a>Ad Sizes</h3><table>
+<thead>
+<tr>
+<th>Keyword</th>
+<th>Shortcuts</th>
+<th>Dimensions</th>
+<th>Regular Expression</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a href="https://dummyimage.com/mediumrectangle" target="_blank" rel="noopener">mediumrectangle</a></td>
+<td><a href="https://dummyimage.com/medrect" target="_blank" rel="noopener">medrect</a></td>
+<td>300×250</td>
+<td>^(med)\w+(rec\w+)</td>
+</tr>
+<tr>
+<td><a href="https://dummyimage.com/squarepopup" target="_blank" rel="noopener">squarepopup</a></td>
+<td><a href="https://dummyimage.com/sqrpop" target="_blank" rel="noopener">sqrpop</a></td>
+<td>250×250</td>
+<td>^(s\w+pop)</td>
+</tr>
+<tr>
+<td><a href="https://dummyimage.com/verticalrectangle" target="_blank" rel="noopener">verticalrectangle</a></td>
+<td><a href="https://dummyimage.com/vertrec" target="_blank" rel="noopener">vertrec</a></td>
+<td>240×400</td>
+<td>^(ver)\w+(rec)</td>
+</tr>
+<tr>
+<td><a href="https://dummyimage.com/largerectangle" target="_blank" rel="noopener">largerectangle</a></td>
+<td><a href="https://dummyimage.com/lrgrec" target="_blank" rel="noopener">lrgrec</a></td>
+<td>336×280</td>
+<td>^(large</td>
+</tr>
+<tr>
+<td><a href="https://dummyimage.com/rectangle" target="_blank" rel="noopener">rectangle</a></td>
+<td><a href="https://dummyimage.com/rec" target="_blank" rel="noopener">rec</a></td>
+<td>180×150</td>
+<td>^(rec)</td>
+</tr>
+<tr>
+<td><a href="https://dummyimage.com/popunder" target="_blank" rel="noopener">popunder</a></td>
+<td><a href="https://dummyimage.com/pop" target="_blank" rel="noopener">pop</a></td>
+<td>720×300</td>
+<td>^(pop)</td>
+</tr>
+<tr>
+<td><a href="https://dummyimage.com/fullbanner" target="_blank" rel="noopener">fullbanner</a></td>
+<td><a href="https://dummyimage.com/fullban" target="_blank" rel="noopener">fullban</a></td>
+<td>468×60</td>
+<td>^(f\w+ban)</td>
+</tr>
+<tr>
+<td><a href="https://dummyimage.com/halfbanner" target="_blank" rel="noopener">halfbanner</a></td>
+<td><a href="https://dummyimage.com/halfban" target="_blank" rel="noopener">halfban</a></td>
+<td>234×60</td>
+<td>^(h\w+ban)</td>
+</tr>
+<tr>
+<td><a href="https://dummyimage.com/microbar" target="_blank" rel="noopener">microbar</a></td>
+<td><a href="https://dummyimage.com/mibar" target="_blank" rel="noopener">mibar</a></td>
+<td>88×31</td>
+<td>^(m\w+bar)</td>
+</tr>
+<tr>
+<td><a href="https://dummyimage.com/button1" target="_blank" rel="noopener">button1</a></td>
+<td><a href="https://dummyimage.com/but1" target="_blank" rel="noopener">but1</a></td>
+<td>120×90</td>
+<td>^(b\w+1)</td>
+</tr>
+<tr>
+<td><a href="https://dummyimage.com/button2" target="_blank" rel="noopener">button2</a></td>
+<td><a href="https://dummyimage.com/but2" target="_blank" rel="noopener">but2</a></td>
+<td>120×60</td>
+<td>^(b\w+2)</td>
+</tr>
+<tr>
+<td><a href="https://dummyimage.com/verticalbanner" target="_blank" rel="noopener">verticalbanner</a></td>
+<td><a href="https://dummyimage.com/vertban" target="_blank" rel="noopener">vertban</a></td>
+<td>120×240</td>
+<td>^(ver\w+ban)</td>
+</tr>
+<tr>
+<td><a href="https://dummyimage.com/squarebutton" target="_blank" rel="noopener">squarebutton</a></td>
+<td><a href="https://dummyimage.com/sqrbut" target="_blank" rel="noopener">sqrbut</a></td>
+<td>125×125</td>
+<td>^(s\w+but)</td>
+</tr>
+<tr>
+<td><a href="https://dummyimage.com/leaderboard" target="_blank" rel="noopener">leaderboard</a></td>
+<td><a href="https://dummyimage.com/leadbrd" target="_blank" rel="noopener">leadbrd</a></td>
+<td>728×90</td>
+<td>^(lea\w+rd)</td>
+</tr>
+<tr>
+<td><a href="https://dummyimage.com/wideskyscraper" target="_blank" rel="noopener">wideskyscraper</a></td>
+<td><a href="https://dummyimage.com/wiskyscrpr" target="_blank" rel="noopener">wiskyscrpr</a></td>
+<td>160×600</td>
+<td>^(w\w+sk\w+r)</td>
+</tr>
+<tr>
+<td><a href="https://dummyimage.com/skyscraper" target="_blank" rel="noopener">skyscraper</a></td>
+<td><a href="https://dummyimage.com/skyscrpr" target="_blank" rel="noopener">skyscrpr</a></td>
+<td>120×600</td>
+<td>^(sk\w+r)</td>
+</tr>
+<tr>
+<td><a href="https://dummyimage.com/halfpage" target="_blank" rel="noopener">halfpage</a></td>
+<td><a href="https://dummyimage.com/hpge" target="_blank" rel="noopener">hpge</a></td>
+<td>300×600</td>
+<td>^(h\w+g)</td>
+</tr>
+</tbody></table>
+<h3 id="Screen-Standards"><a href="#Screen-Standards" class="headerlink" title="Screen Standards"></a>Screen Standards</h3><table>
+<thead>
+<tr>
+<th>Keyword</th>
+<th>Dimensions</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a href="https://dummyimage.com/cga" target="_blank" rel="noopener">cga</a></td>
+<td>320x200</td>
+</tr>
+<tr>
+<td><a href="https://dummyimage.com/qvga" target="_blank" rel="noopener">qvga</a></td>
+<td>320x240</td>
+</tr>
+<tr>
+<td><a href="https://dummyimage.com/vga" target="_blank" rel="noopener">vga</a></td>
+<td>640x480</td>
+</tr>
+<tr>
+<td><a href="https://dummyimage.com/wvga" target="_blank" rel="noopener">wvga</a></td>
+<td>800x480</td>
+</tr>
+<tr>
+<td><a href="https://dummyimage.com/svga" target="_blank" rel="noopener">svga</a></td>
+<td>800x480</td>
+</tr>
+<tr>
+<td><a href="https://dummyimage.com/wsvga" target="_blank" rel="noopener">wsvga</a></td>
+<td>1024x600</td>
+</tr>
+<tr>
+<td><a href="https://dummyimage.com/xga" target="_blank" rel="noopener">xga</a></td>
+<td>1024x768</td>
+</tr>
+<tr>
+<td><a href="https://dummyimage.com/wxga" target="_blank" rel="noopener">wxga</a></td>
+<td>1280x800</td>
+</tr>
+<tr>
+<td><a href="https://dummyimage.com/wsxga" target="_blank" rel="noopener">wsxga</a></td>
+<td>1440x900</td>
+</tr>
+<tr>
+<td><a href="https://dummyimage.com/wuxga" target="_blank" rel="noopener">wuxga</a></td>
+<td>1920x1200</td>
+</tr>
+<tr>
+<td><a href="https://dummyimage.com/wqxga" target="_blank" rel="noopener">wqxga</a></td>
+<td>2560x1600</td>
+</tr>
+</tbody></table>
+<h3 id="Video-Standards"><a href="#Video-Standards" class="headerlink" title="Video Standards"></a>Video Standards</h3><table>
+<thead>
+<tr>
+<th>Keyword</th>
+<th>Dimensions</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a href="https://dummyimage.com/ntsc" target="_blank" rel="noopener">ntsc</a></td>
+<td>720x480</td>
+</tr>
+<tr>
+<td><a href="https://dummyimage.com/pal" target="_blank" rel="noopener">pal</a></td>
+<td>768x576</td>
+</tr>
+<tr>
+<td><a href="https://dummyimage.com/hd720" target="_blank" rel="noopener">hd720</a></td>
+<td>1280x720</td>
+</tr>
+<tr>
+<td><a href="https://dummyimage.com/hd1080" target="_blank" rel="noopener">hd1080</a></td>
+<td>1920x1080</td>
+</tr>
+</tbody></table>
+<h2 id="Flash-Support"><a href="#Flash-Support" class="headerlink" title="Flash Support"></a>Flash Support</h2><p>Dummyimage.com works with Flash applications.</p>
+<ul>
+<li>Images are served with a specified <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.13" target="_blank" rel="noopener">Content-Length</a> so they can be used in preloaders</li>
+<li>Dummyimage.com uses a <a href="https://dummyimage.com/crossdomain.xml" target="_blank" rel="noopener">crossdomain.xml</a> file</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/react/" rel="tag"># react</a>
+              <a href="/tags/mock/" rel="tag"># mock</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/09/19/react/%E6%8E%A8%E8%8D%90%E5%9C%A8%E7%BA%BFreact%E7%BC%96%E8%BE%91%E5%99%A8/" rel="prev" title="推荐在线react编辑器">
+      <i class="fa fa-chevron-left"></i> 推荐在线react编辑器
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/10/07/axure/Axure-RP-9-%E6%B3%A8%E5%86%8C%E7%A0%81/" rel="next" title="Axure RP 9 注册码">
+      Axure RP 9 注册码 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#要点"><span class="nav-number">1.</span> <span class="nav-text">要点</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Size"><span class="nav-number">1.1.</span> <span class="nav-text">Size</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Colors"><span class="nav-number">1.2.</span> <span class="nav-text">Colors</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Image-Formats"><span class="nav-number">1.3.</span> <span class="nav-text">Image Formats</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Custom-Text"><span class="nav-number">1.4.</span> <span class="nav-text">Custom Text</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Standard-Image-Sizes"><span class="nav-number">1.5.</span> <span class="nav-text">Standard Image Sizes</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Ad-Sizes"><span class="nav-number">1.5.1.</span> <span class="nav-text">Ad Sizes</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Screen-Standards"><span class="nav-number">1.5.2.</span> <span class="nav-text">Screen Standards</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Video-Standards"><span class="nav-number">1.5.3.</span> <span class="nav-text">Video Standards</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Flash-Support"><span class="nav-number">1.6.</span> <span class="nav-text">Flash Support</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Andy Ge</p>
+  <div class="site-description" itemprop="description">勇于积极进取，步入人生的世外桃源</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">728</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">134</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">315</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/andyge" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;andyge" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:geshaofei@126.com" title="E-Mail → mailto:geshaofei@126.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.ruanyifeng.com/" title="http:&#x2F;&#x2F;www.ruanyifeng.com&#x2F;" rel="noopener" target="_blank">阮一峰</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://colobu.com/" title="http:&#x2F;&#x2F;colobu.com&#x2F;" rel="noopener" target="_blank">鸟窝</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.cnblogs.com/hellokuangshen/" title="https:&#x2F;&#x2F;www.cnblogs.com&#x2F;hellokuangshen&#x2F;" rel="noopener" target="_blank">狂神</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://yelog.org/" title="https:&#x2F;&#x2F;yelog.org&#x2F;" rel="noopener" target="_blank">叶落阁</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Andy Ge</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.7.1
+  </div>
+
+        
+
+
+
+
+
+
+  <script>
+  function leancloudSelector(url) {
+    url = encodeURI(url);
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.getAttribute('id'));
+      var title = visitors.getAttribute('data-flag-title');
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .then(() => {
+                leancloudSelector(url).innerText = counter.time + 1;
+              })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              })
+          } else {
+              Counter('post', '/classes/Counter', { title: title, url: url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.getAttribute('id'));
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (let item of results) {
+            let { url, time } = item;
+            leancloudSelector(url).innerText = time;
+          }
+          for (let url of entries) {
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=2TdIb5gRlAVUw24l2W0zWnCj-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method: method,
+          headers: {
+            'X-LC-Id'     : '2TdIb5gRlAVUw24l2W0zWnCj-gzGzoHsz',
+            'X-LC-Key'    : 'cJdJrMLBXsj0ttq0WsL0aA2j',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

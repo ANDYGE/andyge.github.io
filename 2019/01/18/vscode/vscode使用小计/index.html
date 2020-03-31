@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"swiftist.cn","root":"/","scheme":"Pisces","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"EVBR3H53HW","apiKey":"2abd573a01143a0cc4108fa4d21ae67c","indexName":"swiftist","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="1. 使用小计1.1. 启用 emmetUser Setting 添加如下配置： 1&quot;emmet.triggerExpansionOnTab&quot;: true  1.2. 配置文件 setting.json没安装一个插件，都会有一些配置节点加入，如安装完 Markdown All In One 之后，会加入 markdown.extension.\* 类别的配置节点。 1234567&amp;#123;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="vscode使用小计">
+<meta property="og:url" content="https://swiftist.cn/2019/01/18/vscode/vscode%E4%BD%BF%E7%94%A8%E5%B0%8F%E8%AE%A1/index.html">
+<meta property="og:site_name" content="飞雪轩辕">
+<meta property="og:description" content="1. 使用小计1.1. 启用 emmetUser Setting 添加如下配置： 1&quot;emmet.triggerExpansionOnTab&quot;: true  1.2. 配置文件 setting.json没安装一个插件，都会有一些配置节点加入，如安装完 Markdown All In One 之后，会加入 markdown.extension.\* 类别的配置节点。 1234567&amp;#123;">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://swiftist.cn/images/misc/WX20191122-045027@2x.png">
+<meta property="og:image" content="https://swiftist.cn/2019/01/18/images/misc/WX20191122-044321@2x.png">
+<meta property="article:published_time" content="2019-01-18T11:37:28.000Z">
+<meta property="article:modified_time" content="2020-03-31T15:07:39.454Z">
+<meta property="article:author" content="Andy Ge">
+<meta property="article:tag" content="owl">
+<meta property="article:tag" content="NOTE">
+<meta property="article:tag" content="vscode">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://swiftist.cn/images/misc/WX20191122-045027@2x.png">
+
+<link rel="canonical" href="https://swiftist.cn/2019/01/18/vscode/vscode%E4%BD%BF%E7%94%A8%E5%B0%8F%E8%AE%A1/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>vscode使用小计 | 飞雪轩辕</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="飞雪轩辕" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">飞雪轩辕</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">人生的乐趣在于把梦想变成现实</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-java">
+
+    <a href="/categories/java/" rel="section"><i class="fa fa-fw fa-th-large"></i>java</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://swiftist.cn/2019/01/18/vscode/vscode%E4%BD%BF%E7%94%A8%E5%B0%8F%E8%AE%A1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Andy Ge">
+      <meta itemprop="description" content="勇于积极进取，步入人生的世外桃源">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="飞雪轩辕">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          vscode使用小计
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-01-18 19:37:28" itemprop="dateCreated datePublished" datetime="2019-01-18T19:37:28+08:00">2019-01-18</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-31 23:07:39" itemprop="dateModified" datetime="2020-03-31T23:07:39+08:00">2020-03-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/vscode/" itemprop="url" rel="index">
+                    <span itemprop="name">vscode</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span id="/2019/01/18/vscode/vscode%E4%BD%BF%E7%94%A8%E5%B0%8F%E8%AE%A1/" class="post-meta-item leancloud_visitors" data-flag-title="vscode使用小计" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="1-使用小计"><a href="#1-使用小计" class="headerlink" title="1. 使用小计"></a>1. 使用小计</h1><h2 id="1-1-启用-emmet"><a href="#1-1-启用-emmet" class="headerlink" title="1.1. 启用 emmet"></a>1.1. 启用 emmet</h2><p>User Setting 添加如下配置：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">"emmet.triggerExpansionOnTab": true</span><br></pre></td></tr></table></figure>
+
+<h2 id="1-2-配置文件-setting-json"><a href="#1-2-配置文件-setting-json" class="headerlink" title="1.2. 配置文件 setting.json"></a>1.2. 配置文件 <code>setting.json</code></h2><p>没安装一个插件，都会有一些配置节点加入，如安装完 <code>Markdown All In One</code> 之后，会加入 <code>markdown.extension.\*</code> 类别的配置节点。</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"vetur.format.defaultFormatter.html"</span>: <span class="string">"js-beautify-html"</span>,</span><br><span class="line">    <span class="attr">"vetur.validation.template"</span>: <span class="literal">false</span>,</span><br><span class="line">    <span class="attr">"eslint.validate"</span>: [<span class="string">"javascript"</span>, <span class="string">"javascriptreact"</span>, <span class="string">"html"</span>, <span class="string">"wpy"</span>, <span class="string">"vue"</span>],</span><br><span class="line">    <span class="attr">"markdown.extension.toc.githubCompatibility"</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">"markdown.extension.print.imgToBase64"</span>: <span class="literal">true</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以通过这些配置改写默认的行为。</p>
+<h1 id="2-常用插件"><a href="#2-常用插件" class="headerlink" title="2. 常用插件"></a>2. 常用插件</h1><h2 id="2-1-Prettier"><a href="#2-1-Prettier" class="headerlink" title="2.1. Prettier"></a>2.1. Prettier</h2><p>Prettier 是一个比较武断的格式化工具，到目前为止，如果只写 <code>markdown</code> 的话，只安装一个 <code>Prettier</code> 就够了。<code>Prettier</code> 只关注格式化，并不具有 <code>lint</code> 检查语法等能力，所以开始大家可能会经常碰到 <code>lint</code> 搭配 <code>prettier</code> 会出现冲突。</p>
+<ul>
+<li>能够格式化 <code>markdown</code> 表格</li>
+<li>能够格式化满足 <code>markdownlint</code> 要求的样式，不符合要求的可以通过 <code>.markdownlint.json</code> 忽略。</li>
+<li>中英混合，自动在英文单词两边添加空格</li>
+</ul>
+<h3 id="2-1-1-prettierrc"><a href="#2-1-1-prettierrc" class="headerlink" title="2.1.1. .prettierrc"></a>2.1.1. <code>.prettierrc</code></h3><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"trailingComma"</span>: <span class="string">"es5"</span>,</span><br><span class="line">    <span class="attr">"tabWidth"</span>: <span class="number">4</span>,</span><br><span class="line">    <span class="attr">"semi"</span>: <span class="literal">false</span>,</span><br><span class="line">    <span class="attr">"singleQuote"</span>: <span class="literal">true</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>放置在根目录下的配置文件是能够生效的。</p>
+<h3 id="2-1-2-与-editconfig-的优先级"><a href="#2-1-2-与-editconfig-的优先级" class="headerlink" title="2.1.2. 与 .editconfig 的优先级"></a>2.1.2. 与 <code>.editconfig</code> 的优先级</h3><p>如果在 <code>.prettierrc</code> 中禁用了 <code>tab</code> ，这时候 <code>.editorconfig</code> 中的配置将会生效。</p>
+<p>vscode 的 setting.json：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"prettier.tabWidth"</span>: <span class="number">2</span>,</span><br><span class="line">    <span class="attr">"prettier.useTabs"</span>: <span class="literal">false</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>根目录下的 <code>.editorconfig</code> ：</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">indent_style</span> = space   <span class="comment"># Tab键缩进的样式，由space和table两种 一般代码中是space</span></span><br><span class="line"><span class="attr">indent_size</span> = <span class="number">4</span>        <span class="comment"># 缩进size为4</span></span><br></pre></td></tr></table></figure>
+
+<p>虽然在 <code>.prettierrc</code> 配置了 <code>tabWidth</code> 为 <code>2</code>，但是由于禁用了 <code>tabs</code> ，最后仍采用的 <code>.editorconfig</code> 的配置，注意前提是安装并启用了<code>EditorConfig For VS Code</code>插件。</p>
+<h3 id="2-1-3-markdownlint-与-prettier-冲突"><a href="#2-1-3-markdownlint-与-prettier-冲突" class="headerlink" title="2.1.3. markdownlint 与 prettier 冲突"></a>2.1.3. markdownlint 与 prettier 冲突</h3><p>在 markdown 文档中格式化时，会在列表<code>-</code>后面生成三个空格，这个和 markdownlint 冲突，解决办法是添加<code>.markdownlint.json</code>文件：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"MD013"</span>: <span class="literal">false</span>,</span><br><span class="line">    <span class="attr">"MD030"</span>: <span class="literal">false</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-2-Markdown-All-In-One"><a href="#2-2-Markdown-All-In-One" class="headerlink" title="2.2. Markdown All In One"></a>2.2. Markdown All In One</h2><ul>
+<li>表格格式化</li>
+<li>列表助手</li>
+<li>如果不装 editorconfig 插件，它的格式化快捷键会覆盖 Prettier 的（不确定）</li>
+</ul>
+<h2 id="2-3-EditorConfig-for-VS-Code"><a href="#2-3-EditorConfig-for-VS-Code" class="headerlink" title="2.3. EditorConfig for VS Code"></a>2.3. EditorConfig for VS Code</h2><p>强烈推荐安装，如果没安装如 <code>Prettier</code> 插件，将会采用项目目录下的 <code>.editorconfig</code> 的配置。</p>
+<h2 id="2-4-Markdown-Preview-Enhanced"><a href="#2-4-Markdown-Preview-Enhanced" class="headerlink" title="2.4. Markdown Preview Enhanced"></a>2.4. Markdown Preview Enhanced</h2><p>能够支持绝大多数的效果，如数学公式，各种流程图等冷僻的 Markdown 标签。</p>
+<h3 id="2-4-1-kbd-标签"><a href="#2-4-1-kbd-标签" class="headerlink" title="2.4.1. kbd 标签"></a>2.4.1. kbd 标签</h3><p>按键效果标签如：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">kbd</span>&gt;</span>Ctrl<span class="tag">&lt;/<span class="name">kbd</span>&gt;</span>+<span class="tag">&lt;<span class="name">kbd</span>&gt;</span>Alt<span class="tag">&lt;/<span class="name">kbd</span>&gt;</span>+<span class="tag">&lt;<span class="name">kbd</span>&gt;</span>l<span class="tag">&lt;/<span class="name">kbd</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<!-- markdownlint-disable MD033 -->
+
+<p><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>l</kbd></p>
+<h3 id="2-4-2-流程图"><a href="#2-4-2-流程图" class="headerlink" title="2.4.2. 流程图"></a>2.4.2. 流程图</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">st&#x3D;&gt;start: 开始</span><br><span class="line">e&#x3D;&gt;end: 登录</span><br><span class="line">io1&#x3D;&gt;inputoutput: 输入用户名密码</span><br><span class="line">sub1&#x3D;&gt;subroutine: 数据库查询子类</span><br><span class="line">cond&#x3D;&gt;condition: 是否有此用户</span><br><span class="line">cond2&#x3D;&gt;condition: 密码是否正确</span><br><span class="line">op&#x3D;&gt;operation: 读入用户信息</span><br><span class="line"></span><br><span class="line">st-&gt;io1-&gt;sub1-&gt;cond</span><br><span class="line">cond(yes,right)-&gt;cond2</span><br><span class="line">cond(no)-&gt;io1(right)</span><br><span class="line">cond2(yes,right)-&gt;op-&gt;e</span><br><span class="line">cond2(no)-&gt;io1</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-5-Markdown-Toc"><a href="#2-5-Markdown-Toc" class="headerlink" title="2.5. Markdown Toc"></a>2.5. Markdown Toc</h2><p>能够在标题的前面插入序号，如果标题中包含有特殊字符，如<code>%\$</code>，将不能够工作<br>另外插入目录有问题。</p>
+<h2 id="2-6-Settings-Sync"><a href="#2-6-Settings-Sync" class="headerlink" title="2.6. Settings Sync"></a>2.6. Settings Sync</h2><p>同步配置，待研究。</p>
+<h2 id="2-7-搜索同时包含两个单词"><a href="#2-7-搜索同时包含两个单词" class="headerlink" title="2.7. 搜索同时包含两个单词"></a>2.7. 搜索同时包含两个单词</h2><p><code>要点[\r\n\s\S]*screen</code>，将搜索出同时包含<code>要点</code>和<code>screen</code>两个单词的文章，注意<code>[\s\S]</code>在这里不同匹配换行。</p>
+<h2 id="2-8-在指定的文件夹下搜索"><a href="#2-8-在指定的文件夹下搜索" class="headerlink" title="2.8. 在指定的文件夹下搜索"></a>2.8. 在指定的文件夹下搜索</h2><p>文件夹采用相对路径<code>./somefolder</code>，如下图：<br><img src="/images/misc/WX20191122-045027@2x.png" alt="文件夹搜索"></p>
+<p>但是如果要从所有的<code>src</code>中搜索，则不需要添加<code>./</code>，只需<code>src</code>即可。</p>
+<h2 id="2-9-排除搜索文件夹"><a href="#2-9-排除搜索文件夹" class="headerlink" title="2.9. 排除搜索文件夹"></a>2.9. 排除搜索文件夹</h2><p>相对于根目录，用英文逗号分隔，如下：<br><img src="../../images/misc/WX20191122-044321@2x.png" alt="排除文件夹"></p>
+<blockquote>
+<p>注意：如果要从根目录下排除上述文件夹，则需要添加<code>./</code>，如<code>./.temp,./dist,./lib,./rn_temp,./node_modules</code>。</p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/owl/" rel="tag"># owl</a>
+              <a href="/tags/NOTE/" rel="tag"># NOTE</a>
+              <a href="/tags/vscode/" rel="tag"># vscode</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/01/15/less/%E5%B0%8F%E8%AE%A1/" rel="prev" title="LESS使用小计">
+      <i class="fa fa-chevron-left"></i> LESS使用小计
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/01/19/owl/css3-transform%E4%BD%BF%E7%94%A8%E5%B0%8F%E8%AE%A1/" rel="next" title="css3 transform使用小计">
+      css3 transform使用小计 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-使用小计"><span class="nav-number">1.</span> <span class="nav-text">1. 使用小计</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-启用-emmet"><span class="nav-number">1.1.</span> <span class="nav-text">1.1. 启用 emmet</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-配置文件-setting-json"><span class="nav-number">1.2.</span> <span class="nav-text">1.2. 配置文件 setting.json</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-常用插件"><span class="nav-number">2.</span> <span class="nav-text">2. 常用插件</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-Prettier"><span class="nav-number">2.1.</span> <span class="nav-text">2.1. Prettier</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-1-prettierrc"><span class="nav-number">2.1.1.</span> <span class="nav-text">2.1.1. .prettierrc</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-2-与-editconfig-的优先级"><span class="nav-number">2.1.2.</span> <span class="nav-text">2.1.2. 与 .editconfig 的优先级</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-3-markdownlint-与-prettier-冲突"><span class="nav-number">2.1.3.</span> <span class="nav-text">2.1.3. markdownlint 与 prettier 冲突</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-Markdown-All-In-One"><span class="nav-number">2.2.</span> <span class="nav-text">2.2. Markdown All In One</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-EditorConfig-for-VS-Code"><span class="nav-number">2.3.</span> <span class="nav-text">2.3. EditorConfig for VS Code</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-4-Markdown-Preview-Enhanced"><span class="nav-number">2.4.</span> <span class="nav-text">2.4. Markdown Preview Enhanced</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-1-kbd-标签"><span class="nav-number">2.4.1.</span> <span class="nav-text">2.4.1. kbd 标签</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-2-流程图"><span class="nav-number">2.4.2.</span> <span class="nav-text">2.4.2. 流程图</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-5-Markdown-Toc"><span class="nav-number">2.5.</span> <span class="nav-text">2.5. Markdown Toc</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-6-Settings-Sync"><span class="nav-number">2.6.</span> <span class="nav-text">2.6. Settings Sync</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-7-搜索同时包含两个单词"><span class="nav-number">2.7.</span> <span class="nav-text">2.7. 搜索同时包含两个单词</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-8-在指定的文件夹下搜索"><span class="nav-number">2.8.</span> <span class="nav-text">2.8. 在指定的文件夹下搜索</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-9-排除搜索文件夹"><span class="nav-number">2.9.</span> <span class="nav-text">2.9. 排除搜索文件夹</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Andy Ge</p>
+  <div class="site-description" itemprop="description">勇于积极进取，步入人生的世外桃源</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">728</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">134</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">315</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/andyge" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;andyge" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:geshaofei@126.com" title="E-Mail → mailto:geshaofei@126.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.ruanyifeng.com/" title="http:&#x2F;&#x2F;www.ruanyifeng.com&#x2F;" rel="noopener" target="_blank">阮一峰</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://colobu.com/" title="http:&#x2F;&#x2F;colobu.com&#x2F;" rel="noopener" target="_blank">鸟窝</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.cnblogs.com/hellokuangshen/" title="https:&#x2F;&#x2F;www.cnblogs.com&#x2F;hellokuangshen&#x2F;" rel="noopener" target="_blank">狂神</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://yelog.org/" title="https:&#x2F;&#x2F;yelog.org&#x2F;" rel="noopener" target="_blank">叶落阁</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Andy Ge</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.7.1
+  </div>
+
+        
+
+
+
+
+
+
+  <script>
+  function leancloudSelector(url) {
+    url = encodeURI(url);
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.getAttribute('id'));
+      var title = visitors.getAttribute('data-flag-title');
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .then(() => {
+                leancloudSelector(url).innerText = counter.time + 1;
+              })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              })
+          } else {
+              Counter('post', '/classes/Counter', { title: title, url: url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.getAttribute('id'));
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (let item of results) {
+            let { url, time } = item;
+            leancloudSelector(url).innerText = time;
+          }
+          for (let url of entries) {
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=2TdIb5gRlAVUw24l2W0zWnCj-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method: method,
+          headers: {
+            'X-LC-Id'     : '2TdIb5gRlAVUw24l2W0zWnCj-gzGzoHsz',
+            'X-LC-Key'    : 'cJdJrMLBXsj0ttq0WsL0aA2j',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

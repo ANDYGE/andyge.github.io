@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"swiftist.cn","root":"/","scheme":"Pisces","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"EVBR3H53HW","apiKey":"2abd573a01143a0cc4108fa4d21ae67c","indexName":"swiftist","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="一、环境准备 注：上述三台 centos 7.3 服务器，均运行 docker 服务，如果是测试环境，那么内存最少 2G，CPU 至少双核，并且 docker 服务的版本不建议过高，最好是 18.09 及以下。 如需部署 docker 服务，可参考博文：Docker 的安装详细配置 二、部署前准备1、检查 docker 版本、关闭防火墙及 Selinux、清空 iptables 规则、禁用 Swa">
+<meta property="og:type" content="article">
+<meta property="og:title" content="k8s简介及安装部署">
+<meta property="og:url" content="https://swiftist.cn/2020/03/08/k8s/k8s%E7%AE%80%E4%BB%8B%E5%8F%8A%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2/index.html">
+<meta property="og:site_name" content="飞雪轩辕">
+<meta property="og:description" content="一、环境准备 注：上述三台 centos 7.3 服务器，均运行 docker 服务，如果是测试环境，那么内存最少 2G，CPU 至少双核，并且 docker 服务的版本不建议过高，最好是 18.09 及以下。 如需部署 docker 服务，可参考博文：Docker 的安装详细配置 二、部署前准备1、检查 docker 版本、关闭防火墙及 Selinux、清空 iptables 规则、禁用 Swa">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s1.51cto.com/images/blog/201911/04/a2f2692d791180d06672690094da661c.png?x-oss-process=image/watermark,size_16,text_QDUxQ1RP5Y2a5a6i,color_FFFFFF,t_100,g_se,x_10,y_10,shadow_90,type_ZmFuZ3poZW5naGVpdGk=">
+<meta property="og:image" content="https://s1.51cto.com/images/blog/201911/04/e5b92996bde30c3a2080aa82b3683fa9.png?x-oss-process=image/watermark,size_16,text_QDUxQ1RP5Y2a5a6i,color_FFFFFF,t_100,g_se,x_10,y_10,shadow_90,type_ZmFuZ3poZW5naGVpdGk=">
+<meta property="og:image" content="https://s1.51cto.com/images/blog/201911/04/f4579d651e7e4f89b1814cd750578716.png?x-oss-process=image/watermark,size_16,text_QDUxQ1RP5Y2a5a6i,color_FFFFFF,t_100,g_se,x_10,y_10,shadow_90,type_ZmFuZ3poZW5naGVpdGk=">
+<meta property="og:image" content="https://s1.51cto.com/images/blog/201911/04/f4b704f9c86768e6d048ac2da081fa39.png?x-oss-process=image/watermark,size_16,text_QDUxQ1RP5Y2a5a6i,color_FFFFFF,t_100,g_se,x_10,y_10,shadow_90,type_ZmFuZ3poZW5naGVpdGk=">
+<meta property="og:image" content="https://s1.51cto.com/images/blog/201911/04/896d2657027ef2f57007cfd6a4788e93.png?x-oss-process=image/watermark,size_16,text_QDUxQ1RP5Y2a5a6i,color_FFFFFF,t_100,g_se,x_10,y_10,shadow_90,type_ZmFuZ3poZW5naGVpdGk=">
+<meta property="og:image" content="https://s1.51cto.com/images/blog/201911/04/6c14293037f8c233bcc81e71f7efb6fd.png?x-oss-process=image/watermark,size_16,text_QDUxQ1RP5Y2a5a6i,color_FFFFFF,t_100,g_se,x_10,y_10,shadow_90,type_ZmFuZ3poZW5naGVpdGk=">
+<meta property="og:image" content="https://s1.51cto.com/images/blog/201911/04/8f6c9c8d57787155699d8f463e83430c.png?x-oss-process=image/watermark,size_16,text_QDUxQ1RP5Y2a5a6i,color_FFFFFF,t_100,g_se,x_10,y_10,shadow_90,type_ZmFuZ3poZW5naGVpdGk=">
+<meta property="article:published_time" content="2020-03-08T01:31:20.000Z">
+<meta property="article:modified_time" content="2020-03-31T15:07:39.372Z">
+<meta property="article:author" content="Andy Ge">
+<meta property="article:tag" content="k8s">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s1.51cto.com/images/blog/201911/04/a2f2692d791180d06672690094da661c.png?x-oss-process=image/watermark,size_16,text_QDUxQ1RP5Y2a5a6i,color_FFFFFF,t_100,g_se,x_10,y_10,shadow_90,type_ZmFuZ3poZW5naGVpdGk=">
+
+<link rel="canonical" href="https://swiftist.cn/2020/03/08/k8s/k8s%E7%AE%80%E4%BB%8B%E5%8F%8A%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>k8s简介及安装部署 | 飞雪轩辕</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="飞雪轩辕" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">飞雪轩辕</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">人生的乐趣在于把梦想变成现实</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-java">
+
+    <a href="/categories/java/" rel="section"><i class="fa fa-fw fa-th-large"></i>java</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://swiftist.cn/2020/03/08/k8s/k8s%E7%AE%80%E4%BB%8B%E5%8F%8A%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Andy Ge">
+      <meta itemprop="description" content="勇于积极进取，步入人生的世外桃源">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="飞雪轩辕">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          k8s简介及安装部署
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-08 09:31:20" itemprop="dateCreated datePublished" datetime="2020-03-08T09:31:20+08:00">2020-03-08</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-31 23:07:39" itemprop="dateModified" datetime="2020-03-31T23:07:39+08:00">2020-03-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/k8s/" itemprop="url" rel="index">
+                    <span itemprop="name">k8s</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/03/08/k8s/k8s%E7%AE%80%E4%BB%8B%E5%8F%8A%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2/" class="post-meta-item leancloud_visitors" data-flag-title="k8s简介及安装部署" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="一、环境准备"><a href="#一、环境准备" class="headerlink" title="一、环境准备"></a>一、环境准备</h2><p><img src="https://s1.51cto.com/images/blog/201911/04/a2f2692d791180d06672690094da661c.png?x-oss-process=image/watermark,size_16,text_QDUxQ1RP5Y2a5a6i,color_FFFFFF,t_100,g_se,x_10,y_10,shadow_90,type_ZmFuZ3poZW5naGVpdGk=" alt="K8s（Kubernetes）简介及安装部署"></p>
+<p><strong>注：上述三台 centos 7.3 服务器，均运行 docker 服务，如果是测试环境，那么内存最少 2G，CPU 至少双核，并且 docker 服务的版本不建议过高，最好是 18.09 及以下。</strong></p>
+<p>如需部署 docker 服务，可参考博文：<a href="https://blog.51cto.com/14154700/2442086" target="_blank" rel="noopener">Docker 的安装详细配置</a></p>
+<h2 id="二、部署前准备"><a href="#二、部署前准备" class="headerlink" title="二、部署前准备"></a>二、部署前准备</h2><h3 id="1、检查-docker-版本、关闭防火墙及-Selinux、清空-iptables-规则、禁用-Swap-交换分区"><a href="#1、检查-docker-版本、关闭防火墙及-Selinux、清空-iptables-规则、禁用-Swap-交换分区" class="headerlink" title="1、检查 docker 版本、关闭防火墙及 Selinux、清空 iptables 规则、禁用 Swap 交换分区"></a>1、检查 docker 版本、关闭防火墙及 Selinux、清空 iptables 规则、禁用 Swap 交换分区</h3><p><strong>注：以下操作需要在三台 docker 主机上分别配置一次,哪怕是在生产环境，都需要进行以下操作，因为 k8s 有它自己的安全策略。</strong></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">[root@master ~]<span class="comment"># docker -v       #确认docker版本</span></span><br><span class="line">Docker version 18.09.0, build 4d60db4</span><br><span class="line"><span class="comment">#关闭防火墙</span></span><br><span class="line">[root@master ~]<span class="comment"># systemctl stop firewalld</span></span><br><span class="line">[root@master ~]<span class="comment"># systemctl disable firewalld</span></span><br><span class="line"><span class="comment">#关闭Selinux</span></span><br><span class="line">[root@master ~]<span class="comment"># setenforce 0</span></span><br><span class="line">[root@master ~]<span class="comment"># vim /etc/sysconfig/selinux</span></span><br><span class="line">SELINUX=disabled          <span class="comment">#将此处改为disabled</span></span><br><span class="line">[root@master ~]<span class="comment"># iptables -F    #清空iptables规则</span></span><br><span class="line"><span class="comment">#重启docker服务</span></span><br><span class="line">[root@master ~]<span class="comment"># systemctl daemon-reload</span></span><br><span class="line">[root@master ~]<span class="comment"># systemctl restart docker</span></span><br><span class="line"><span class="comment">#禁用swap交换分区</span></span><br><span class="line">[root@master ~]<span class="comment"># swapoff -a   #临时禁用swap</span></span><br><span class="line">[root@master ~]<span class="comment"># vim /etc/fstab     #打开自动挂载的配置文件，将swap配置项注释掉</span></span><br><span class="line"><span class="comment">#/dev/mapper/cl-swap     swap                    swap    defaults        0 0</span></span><br><span class="line"><span class="comment">#就注释掉上面那行</span></span><br><span class="line">[root@node02 ~]<span class="comment"># mount -a    #重新加载挂载的配置文件</span></span><br><span class="line">[root@node02 ~]<span class="comment"># free -h     #确认输出的swap行如下（都为0）：</span></span><br><span class="line">Swap:            0B          0B          0B</span><br></pre></td></tr></table></figure>
+
+<h3 id="2、配置-ssh-免密登录、主机名解析及-yum-源"><a href="#2、配置-ssh-免密登录、主机名解析及-yum-源" class="headerlink" title="2、配置 ssh 免密登录、主机名解析及 yum 源"></a>2、配置 ssh 免密登录、主机名解析及 yum 源</h3><p><strong>注：以下没有特别说明的操作，在 master 主机上操作即可</strong></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">[root@master ~]<span class="comment"># tail -3 /etc/hosts        #在该文件添加三台主机的解析</span></span><br><span class="line">192.168.20.6 master</span><br><span class="line">192.168.20.7 node01</span><br><span class="line">192.168.20.8 node02</span><br><span class="line"><span class="comment">#配置ssh免密登录（为了方便在主机间复制配置文件，可不做）</span></span><br><span class="line">[root@master ~]<span class="comment"># ssh-keygen -t rsa</span></span><br><span class="line">[root@master ~]<span class="comment"># ssh-copy-id node01</span></span><br><span class="line">[root@master ~]<span class="comment"># ssh-copy-id node02</span></span><br><span class="line"><span class="comment">#将更改后的hosts文件发送到node01及node02</span></span><br><span class="line">[root@master ~]<span class="comment"># scp /etc/hosts node01:/etc/</span></span><br><span class="line">[root@master ~]<span class="comment"># scp /etc/hosts node02:/etc/</span></span><br><span class="line"><span class="comment">#接下来配置yum源</span></span><br><span class="line">[root@master ~]<span class="comment"># vim /etc/yum.repos.d/kubernetes.repo  #编辑yum文件</span></span><br><span class="line">[kubernetes]</span><br><span class="line">name=kubneters</span><br><span class="line">baseurl=https://mirrors.aliyun.com/kubernetes/yum/repos/kubernetes-el7-x86_64/</span><br><span class="line">enabled=1</span><br><span class="line">gpgcheck=0</span><br><span class="line"><span class="comment">#以上url是阿里开源镜像站，可复制网址自行查看</span></span><br><span class="line">[root@master yum.repos.d]<span class="comment"># yum repolist    #查看刚刚配置的yum源中有没有可用的包</span></span><br><span class="line">kubernetes               kubneters                      421  <span class="comment">#返回的这一行不可为0</span></span><br><span class="line">[root@master yum.repos.d]<span class="comment"># yum makecache    #制作yum元数据缓存</span></span><br><span class="line"><span class="comment">#将yum源的配置文件复制到另外两台节点主机上</span></span><br><span class="line">[root@master ~]<span class="comment"># scp /etc/yum.repos.d/kubernetes.repo node01:/etc/yum.repos.d/</span></span><br><span class="line">[root@master ~]<span class="comment"># scp /etc/yum.repos.d/kubernetes.repo node02:/etc/yum.repos.d/</span></span><br><span class="line"><span class="comment">#在另外两台主机上，都需执行以下两条命令</span></span><br><span class="line">[root@node01 ~]<span class="comment"># yum repolist</span></span><br><span class="line">kubernetes               kubneters                      421  <span class="comment">#返回的这一行不可为0</span></span><br><span class="line">[root@node01 ~]<span class="comment"># yum makecache</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="3、打开-iptables-桥接功能及路由转发"><a href="#3、打开-iptables-桥接功能及路由转发" class="headerlink" title="3、打开 iptables 桥接功能及路由转发"></a>3、打开 iptables 桥接功能及路由转发</h3><p><strong>同样，没有特别说明的配置，在 master 上进行配置即可。</strong></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#打开iptables桥接功能</span></span><br><span class="line">[root@master ~]<span class="comment"># vim /etc/sysctl.d/k8s.conf   #写入以下配置</span></span><br><span class="line">net.bridge.bridge-nf-call-iptables = 1</span><br><span class="line">net.bridge.bridge-nf-call-ip6tables = 1</span><br><span class="line">[root@master ~]<span class="comment"># sysctl -p /etc/sysctl.d/k8s.conf   #刷新配置</span></span><br><span class="line">net.bridge.bridge-nf-call-iptables = 1</span><br><span class="line">net.bridge.bridge-nf-call-ip6tables = 1</span><br><span class="line"><span class="comment"># PS：如果报错“找不到文件”，需要执行下面的命令以便加载一个模块。</span></span><br><span class="line">[root@master ~]<span class="comment"># modprobe br_netfilter    #加载br_netfileter模块</span></span><br><span class="line"><span class="comment">#将配置的k8s.conf文件复制到另外两台节点</span></span><br><span class="line">[root@master ~]<span class="comment"># scp /etc/sysctl.d/k8s.conf node01:/etc/sysctl.d/</span></span><br><span class="line">[root@master ~]<span class="comment"># scp /etc/sysctl.d/k8s.conf node02:/etc/sysctl.d/</span></span><br><span class="line"><span class="comment">#将配置文件复制到另外两台节点后，需要在node01及02上分别执行下面的命令进行刷新</span></span><br><span class="line">[root@node02 ~]<span class="comment"># sysctl -p /etc/sysctl.d/k8s.conf     #刷新配置文件</span></span><br><span class="line"><span class="comment">#接下来开启路由转发（三台docker主机上都需要进行以下操作）</span></span><br><span class="line">[root@master ~]<span class="comment"># echo "net.ipv4.ip_forward = 1" &gt;&gt; /etc/sysctl.conf</span></span><br><span class="line"><span class="comment">#开启路由转发</span></span><br><span class="line">[root@master ~]<span class="comment"># sysctl -p    #刷新配置</span></span><br><span class="line">net.ipv4.ip_forward = 1</span><br></pre></td></tr></table></figure>
+
+<p>配置至此，部署前的工作就完成了。</p>
+<p>在进行接下来的操作前，需要先<a href="https://pan.baidu.com/s/1hAgloF231dYtD2gjH2g3eg" target="_blank" rel="noopener">下载</a>我提供的镜像。</p>
+<h2 id="三、配置-k8s-群集"><a href="#三、配置-k8s-群集" class="headerlink" title="三、配置 k8s 群集"></a>三、配置 k8s 群集</h2><h3 id="1、安装部署-k8s-相关工具"><a href="#1、安装部署-k8s-相关工具" class="headerlink" title="1、安装部署 k8s 相关工具"></a>1、安装部署 k8s 相关工具</h3><p><strong>注：以下操作在 master 主机上进行</strong></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">[root@master ~]<span class="comment"># yum -y install kubelet-1.15.0-0 kubeadm-1.15.0-0 kubectl-1.15.0-0</span></span><br><span class="line"><span class="comment">#安装k8s的master所需组件</span></span><br><span class="line">[root@master ~]<span class="comment"># systemctl enable kubelet</span></span><br><span class="line"><span class="comment">#将kubelet加入开机自启，但现在不要启动</span></span><br><span class="line">[root@master ~]<span class="comment"># mkdir images</span></span><br><span class="line">[root@master ~]<span class="comment"># cd images/</span></span><br><span class="line">[root@master images]<span class="comment"># rz   #上传我提供的所有镜像包，共8个镜像包</span></span><br><span class="line">[root@master images]<span class="comment"># ls   #确认上传的镜像包</span></span><br><span class="line">coredns-1-3-1.tar         kube-proxy-1-15.tar</span><br><span class="line">etcd-3-3-10.tar           kube-scheduler-1-15.tar</span><br><span class="line">kube-apiserver-1-15.tar   myflannel-11-0.tar</span><br><span class="line">kube-controller-1-15.tar  pause-3-1.tar</span><br><span class="line"><span class="comment">#接下来导入上传的镜像包到docker镜像中</span></span><br><span class="line">[root@master ~]<span class="comment"># pwd     #脚本不要和镜像在同一个目录</span></span><br><span class="line">/root</span><br><span class="line">[root@master ~]<span class="comment"># vim a.sh       #编写脚本如下</span></span><br><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"><span class="built_in">cd</span> /root/images/</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> `ls`</span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">        docker load &lt; <span class="variable">$&#123;i&#125;</span></span><br><span class="line"><span class="keyword">done</span></span><br><span class="line">[root@master ~]<span class="comment"># sh a.sh      #执行脚本，进行导入镜像</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2、初始化-k8s-集群"><a href="#2、初始化-k8s-集群" class="headerlink" title="2、初始化 k8s 集群"></a>2、初始化 k8s 集群</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">[root@master images]<span class="comment"># kubeadm init --kubernetes-version=v1.15.0 --pod-network-cidr=10.244.0.0/16 --service-cidr=10.96.0.0/12 --ignore-preflight-errors=Swap</span></span><br><span class="line">                    &lt;!--</span><br><span class="line">这里指定的版本必须和前面yum安装的版本一致。指定的两个网络则是官方建议使用的网段</span><br><span class="line">如果执行上述命令后，返回CPU相关的报错信息，那么需要调大CPU的核心数</span><br><span class="line">初始化成功后，首先复制下面返回的这条命令，并妥善保存</span><br><span class="line">若初始化失败，可以执行kubeadm reset进行重置群集</span><br><span class="line">                                              --&gt;</span><br><span class="line">kubeadm join 192.168.20.6:6443 --token xfp7g5.6f2bdfjybt8a1j7r \</span><br><span class="line">    --discovery-token-ca-cert-hash sha256:17895c549344a83daae4318360dc9c9212b5dc3b1fb7d79ef84a640c63e489e2</span><br><span class="line">                    &lt;!--</span><br><span class="line">上面这条命令是用来其他节点加入到当前k8s群集中需要执行的</span><br><span class="line">一旦丢失，特别麻烦，并且只有24小时有效期，每次初始化群集后产生的都不一样</span><br><span class="line">                                              --&gt;</span><br><span class="line">                &lt;!--</span><br><span class="line">接下来呢，依次执行返回的其他指令，如下（由于我是root用户，所以就省略了sudo指令）：</span><br><span class="line">                                    --&gt;</span><br><span class="line">[root@master ~]<span class="comment"># mkdir -p $HOME/.kube</span></span><br><span class="line">[root@master ~]<span class="comment"># cp -i /etc/kubernetes/admin.conf $HOME/.kube/config</span></span><br><span class="line">[root@master ~]<span class="comment"># chown $(id -u):$(id -g) $HOME/.kube/config</span></span><br></pre></td></tr></table></figure>
+
+<p>返回的信息截图如下，供参考：</p>
+<p><img src="https://s1.51cto.com/images/blog/201911/04/e5b92996bde30c3a2080aa82b3683fa9.png?x-oss-process=image/watermark,size_16,text_QDUxQ1RP5Y2a5a6i,color_FFFFFF,t_100,g_se,x_10,y_10,shadow_90,type_ZmFuZ3poZW5naGVpdGk=" alt="K8s（Kubernetes）简介及安装部署"></p>
+<h3 id="3、配置-master-节点状态"><a href="#3、配置-master-节点状态" class="headerlink" title="3、配置 master 节点状态"></a>3、配置 master 节点状态</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@master images]<span class="comment"># kubectl get nodes    #查看群集节点信息</span></span><br><span class="line">NAME     STATUS     ROLES    AGE   VERSION</span><br><span class="line">master   NotReady   master   14m   v1.15.0</span><br><span class="line"><span class="comment">#可以看到master当前状态为未准备</span></span><br></pre></td></tr></table></figure>
+
+<p>接下来可以去<a href="https://github.com/" target="_blank" rel="noopener">github 官网</a>进行以下操作以便查看相应的命令：</p>
+<p><img src="https://s1.51cto.com/images/blog/201911/04/f4579d651e7e4f89b1814cd750578716.png?x-oss-process=image/watermark,size_16,text_QDUxQ1RP5Y2a5a6i,color_FFFFFF,t_100,g_se,x_10,y_10,shadow_90,type_ZmFuZ3poZW5naGVpdGk=" alt="K8s（Kubernetes）简介及安装部署"></p>
+<p><img src="https://s1.51cto.com/images/blog/201911/04/f4b704f9c86768e6d048ac2da081fa39.png?x-oss-process=image/watermark,size_16,text_QDUxQ1RP5Y2a5a6i,color_FFFFFF,t_100,g_se,x_10,y_10,shadow_90,type_ZmFuZ3poZW5naGVpdGk=" alt="K8s（Kubernetes）简介及安装部署"></p>
+<p>点击进入后，下拉页面到以下位置，并复制指定的命令到 master 节点执行一下：<br><img src="https://s1.51cto.com/images/blog/201911/04/896d2657027ef2f57007cfd6a4788e93.png?x-oss-process=image/watermark,size_16,text_QDUxQ1RP5Y2a5a6i,color_FFFFFF,t_100,g_se,x_10,y_10,shadow_90,type_ZmFuZ3poZW5naGVpdGk=" alt="K8s（Kubernetes）简介及安装部署"></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@master images]<span class="comment"># kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml</span></span><br><span class="line"><span class="comment">#执行在github官网复制的命令</span></span><br></pre></td></tr></table></figure>
+
+<p>以上只是方式之一，在网络状况良好的情况下建议使用上述方法（调用远端文件执行一下），<strong>若网速较差，建议使用以下方法：</strong></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@master images]<span class="comment"># wget https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml</span></span><br><span class="line"><span class="comment">#将github官网指定的.yml配置文件下载到本地</span></span><br><span class="line">[root@master images]<span class="comment"># ls | grep flannel.yml   #确定下载到了当前目录</span></span><br><span class="line">kube-flannel.yml</span><br><span class="line">[root@master images]<span class="comment"># kubectl apply -f kube-flannel.yml  #指定下载的.yml文件执行相应命令</span></span><br></pre></td></tr></table></figure>
+
+<p>上述方法，二选一进行配置即可。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@master images]<span class="comment"># kubectl get nodes   #再次查看master状态，发现已经成为了“Ready”</span></span><br><span class="line">NAME     STATUS   ROLES    AGE   VERSION</span><br><span class="line">master   Ready    master   30m   v1.15.0</span><br><span class="line">[root@master images]<span class="comment"># ls /etc/kubernetes/    #k8s的配置文件目录</span></span><br><span class="line">[root@master images]<span class="comment"># ls /etc/kubernetes/manifests/   #k8s的.yaml文件存放目录</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="4、配置-node01-及-node02-加入-master-群集"><a href="#4、配置-node01-及-node02-加入-master-群集" class="headerlink" title="4、配置 node01 及 node02 加入 master 群集"></a>4、配置 node01 及 node02 加入 master 群集</h3><p><strong>以下操作需要在 node01 及 node02 分别执行一次</strong></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">[root@node01 ~]<span class="comment"># yum -y install kubelet-1.15.0-0 kubeadm-1.15.0-0</span></span><br><span class="line"><span class="comment">#安装k8s相关组件</span></span><br><span class="line">[root@node01 ~]<span class="comment"># systemctl enable kubelet.service    #设置为开机自启</span></span><br><span class="line">[root@node01 ~]<span class="comment"># mkdir images</span></span><br><span class="line">[root@node01 ~]<span class="comment"># cd images/</span></span><br><span class="line">[root@node01 images]<span class="comment"># rz   #上传我提供的镜像文件，共三个，是下面 ls 命令查看的三个</span></span><br><span class="line"></span><br><span class="line">[root@node01 images]<span class="comment"># ls    #需要上传的镜像文件如下</span></span><br><span class="line">kube-proxy-1-15.tar  myflannel-11-0.tar  pause-3-1.tar</span><br><span class="line">[root@node01 images]<span class="comment"># docker load &lt; kube-proxy-1-15.tar</span></span><br><span class="line">[root@node01 images]<span class="comment"># docker load &lt; myflannel-11-0.tar</span></span><br><span class="line">[root@node01 images]<span class="comment"># docker load &lt; pause-3-1.tar</span></span><br><span class="line">[root@node01 images]<span class="comment"># kubeadm join 192.168.20.6:6443 --token xfp7g5.6f2bdfjybt8a1j7r --discovery-token-ca-cert-hash sha256:17895c549344a83daae4318360dc9c9212b5dc3b1fb7d79ef84a640c63e489e2</span></span><br><span class="line"><span class="comment">#执行master初始化群集时返回的命令，以便加入到master的群集中</span></span><br></pre></td></tr></table></figure>
+
+<p>返回以下信息，则表示加入成功：</p>
+<p><img src="https://s1.51cto.com/images/blog/201911/04/6c14293037f8c233bcc81e71f7efb6fd.png?x-oss-process=image/watermark,size_16,text_QDUxQ1RP5Y2a5a6i,color_FFFFFF,t_100,g_se,x_10,y_10,shadow_90,type_ZmFuZ3poZW5naGVpdGk=" alt="K8s（Kubernetes）简介及安装部署"></p>
+<p><strong>自行将上述配置在 node02 主机上配置一次即可</strong></p>
+<p>当在 node01 及 node02 依次配置完成后，即可在 master 上进行查看节点状态，如下：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@master images]<span class="comment"># kubectl get nodes    #在master上查看节点信息都为“Ready”</span></span><br><span class="line">NAME     STATUS   ROLES    AGE     VERSION</span><br><span class="line">master   Ready    master   51m     v1.15.0</span><br><span class="line">node01   Ready    &lt;none&gt;   4m19s   v1.15.0</span><br><span class="line">node02   Ready    &lt;none&gt;   4m13s   v1.15.0</span><br></pre></td></tr></table></figure>
+
+<h3 id="5、部署后的优化配置"><a href="#5、部署后的优化配置" class="headerlink" title="5、部署后的优化配置"></a>5、部署后的优化配置</h3><blockquote>
+<p>其实配置至此，K8s 已经完成了，但是为了以后更为方便的使用 k8s，建议优化以下几项：</p>
+<ul>
+<li>设置 table 键的默认间距；</li>
+<li>设置 kubectl 命令自动补全；</li>
+<li>优化开机自启配置。</li>
+</ul>
+</blockquote>
+<h4 id="1）设置-table-默认间距（该优化只需在-master-上进行配置即可，由于经常需要编写-yml-文件所以才需要更改-table-间距）"><a href="#1）设置-table-默认间距（该优化只需在-master-上进行配置即可，由于经常需要编写-yml-文件所以才需要更改-table-间距）" class="headerlink" title="1）设置 table 默认间距（该优化只需在 master 上进行配置即可，由于经常需要编写.yml 文件所以才需要更改 table 间距）"></a>1）设置 table 默认间距（该优化只需在 master 上进行配置即可，由于经常需要编写.yml 文件所以才需要更改 table 间距）</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@master images]<span class="comment"># cd           #切换至宿主目录</span></span><br><span class="line">[root@master ~]<span class="comment"># echo "set tabstop=2" &gt;&gt; .vimrc   #将此参数写入.vimrc文件</span></span><br><span class="line">[root@master ~]<span class="comment"># bash    #切换shell环境，使更改生效</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="2）设置-kubectl-命令自动补全（master-和-node-节点都可配置）"><a href="#2）设置-kubectl-命令自动补全（master-和-node-节点都可配置）" class="headerlink" title="2）设置 kubectl 命令自动补全（master 和 node 节点都可配置）"></a>2）设置 kubectl 命令自动补全（master 和 node 节点都可配置）</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@master ~]<span class="comment"># yum -y install bash-completion</span></span><br><span class="line">[root@master ~]<span class="comment"># source /usr/share/bash-completion/bash_completion</span></span><br><span class="line">[root@master ~]<span class="comment"># source &lt;(kubectl completion bash)</span></span><br><span class="line">[root@master ~]<span class="comment"># echo "source &lt;(kubectl completion bash)" &gt;&gt; ~/.bashrc</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="3）确认-k8s-群集没有问题，并设置为开机自启"><a href="#3）确认-k8s-群集没有问题，并设置为开机自启" class="headerlink" title="3）确认 k8s 群集没有问题，并设置为开机自启"></a>3）确认 k8s 群集没有问题，并设置为开机自启</h4><p><strong>master 主机操作如下：</strong></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@master ~]<span class="comment"># kubectl get pod -n kube-system</span></span><br><span class="line"><span class="comment">#查看pod资源，类似于docker中的容器，确保返回的信息都是running</span></span><br><span class="line"><span class="comment">#“-n kube-system”：是k8s的名称空间</span></span><br></pre></td></tr></table></figure>
+
+<p>上述命令返回的信息如下：<br><img src="https://s1.51cto.com/images/blog/201911/04/8f6c9c8d57787155699d8f463e83430c.png?x-oss-process=image/watermark,size_16,text_QDUxQ1RP5Y2a5a6i,color_FFFFFF,t_100,g_se,x_10,y_10,shadow_90,type_ZmFuZ3poZW5naGVpdGk=" alt="K8s（Kubernetes）简介及安装部署"></p>
+<p><strong>master 和 node 节点上都需要进行以下操作，以便设置为开机自启：</strong></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@master ~]<span class="comment"># systemctl enable kubelet</span></span><br><span class="line">[root@master ~]<span class="comment"># systemctl enable docker</span></span><br></pre></td></tr></table></figure>
+
+<p>设置为开机自启后，k8s 群集的配置基本完成了，现在可以重启一下这三台服务器，如果重启后，执行下面的命令，状态都还是 running，则表示绝对没有问题了。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@master ~]<span class="comment"># kubectl get pod -n kube-system    #重启后验证状态是否还都是running</span></span><br></pre></td></tr></table></figure>
+
+<p>转自<a href="https://blog.51cto.com/14154700/2447761" target="_blank" rel="noopener">https://blog.51cto.com/14154700/2447761</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/k8s/" rel="tag"># k8s</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/03/08/k8s/K8s%E4%B9%8BMySQL%E5%AE%9E%E7%8E%B0%E6%95%B0%E6%8D%AE%E6%8C%81%E4%B9%85%E5%8C%96/" rel="prev" title="K8s之MySQL实现数据持久化">
+      <i class="fa fa-chevron-left"></i> K8s之MySQL实现数据持久化
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/03/08/helm/kubernetes-Helm%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/" rel="next" title="kubernetes Helm基本操作">
+      kubernetes Helm基本操作 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、环境准备"><span class="nav-number">1.</span> <span class="nav-text">一、环境准备</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、部署前准备"><span class="nav-number">2.</span> <span class="nav-text">二、部署前准备</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、检查-docker-版本、关闭防火墙及-Selinux、清空-iptables-规则、禁用-Swap-交换分区"><span class="nav-number">2.1.</span> <span class="nav-text">1、检查 docker 版本、关闭防火墙及 Selinux、清空 iptables 规则、禁用 Swap 交换分区</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、配置-ssh-免密登录、主机名解析及-yum-源"><span class="nav-number">2.2.</span> <span class="nav-text">2、配置 ssh 免密登录、主机名解析及 yum 源</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3、打开-iptables-桥接功能及路由转发"><span class="nav-number">2.3.</span> <span class="nav-text">3、打开 iptables 桥接功能及路由转发</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、配置-k8s-群集"><span class="nav-number">3.</span> <span class="nav-text">三、配置 k8s 群集</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、安装部署-k8s-相关工具"><span class="nav-number">3.1.</span> <span class="nav-text">1、安装部署 k8s 相关工具</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、初始化-k8s-集群"><span class="nav-number">3.2.</span> <span class="nav-text">2、初始化 k8s 集群</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3、配置-master-节点状态"><span class="nav-number">3.3.</span> <span class="nav-text">3、配置 master 节点状态</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4、配置-node01-及-node02-加入-master-群集"><span class="nav-number">3.4.</span> <span class="nav-text">4、配置 node01 及 node02 加入 master 群集</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5、部署后的优化配置"><span class="nav-number">3.5.</span> <span class="nav-text">5、部署后的优化配置</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1）设置-table-默认间距（该优化只需在-master-上进行配置即可，由于经常需要编写-yml-文件所以才需要更改-table-间距）"><span class="nav-number">3.5.1.</span> <span class="nav-text">1）设置 table 默认间距（该优化只需在 master 上进行配置即可，由于经常需要编写.yml 文件所以才需要更改 table 间距）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2）设置-kubectl-命令自动补全（master-和-node-节点都可配置）"><span class="nav-number">3.5.2.</span> <span class="nav-text">2）设置 kubectl 命令自动补全（master 和 node 节点都可配置）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3）确认-k8s-群集没有问题，并设置为开机自启"><span class="nav-number">3.5.3.</span> <span class="nav-text">3）确认 k8s 群集没有问题，并设置为开机自启</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Andy Ge</p>
+  <div class="site-description" itemprop="description">勇于积极进取，步入人生的世外桃源</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">728</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">134</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">315</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/andyge" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;andyge" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:geshaofei@126.com" title="E-Mail → mailto:geshaofei@126.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.ruanyifeng.com/" title="http:&#x2F;&#x2F;www.ruanyifeng.com&#x2F;" rel="noopener" target="_blank">阮一峰</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://colobu.com/" title="http:&#x2F;&#x2F;colobu.com&#x2F;" rel="noopener" target="_blank">鸟窝</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.cnblogs.com/hellokuangshen/" title="https:&#x2F;&#x2F;www.cnblogs.com&#x2F;hellokuangshen&#x2F;" rel="noopener" target="_blank">狂神</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://yelog.org/" title="https:&#x2F;&#x2F;yelog.org&#x2F;" rel="noopener" target="_blank">叶落阁</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Andy Ge</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.7.1
+  </div>
+
+        
+
+
+
+
+
+
+  <script>
+  function leancloudSelector(url) {
+    url = encodeURI(url);
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.getAttribute('id'));
+      var title = visitors.getAttribute('data-flag-title');
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .then(() => {
+                leancloudSelector(url).innerText = counter.time + 1;
+              })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              })
+          } else {
+              Counter('post', '/classes/Counter', { title: title, url: url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.getAttribute('id'));
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (let item of results) {
+            let { url, time } = item;
+            leancloudSelector(url).innerText = time;
+          }
+          for (let url of entries) {
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=2TdIb5gRlAVUw24l2W0zWnCj-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method: method,
+          headers: {
+            'X-LC-Id'     : '2TdIb5gRlAVUw24l2W0zWnCj-gzGzoHsz',
+            'X-LC-Key'    : 'cJdJrMLBXsj0ttq0WsL0aA2j',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

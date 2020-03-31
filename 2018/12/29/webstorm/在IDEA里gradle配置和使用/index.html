@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"swiftist.cn","root":"/","scheme":"Pisces","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"EVBR3H53HW","apiKey":"2abd573a01143a0cc4108fa4d21ae67c","indexName":"swiftist","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="前言有人说Gradle使用groovy语言编写，简单，明了没像maven使用xml臃肿，其实我倒不觉得，我觉得maven挺好的，管理jar依赖和项目生命周期挺方便的，我使用gradle只是因为公司用，不然我估计不会学习gradle。下面是gradle的优点，自己斟酌吧。  按约定声明构建和建设； 强大的支持多工程的构建； 强大的依赖管理（基于Apache Ivy），提供最大的便利去构建工程； 全力">
+<meta property="og:type" content="article">
+<meta property="og:title" content="在IDEA里gradle配置和使用">
+<meta property="og:url" content="https://swiftist.cn/2018/12/29/webstorm/%E5%9C%A8IDEA%E9%87%8Cgradle%E9%85%8D%E7%BD%AE%E5%92%8C%E4%BD%BF%E7%94%A8/index.html">
+<meta property="og:site_name" content="飞雪轩辕">
+<meta property="og:description" content="前言有人说Gradle使用groovy语言编写，简单，明了没像maven使用xml臃肿，其实我倒不觉得，我觉得maven挺好的，管理jar依赖和项目生命周期挺方便的，我使用gradle只是因为公司用，不然我估计不会学习gradle。下面是gradle的优点，自己斟酌吧。  按约定声明构建和建设； 强大的支持多工程的构建； 强大的依赖管理（基于Apache Ivy），提供最大的便利去构建工程； 全力">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://swiftist.cn/images/owl/idea_gradle.png">
+<meta property="article:published_time" content="2018-12-29T01:19:58.000Z">
+<meta property="article:modified_time" content="2020-03-31T15:07:39.461Z">
+<meta property="article:author" content="Andy Ge">
+<meta property="article:tag" content="idea">
+<meta property="article:tag" content="gradle">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://swiftist.cn/images/owl/idea_gradle.png">
+
+<link rel="canonical" href="https://swiftist.cn/2018/12/29/webstorm/%E5%9C%A8IDEA%E9%87%8Cgradle%E9%85%8D%E7%BD%AE%E5%92%8C%E4%BD%BF%E7%94%A8/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>在IDEA里gradle配置和使用 | 飞雪轩辕</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="飞雪轩辕" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">飞雪轩辕</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">人生的乐趣在于把梦想变成现实</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-java">
+
+    <a href="/categories/java/" rel="section"><i class="fa fa-fw fa-th-large"></i>java</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://swiftist.cn/2018/12/29/webstorm/%E5%9C%A8IDEA%E9%87%8Cgradle%E9%85%8D%E7%BD%AE%E5%92%8C%E4%BD%BF%E7%94%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Andy Ge">
+      <meta itemprop="description" content="勇于积极进取，步入人生的世外桃源">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="飞雪轩辕">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          在IDEA里gradle配置和使用
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-12-29 09:19:58" itemprop="dateCreated datePublished" datetime="2018-12-29T09:19:58+08:00">2018-12-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-31 23:07:39" itemprop="dateModified" datetime="2020-03-31T23:07:39+08:00">2020-03-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/gradle/" itemprop="url" rel="index">
+                    <span itemprop="name">gradle</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span id="/2018/12/29/webstorm/%E5%9C%A8IDEA%E9%87%8Cgradle%E9%85%8D%E7%BD%AE%E5%92%8C%E4%BD%BF%E7%94%A8/" class="post-meta-item leancloud_visitors" data-flag-title="在IDEA里gradle配置和使用" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>有人说Gradle使用groovy语言编写，简单，明了没像maven使用xml臃肿，其实我倒不觉得，我觉得maven挺好的，管理jar依赖和项目生命周期挺方便的，我使用gradle只是因为公司用，不然我估计不会学习gradle。下面是gradle的优点，自己斟酌吧。</p>
+<ol>
+<li>按约定声明构建和建设；</li>
+<li>强大的支持多工程的构建；</li>
+<li>强大的依赖管理（基于Apache Ivy），提供最大的便利去构建工程；</li>
+<li>全力支持已有的 Maven 或者Ivy仓库基础建设；</li>
+<li>支持传递性依赖管理，在不需要远程仓库和pom.xml和ivy配置文件的前提下；  </li>
+<li>基于groovy脚本构建，其build脚本使用groovy语言编写；</li>
+<li>具有广泛的领域模型支持构建；</li>
+<li>深度 API；</li>
+<li>易迁移；</li>
+<li>自由和开放源码，Gradle是一个开源项目，基于 ASL 许可。</li>
+</ol>
+<hr>
+<h1 id="Windows环境IDEA配置gradle"><a href="#Windows环境IDEA配置gradle" class="headerlink" title="Windows环境IDEA配置gradle"></a>Windows环境IDEA配置gradle</h1><h2 id="配置系统环境变量"><a href="#配置系统环境变量" class="headerlink" title="配置系统环境变量"></a>配置系统环境变量</h2><p>为了使用gradle命令，idea里使用不了命令。比如编译命令<code>gradle build</code></p>
+<h2 id="下载"><a href="#下载" class="headerlink" title="下载"></a>下载</h2><p><a href="https://gradle.org/releases/" target="_blank" rel="noopener">gradle安装包下载地址</a>,解压到“<code>D:\soft\gradle\gradle-4.8</code>”</p>
+<h2 id="配置环境变量"><a href="#配置环境变量" class="headerlink" title="配置环境变量"></a>配置环境变量</h2><p>打开环境配置，新建系统环境“GRADLE_HOME”,值为<code>D:\soft\gradle\gradle-4.8</code>,找到path变量，后面添加<code>%GRADLE_HOME%\bin;</code>。</p>
+<h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><p>在cmd命令里输入<code>gradle -v</code>如果能打出版本号，说明环境配置完毕。</p>
+<h2 id="idea配置"><a href="#idea配置" class="headerlink" title="idea配置"></a>idea配置</h2><p>在D盘新建文件<code>.gradle</code>（使用dos命令<code>mkdir .gradle</code> ）,做为gradle下载的jar包仓库主目录，默认在<code>C:\Users\Administrator\.gradle</code>.<br>打开file-&gt;setting-&gt;Build,Execution,Deployment-&gt;Gradle，修改如下：<br><img src="/images/owl/idea_gradle.png" alt="这里写图片描述"><br><code>Gradle home</code>指定了gradle文件目录<br><code>Service directory path</code>指定了gradle工作主目录  </p>
+<hr>
+<h1 id="gradle仓库设置"><a href="#gradle仓库设置" class="headerlink" title="gradle仓库设置"></a>gradle仓库设置</h1><p>建议如下设置</p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">repositories</span> &#123;</span><br><span class="line">    mavenLocal()</span><br><span class="line">    maven &#123; url <span class="string">"http://maven.aliyun.com/nexus/content/groups/public/"</span>&#125;</span><br><span class="line">    mavenCentral()</span><br><span class="line">    jcenter()</span><br><span class="line">    maven &#123; url <span class="string">"https://repo.spring.io/snapshot"</span> &#125;</span><br><span class="line">    maven &#123; url <span class="string">"https://repo.spring.io/milestone"</span> &#125;</span><br><span class="line">    maven &#123; url <span class="string">'http://oss.jfrog.org/artifactory/oss-snapshot-local/'</span> &#125;  <span class="comment">//转换pdf使用</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>存储库只是文件的集合，按分组，名称和版本来组织构造。 默认情况下，Gradle不定义任何存储库。 这里使用repositories 指定存储库。<br>mavenLocal()：指定使用maven本地仓库，而本地仓库在配置maven时setting文件指定的仓库位置。如<code>&lt;localRepository&gt;D:/repository&lt;/localRepository&gt;</code>，同时将<code>setting</code>文件拷贝到<code>C:\Users\Administrator\.m2</code>目录下，一般该目录下是没有<code>setting</code>文件的，gradle查找jar包顺序如下：<code>gradle默认会按以下顺序去查找本地的仓库：USER_HOME/.m2/settings.xml &gt;&gt; M2_HOME/conf/settings.xml &gt;&gt; USER_HOME/.m2/repository。</code><br><code>maven { url &quot;http://maven.aliyun.com/nexus/content/groups/public/&quot;}</code>：指定阿里云镜像加速地址<br>mavenCentral()：这是Maven的中央仓库，无需配置，直接声明就可以使用<br>jcenter():JCenter中央仓库，实际也是是用的maven搭建的，但相比Maven仓库更友好，通过CDN分发，并且支持https访问。<br>后面的<code>maven { url 地址}</code>，指定maven仓库，一般用私有仓库地址或其它的第三方库<br>gradle按配置顺序寻找jar文件。如果本地存在就不会再去下载。不存在的再去maven仓库下载，这里注意下载下来的jar文件不在maven仓库里，而是在gradle的主工作目录下，如上面的<code>D:\.gradle</code>目录<br>参考<a href="http://www.souvc.com/?p=2573" target="_blank" rel="noopener">《Gradle实战》如何配置利用Maven本地仓库</a></p>
+<hr>
+<h1 id="构建命令"><a href="#构建命令" class="headerlink" title="构建命令"></a>构建命令</h1><p>清理命令</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gradle clean</span><br></pre></td></tr></table></figure>
+
+<p>构建打包命令</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gradle clean build</span><br></pre></td></tr></table></figure>
+
+<p>编译时跳过测试，使用<code>-x</code>,<code>-x</code>参数用来排除不需要执行的任务</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gradle clean build -x test</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="创建缓存依赖"><a href="#创建缓存依赖" class="headerlink" title="创建缓存依赖"></a>创建缓存依赖</h1><p>执行命令<code>gradle clean build --refresh-dependencies</code>或删除.gradle/caches目录，构建的时候它会下载所有依赖并加入到缓存中。</p>
+<hr>
+<h1 id="阿里云镜像"><a href="#阿里云镜像" class="headerlink" title="阿里云镜像"></a>阿里云镜像</h1><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">buildscript &#123;</span><br><span class="line">    repositories &#123;</span><br><span class="line">        maven &#123; url <span class="string">'http://maven.aliyun.com/nexus/content/groups/public/'</span> &#125;</span><br><span class="line">        maven&#123; url <span class="string">'http://maven.aliyun.com/nexus/content/repositories/jcenter'</span>&#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="参考gradle配置国内镜像"><a href="#参考gradle配置国内镜像" class="headerlink" title="参考gradle配置国内镜像"></a><a href="https://blog.csdn.net/lj402159806/article/details/78422953" target="_blank" rel="noopener">参考gradle配置国内镜像</a></h2><h1 id="gradle-build构建脚本"><a href="#gradle-build构建脚本" class="headerlink" title="gradle.build构建脚本"></a>gradle.build构建脚本</h1><p>build.gradle是Gradle默认的构建脚本文件，执行Gradle命令的时候，会默认加载当前目录下的build.gradle脚本文件。<br>gradle.build脚本如下：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">buildScript &#123;</span><br><span class="line">    repositories &#123;</span><br><span class="line">         mavenCentral()</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">repositories &#123;</span><br><span class="line">     mavenCentral()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>buildScript里的repositories是这个脚本需要的依赖库，与项目无关，在执行脚本时，会从这个库里download对应的jar和插件。第二个repositories是项目里需要依赖的jar的库。</p>
+<hr>
+<h1 id="查看项目已定义的所有task以及含义"><a href="#查看项目已定义的所有task以及含义" class="headerlink" title="查看项目已定义的所有task以及含义"></a>查看项目已定义的所有task以及含义</h1><p>命令</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gradle tasks</span><br></pre></td></tr></table></figure>
+
+<p>比如结果如下</p>
+<ul>
+<li>assemble: 编译</li>
+<li>build：编译并执行测试</li>
+<li>clean：删除build目录</li>
+<li>jar： 生成jar包</li>
+<li>test：执行单元测试</li>
+</ul>
+<hr>
+<h1 id="maven项目转换为gradle项目"><a href="#maven项目转换为gradle项目" class="headerlink" title="maven项目转换为gradle项目"></a>maven项目转换为gradle项目</h1><p>根目录执行</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gradle init --<span class="built_in">type</span> pom</span><br></pre></td></tr></table></figure>
+
+<p>上面的命令会根据pom文件自动生成gradle项目所需的文件和配置，然后以gradle项目重新导入即可。</p>
+<hr>
+<h1 id="settings-gradle配置"><a href="#settings-gradle配置" class="headerlink" title="settings.gradle配置"></a>settings.gradle配置</h1><p>是模块Module配置文件，大多数setting.gradle的作用是为了配置子工程，根目录下的settings.gradle脚本文件是针对module的全局配置，它的作用域所包含的所有module是通过settings.gradle来配置。<br>settings.gradle用于创建多Project的Gradle项目。Project在IDEA里对应Module模块。<br>例如配置module名<code>rootProject.name = &#39;DyoonPLM&#39;</code></p>
+<p>参考<a href="https://www.jianshu.com/p/001abe1d8e95" target="_blank" rel="noopener">Gradle 入门–只此一篇</a>  </p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/idea/" rel="tag"># idea</a>
+              <a href="/tags/gradle/" rel="tag"># gradle</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/12/28/myBatis/Mybatis-%E7%B1%BB%E5%B1%9E%E6%80%A7%E5%92%8C%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AD%97%E6%AE%B5%E6%98%A0%E5%B0%84%E6%96%B9%E5%BC%8F/" rel="prev" title="Mybatis-类属性和数据库字段映射方式">
+      <i class="fa fa-chevron-left"></i> Mybatis-类属性和数据库字段映射方式
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/12/29/es/10%E5%88%86%E9%92%9F%E4%BA%86%E8%A7%A3JSON-Web%E4%BB%A4%E7%89%8C%EF%BC%88JWT%EF%BC%89/" rel="next" title="10分钟了解JSON Web令牌（JWT）">
+      10分钟了解JSON Web令牌（JWT） <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Windows环境IDEA配置gradle"><span class="nav-number">2.</span> <span class="nav-text">Windows环境IDEA配置gradle</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#配置系统环境变量"><span class="nav-number">2.1.</span> <span class="nav-text">配置系统环境变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#下载"><span class="nav-number">2.2.</span> <span class="nav-text">下载</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置环境变量"><span class="nav-number">2.3.</span> <span class="nav-text">配置环境变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#测试"><span class="nav-number">2.4.</span> <span class="nav-text">测试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#idea配置"><span class="nav-number">2.5.</span> <span class="nav-text">idea配置</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#gradle仓库设置"><span class="nav-number">3.</span> <span class="nav-text">gradle仓库设置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#构建命令"><span class="nav-number">4.</span> <span class="nav-text">构建命令</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#创建缓存依赖"><span class="nav-number">5.</span> <span class="nav-text">创建缓存依赖</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#阿里云镜像"><span class="nav-number">6.</span> <span class="nav-text">阿里云镜像</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#参考gradle配置国内镜像"><span class="nav-number">6.1.</span> <span class="nav-text">参考gradle配置国内镜像</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#gradle-build构建脚本"><span class="nav-number">7.</span> <span class="nav-text">gradle.build构建脚本</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#查看项目已定义的所有task以及含义"><span class="nav-number">8.</span> <span class="nav-text">查看项目已定义的所有task以及含义</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#maven项目转换为gradle项目"><span class="nav-number">9.</span> <span class="nav-text">maven项目转换为gradle项目</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#settings-gradle配置"><span class="nav-number">10.</span> <span class="nav-text">settings.gradle配置</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Andy Ge</p>
+  <div class="site-description" itemprop="description">勇于积极进取，步入人生的世外桃源</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">728</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">134</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">315</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/andyge" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;andyge" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:geshaofei@126.com" title="E-Mail → mailto:geshaofei@126.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.ruanyifeng.com/" title="http:&#x2F;&#x2F;www.ruanyifeng.com&#x2F;" rel="noopener" target="_blank">阮一峰</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://colobu.com/" title="http:&#x2F;&#x2F;colobu.com&#x2F;" rel="noopener" target="_blank">鸟窝</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.cnblogs.com/hellokuangshen/" title="https:&#x2F;&#x2F;www.cnblogs.com&#x2F;hellokuangshen&#x2F;" rel="noopener" target="_blank">狂神</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://yelog.org/" title="https:&#x2F;&#x2F;yelog.org&#x2F;" rel="noopener" target="_blank">叶落阁</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Andy Ge</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.7.1
+  </div>
+
+        
+
+
+
+
+
+
+  <script>
+  function leancloudSelector(url) {
+    url = encodeURI(url);
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.getAttribute('id'));
+      var title = visitors.getAttribute('data-flag-title');
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .then(() => {
+                leancloudSelector(url).innerText = counter.time + 1;
+              })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              })
+          } else {
+              Counter('post', '/classes/Counter', { title: title, url: url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.getAttribute('id'));
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (let item of results) {
+            let { url, time } = item;
+            leancloudSelector(url).innerText = time;
+          }
+          for (let url of entries) {
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=2TdIb5gRlAVUw24l2W0zWnCj-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method: method,
+          headers: {
+            'X-LC-Id'     : '2TdIb5gRlAVUw24l2W0zWnCj-gzGzoHsz',
+            'X-LC-Key'    : 'cJdJrMLBXsj0ttq0WsL0aA2j',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

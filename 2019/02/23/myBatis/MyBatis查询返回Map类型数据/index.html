@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"swiftist.cn","root":"/","scheme":"Pisces","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"EVBR3H53HW","apiKey":"2abd573a01143a0cc4108fa4d21ae67c","indexName":"swiftist","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="解说MyBatis 作为现近 JavaEE 企业级项目开发中常用的持久层框架之一，以其简洁高效的 ORM 映射和高度的 SQL 的自由性被广大开发人员认可。Mybatis 在接收系统传来的参数和返回的参数时主要可以有 Map 类型和实体类型两种。在我参与开发的有限几个项目当中，有使用实体类型比较多的，也有使用 Map 类型比较多的。不管选择哪种类型，在项目架构来说决定了这个项目中部分请求和返回数据">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MyBatis查询返回Map类型数据">
+<meta property="og:url" content="https://swiftist.cn/2019/02/23/myBatis/MyBatis%E6%9F%A5%E8%AF%A2%E8%BF%94%E5%9B%9EMap%E7%B1%BB%E5%9E%8B%E6%95%B0%E6%8D%AE/index.html">
+<meta property="og:site_name" content="飞雪轩辕">
+<meta property="og:description" content="解说MyBatis 作为现近 JavaEE 企业级项目开发中常用的持久层框架之一，以其简洁高效的 ORM 映射和高度的 SQL 的自由性被广大开发人员认可。Mybatis 在接收系统传来的参数和返回的参数时主要可以有 Map 类型和实体类型两种。在我参与开发的有限几个项目当中，有使用实体类型比较多的，也有使用 Map 类型比较多的。不管选择哪种类型，在项目架构来说决定了这个项目中部分请求和返回数据">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://swiftist.cn/images/owl/20180712100039248.png">
+<meta property="article:published_time" content="2019-02-22T22:44:40.000Z">
+<meta property="article:modified_time" content="2020-03-31T15:07:39.391Z">
+<meta property="article:author" content="Andy Ge">
+<meta property="article:tag" content="mybatis">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://swiftist.cn/images/owl/20180712100039248.png">
+
+<link rel="canonical" href="https://swiftist.cn/2019/02/23/myBatis/MyBatis%E6%9F%A5%E8%AF%A2%E8%BF%94%E5%9B%9EMap%E7%B1%BB%E5%9E%8B%E6%95%B0%E6%8D%AE/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>MyBatis查询返回Map类型数据 | 飞雪轩辕</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="飞雪轩辕" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">飞雪轩辕</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">人生的乐趣在于把梦想变成现实</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-java">
+
+    <a href="/categories/java/" rel="section"><i class="fa fa-fw fa-th-large"></i>java</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://swiftist.cn/2019/02/23/myBatis/MyBatis%E6%9F%A5%E8%AF%A2%E8%BF%94%E5%9B%9EMap%E7%B1%BB%E5%9E%8B%E6%95%B0%E6%8D%AE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Andy Ge">
+      <meta itemprop="description" content="勇于积极进取，步入人生的世外桃源">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="飞雪轩辕">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          MyBatis查询返回Map类型数据
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-02-23 06:44:40" itemprop="dateCreated datePublished" datetime="2019-02-23T06:44:40+08:00">2019-02-23</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-31 23:07:39" itemprop="dateModified" datetime="2020-03-31T23:07:39+08:00">2020-03-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/mybatis/" itemprop="url" rel="index">
+                    <span itemprop="name">mybatis</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span id="/2019/02/23/myBatis/MyBatis%E6%9F%A5%E8%AF%A2%E8%BF%94%E5%9B%9EMap%E7%B1%BB%E5%9E%8B%E6%95%B0%E6%8D%AE/" class="post-meta-item leancloud_visitors" data-flag-title="MyBatis查询返回Map类型数据" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="解说"><a href="#解说" class="headerlink" title="解说"></a>解说</h1><p>MyBatis 作为现近 JavaEE 企业级项目开发中常用的持久层框架之一，以其简洁高效的 ORM 映射和高度的 SQL 的自由性被广大开发人员认可。Mybatis 在接收系统传来的参数和返回的参数时主要可以有 Map 类型和实体类型两种。在我参与开发的有限几个项目当中，有使用实体类型比较多的，也有使用 Map 类型比较多的。不管选择哪种类型，在项目架构来说决定了这个项目中部分请求和返回数据的类型。</p>
+<p>使用 Map 作为接收类型时，通常能够在传参到持久层这一过程中省去很多麻烦。前端请求及参数到达 Action 或者 Controller 时通常使用 map 来进行接收，使用 map 作为传递类型可以不用再将数据封装为 Bean 类型再去根据实体属性一一填充，直接通过 Service 和 Dao 以 map 类型将数据传到 map 配置 SQL 文件当中，省去很多数据转换环节。再执行完 SQL 语句返回时制定 map 类型返回，不管是单条数据还是 List 都可以快速编写并返回给前端。这种方式在处理多表查询时避免了编写大量的实体类和属性字段定义，减少了很多中间流程。缺点也一样明显，由于这种完全摒弃了面向对象思想的传值类型，首先需要自己详细记好 map 中 key-value 映射的关系，尤其的记好自己给每个数据库字段所定义的 key 值以做中间过程的查看或修改。其次，当你的代码不止你一个维护时，你的同事并不能通过查看实体类来获知你这个业务所传递的具体字段，只有通过询问或查看 Map 文件或者调试才能知晓，也不利于自己后期的 codeReview。</p>
+<p>使用实体类 Bean 来作为参数的传递类型，麻烦之处在于实体类的编写以及大量的 get、set 方法，以及需要在 map 文件中手写大量关系映射。除此之外在设计多表多字段的查询和操作时往往需要大量的代码编写已经多个代码层的变动，使得代码变得十分繁琐。优点之处是在于使用了面向对象的思想，使得你的代码更容易读懂。</p>
+<h1 id="截图实例"><a href="#截图实例" class="headerlink" title="截图实例"></a>截图实例</h1><p><img src="/images/owl/20180712100039248.png" alt="map文件"></p>
+<h1 id="代码实例一"><a href="#代码实例一" class="headerlink" title="代码实例一"></a>代码实例一</h1><p>1.Mapper 中 SQL：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--查询返回base地的map集合--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">select</span>  <span class="attr">id</span>=<span class="string">"getBaseMap"</span> <span class="attr">resultType</span>=<span class="string">"java.util.HashMap"</span>&gt;</span></span><br><span class="line">    select base,traffic_fare from T_EAD_TRAFFICBASE</span><br><span class="line"><span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>2.DAO 中的成员方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> List&lt;Map&lt;String, Object&gt;&gt; getBaseMap();</span><br></pre></td></tr></table></figure>
+
+<p>3.对返回<code>List&lt;map&gt;</code>的处理：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> Map&lt;String,BigDecimal&gt; <span class="title">getBaseMap</span><span class="params">(Logger logger)</span> </span>&#123;</span><br><span class="line">    Map&lt;String, BigDecimal&gt; baseMap = <span class="keyword">new</span> HashMap&lt;String, BigDecimal&gt;();</span><br><span class="line">    List&lt;Map&lt;String, Object&gt;&gt; baseList = eadTrafficBaseMapper.getBaseMap();</span><br><span class="line">    <span class="keyword">for</span> (Map&lt;String, Object&gt; map:baseList     <span class="comment">//遍历list</span></span><br><span class="line">         ) &#123;</span><br><span class="line">        String base = <span class="keyword">null</span>;</span><br><span class="line">        BigDecimal fare = <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">for</span> (Map.Entry&lt;String,Object&gt;  entry:map.entrySet()   <span class="comment">//遍历map的key集合 获取对应key的value</span></span><br><span class="line">             ) &#123;</span><br><span class="line">            <span class="keyword">if</span> (<span class="string">"base"</span>.equals(entry.getKey())) &#123;</span><br><span class="line">                base =  String.valueOf(entry.getValue());</span><br><span class="line">            &#125;<span class="keyword">else</span> <span class="keyword">if</span> (<span class="string">"traffic_fare"</span>.equals(entry.getKey())) &#123;</span><br><span class="line">                fare = <span class="keyword">new</span> BigDecimal(String.valueOf(entry.getValue()));</span><br><span class="line">            &#125;</span><br><span class="line">            baseMap.put(base,fare);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> baseMap;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注意：在返回的 list 结果中，list.get(0) 获取的只是查询结果的一条数据的 map，并不是全部数据的 map。SQL 查询的结果中，每一条查询结果都是一个 map,然后把所有 map 放在 list 中。map 的形式是{“code1”:”value1”,”code2”:”value2”,”code3”:”value3”…}，所以需要对 list 遍历，再遍历 map，分别获取对应 table 的字段值，放入到一个新的 map 集合。</p>
+<h1 id="代码实例二"><a href="#代码实例二" class="headerlink" title="代码实例二"></a>代码实例二</h1><h2 id="mybatis-更新-sql-语句"><a href="#mybatis-更新-sql-语句" class="headerlink" title="mybatis 更新 sql 语句"></a>mybatis 更新 sql 语句</h2><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">update</span> <span class="attr">id</span>=<span class="string">"publishT00_notice"</span> <span class="attr">parameterType</span>=<span class="string">"Map"</span>&gt;</span></span><br><span class="line">update test</span><br><span class="line">set createdate = #&#123;createdate&#125;,</span><br><span class="line">creator = #&#123;creator&#125;</span><br><span class="line">where id in</span><br><span class="line"><span class="tag">&lt;<span class="name">foreach</span> <span class="attr">collection</span>=<span class="string">"ids"</span> <span class="attr">item</span>=<span class="string">"ids"</span> <span class="attr">separator</span>=<span class="string">","</span> <span class="attr">open</span>=<span class="string">"("</span> <span class="attr">close</span>=<span class="string">")"</span>&gt;</span></span><br><span class="line">#&#123;ids&#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">foreach</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">update</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="传入-map-参数类型"><a href="#传入-map-参数类型" class="headerlink" title="传入 map 参数类型"></a>传入 map 参数类型</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">HashMap&lt;String,Object&gt; map = <span class="keyword">new</span> HashMap&lt;String, Object&gt;();</span><br><span class="line">map.put(<span class="string">"creator"</span>, <span class="string">"creator"</span>);</span><br><span class="line">map.put(<span class="string">"createdate"</span>, <span class="string">"createdate"</span>);</span><br><span class="line"></span><br><span class="line">String[] ids = &#123;<span class="string">"1"</span>,<span class="string">"2"</span>&#125;;</span><br><span class="line">map.put(<span class="string">"ids"</span>, ids );</span><br></pre></td></tr></table></figure>
+
+<h1 id="代码实例三"><a href="#代码实例三" class="headerlink" title="代码实例三"></a>代码实例三</h1><h2 id="在你的-mapper-写上"><a href="#在你的-mapper-写上" class="headerlink" title="在你的 mapper 写上"></a>在你的 mapper 写上</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">List&lt;WeixinUserLocationList&gt; <span class="title">findweixinUserLocations</span><span class="params">(@Param(<span class="string">"params"</span>)</span> Map&lt;String, Object&gt; map)</span>;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>注意就是注解@param 这个，是 mybatis 的，<code>org.apache.ibatis.annotations.Param</code>。</p>
+</blockquote>
+<h2 id="在-xml-中这样写"><a href="#在-xml-中这样写" class="headerlink" title="在 xml 中这样写"></a>在 xml 中这样写</h2><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">if</span> <span class="attr">test</span>=<span class="string">"params.accountId!=null"</span>&gt;</span></span><br><span class="line">    and a.accountid=#&#123;params.accountId&#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">if</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">if</span> <span class="attr">test</span>=<span class="string">"params.nickname!=null and params.nickname !=''"</span>&gt;</span></span><br><span class="line">    and a.nickname like '%$&#123;params.nickname&#125;%'</span><br><span class="line"><span class="tag">&lt;/<span class="name">if</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">if</span> <span class="attr">test</span>=<span class="string">"params.beginDate!=null and params.beginDate!=''"</span>&gt;</span></span><br><span class="line">    and date_format(a.createtime,'%Y-%m-%d')&gt;=$&#123;params.beginDate&#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">if</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">if</span> <span class="attr">test</span>=<span class="string">"params.endDate!=null and params.endDate!=''"</span>&gt;</span></span><br><span class="line">    &lt;![CDATA[    and date_format(a.createtime,'%Y-%m-%d')&lt;=$&#123;params.endDate&#125;  ]]&gt;</span><br><span class="line"><span class="tag">&lt;/<span class="name">if</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>${params.nickname}这种写法参数默认是传字符串，#{params.accountId}可以取 Long，Integer 之类的。</p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/mybatis/" rel="tag"># mybatis</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/02/22/java/Java%E9%AD%94%E6%B3%95%E5%A0%82Stringformat%E8%AF%A6%E8%A7%A3/" rel="prev" title="Java魔法堂：String.format详解">
+      <i class="fa fa-chevron-left"></i> Java魔法堂：String.format详解
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/02/23/centos/MyCentOS/" rel="next" title="MyCentOS">
+      MyCentOS <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#解说"><span class="nav-number">1.</span> <span class="nav-text">解说</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#截图实例"><span class="nav-number">2.</span> <span class="nav-text">截图实例</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#代码实例一"><span class="nav-number">3.</span> <span class="nav-text">代码实例一</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#代码实例二"><span class="nav-number">4.</span> <span class="nav-text">代码实例二</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#mybatis-更新-sql-语句"><span class="nav-number">4.1.</span> <span class="nav-text">mybatis 更新 sql 语句</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#传入-map-参数类型"><span class="nav-number">4.2.</span> <span class="nav-text">传入 map 参数类型</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#代码实例三"><span class="nav-number">5.</span> <span class="nav-text">代码实例三</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#在你的-mapper-写上"><span class="nav-number">5.1.</span> <span class="nav-text">在你的 mapper 写上</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#在-xml-中这样写"><span class="nav-number">5.2.</span> <span class="nav-text">在 xml 中这样写</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Andy Ge</p>
+  <div class="site-description" itemprop="description">勇于积极进取，步入人生的世外桃源</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">728</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">134</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">315</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/andyge" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;andyge" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:geshaofei@126.com" title="E-Mail → mailto:geshaofei@126.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.ruanyifeng.com/" title="http:&#x2F;&#x2F;www.ruanyifeng.com&#x2F;" rel="noopener" target="_blank">阮一峰</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://colobu.com/" title="http:&#x2F;&#x2F;colobu.com&#x2F;" rel="noopener" target="_blank">鸟窝</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.cnblogs.com/hellokuangshen/" title="https:&#x2F;&#x2F;www.cnblogs.com&#x2F;hellokuangshen&#x2F;" rel="noopener" target="_blank">狂神</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://yelog.org/" title="https:&#x2F;&#x2F;yelog.org&#x2F;" rel="noopener" target="_blank">叶落阁</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Andy Ge</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.7.1
+  </div>
+
+        
+
+
+
+
+
+
+  <script>
+  function leancloudSelector(url) {
+    url = encodeURI(url);
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.getAttribute('id'));
+      var title = visitors.getAttribute('data-flag-title');
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .then(() => {
+                leancloudSelector(url).innerText = counter.time + 1;
+              })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              })
+          } else {
+              Counter('post', '/classes/Counter', { title: title, url: url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.getAttribute('id'));
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (let item of results) {
+            let { url, time } = item;
+            leancloudSelector(url).innerText = time;
+          }
+          for (let url of entries) {
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=2TdIb5gRlAVUw24l2W0zWnCj-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method: method,
+          headers: {
+            'X-LC-Id'     : '2TdIb5gRlAVUw24l2W0zWnCj-gzGzoHsz',
+            'X-LC-Key'    : 'cJdJrMLBXsj0ttq0WsL0aA2j',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

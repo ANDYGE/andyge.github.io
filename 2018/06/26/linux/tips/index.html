@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"swiftist.cn","root":"/","scheme":"Pisces","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"EVBR3H53HW","apiKey":"2abd573a01143a0cc4108fa4d21ae67c","indexName":"swiftist","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="熟记的命令打印环境变量1sh -c env  docker 容器操作12345678910111213141516171819202122232425262728293031323334353637383940414243# 安装docker-ceyum install -y docker-ce# 启动dockersystemctl start docker# 配置docker源cat &lt;&amp;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="linux tips">
+<meta property="og:url" content="https://swiftist.cn/2018/06/26/linux/tips/index.html">
+<meta property="og:site_name" content="飞雪轩辕">
+<meta property="og:description" content="熟记的命令打印环境变量1sh -c env  docker 容器操作12345678910111213141516171819202122232425262728293031323334353637383940414243# 安装docker-ceyum install -y docker-ce# 启动dockersystemctl start docker# 配置docker源cat &lt;&amp;">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-06-26T06:54:26.000Z">
+<meta property="article:modified_time" content="2020-03-31T15:07:39.378Z">
+<meta property="article:author" content="Andy Ge">
+<meta property="article:tag" content="笔记">
+<meta property="article:tag" content="tips">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://swiftist.cn/2018/06/26/linux/tips/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>linux tips | 飞雪轩辕</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="飞雪轩辕" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">飞雪轩辕</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">人生的乐趣在于把梦想变成现实</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-java">
+
+    <a href="/categories/java/" rel="section"><i class="fa fa-fw fa-th-large"></i>java</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://swiftist.cn/2018/06/26/linux/tips/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Andy Ge">
+      <meta itemprop="description" content="勇于积极进取，步入人生的世外桃源">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="飞雪轩辕">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          linux tips
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-06-26 14:54:26" itemprop="dateCreated datePublished" datetime="2018-06-26T14:54:26+08:00">2018-06-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-31 23:07:39" itemprop="dateModified" datetime="2020-03-31T23:07:39+08:00">2020-03-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index">
+                    <span itemprop="name">linux</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span id="/2018/06/26/linux/tips/" class="post-meta-item leancloud_visitors" data-flag-title="linux tips" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="熟记的命令"><a href="#熟记的命令" class="headerlink" title="熟记的命令"></a>熟记的命令</h1><h2 id="打印环境变量"><a href="#打印环境变量" class="headerlink" title="打印环境变量"></a>打印环境变量</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sh -c env</span><br></pre></td></tr></table></figure>
+
+<h2 id="docker-容器操作"><a href="#docker-容器操作" class="headerlink" title="docker 容器操作"></a>docker 容器操作</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 安装docker-ce</span></span><br><span class="line">yum install -y docker-ce</span><br><span class="line"></span><br><span class="line"><span class="comment"># 启动docker</span></span><br><span class="line">systemctl start docker</span><br><span class="line"></span><br><span class="line"><span class="comment"># 配置docker源</span></span><br><span class="line">cat &lt;&lt;EOF &gt;&gt; /etc/docker/daemon.json</span><br><span class="line">&#123;</span><br><span class="line">    <span class="string">"registry-mirrors"</span>:[<span class="string">"https://registry.docker-cn.com"</span>]</span><br><span class="line">&#125;</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line"><span class="comment"># 重新加载配置</span></span><br><span class="line">systemctl daemon-reload</span><br><span class="line"></span><br><span class="line"><span class="comment"># 设置为开机启动</span></span><br><span class="line">systemctl <span class="built_in">enable</span> docker</span><br><span class="line"></span><br><span class="line"><span class="comment"># 重新启动docker</span></span><br><span class="line">systemctl restart docker</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 停止所有容器</span></span><br><span class="line">docker stop `docker ps -qa`</span><br><span class="line"></span><br><span class="line"><span class="comment"># 删除所有容器</span></span><br><span class="line">docker rm `docker ps -qa`</span><br><span class="line"></span><br><span class="line"><span class="comment"># 进入容器</span></span><br><span class="line">docker <span class="built_in">exec</span> -it zabbix-server-mysql /bin/bash</span><br><span class="line"></span><br><span class="line"><span class="comment"># 提前下载镜像文件</span></span><br><span class="line">docker pull zabbix/zabbix-server-mysql</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看所有已下载的镜像</span></span><br><span class="line">docker images</span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装docker-compose</span></span><br><span class="line">yum install -y docker-composer</span><br><span class="line"></span><br><span class="line"><span class="comment"># 运行docker-compose文件</span></span><br><span class="line">docker-compose up -d</span><br></pre></td></tr></table></figure>
+
+<h2 id="grep-过滤"><a href="#grep-过滤" class="headerlink" title="grep 过滤"></a>grep 过滤</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 过滤以$和#开头的行</span></span><br><span class="line">more /etc/mail.rc |grep -v ^$ |grep -v ^<span class="comment">#</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="telnet-查看端口是否联通"><a href="#telnet-查看端口是否联通" class="headerlink" title="telnet 查看端口是否联通"></a>telnet 查看端口是否联通</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 安装telnet</span></span><br><span class="line">yum install -y telnet</span><br><span class="line"></span><br><span class="line"><span class="comment"># 测试端口是否联通，结果标识联通</span></span><br><span class="line">telnet 192.168.1.102 4000</span><br><span class="line">Trying 192.168.1.102...</span><br><span class="line">Connected to 192.168.1.102.</span><br><span class="line">Escape character is <span class="string">'^]'</span>.</span><br></pre></td></tr></table></figure>
+
+<h2 id="ps-过滤进程"><a href="#ps-过滤进程" class="headerlink" title="ps 过滤进程"></a>ps 过滤进程</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看是否有zabbix进程</span></span><br><span class="line">ps aux|grep zabbix</span><br><span class="line"></span><br><span class="line"><span class="comment"># 或者采用</span></span><br><span class="line">ps -ef|grep zabbix</span><br></pre></td></tr></table></figure>
+
+<h2 id="netstat-查看端口"><a href="#netstat-查看端口" class="headerlink" title="netstat 查看端口"></a>netstat 查看端口</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看zabbix的端口</span></span><br><span class="line">netstat -nltp | grep zabbix</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看某个端口</span></span><br><span class="line">netstat -an | grep 10050</span><br></pre></td></tr></table></figure>
+
+<h2 id="firewall-cmd-防火墙"><a href="#firewall-cmd-防火墙" class="headerlink" title="firewall-cmd 防火墙"></a>firewall-cmd 防火墙</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 打开10050端口</span></span><br><span class="line">firewall-cmd --zone=public --add-port=10050/tcp --permanent</span><br></pre></td></tr></table></figure>
+
+<h2 id="tar-解压缩文件"><a href="#tar-解压缩文件" class="headerlink" title="tar 解压缩文件"></a>tar 解压缩文件</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 打包数据</span></span><br><span class="line">tar -zcvf parse.tar.gz /dump/parse</span><br><span class="line"><span class="comment"># 解压数据包，数据目录为dump/parse</span></span><br><span class="line">tar -zxvf parse.tar.gz</span><br><span class="line"></span><br><span class="line"><span class="comment"># 解压到指定位置</span></span><br><span class="line">tar zxvf /bbs.tar.gz -C /zzz/bbs</span><br><span class="line"><span class="comment"># 压缩到指定位置文件</span></span><br><span class="line">tar zcvf /zzz.tar.gz ./zzz</span><br></pre></td></tr></table></figure>
+
+<h2 id="wget-下载文件"><a href="#wget-下载文件" class="headerlink" title="wget 下载文件"></a>wget 下载文件</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 安装wget</span></span><br><span class="line">yum install -y wget</span><br><span class="line"></span><br><span class="line"><span class="comment"># 下载文件到指定位置</span></span><br><span class="line">wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo</span><br></pre></td></tr></table></figure>
+
+<h2 id="vim-常用操作"><a href="#vim-常用操作" class="headerlink" title="vim 常用操作"></a>vim 常用操作</h2><ul>
+<li><code>gg</code>：光标到第一行</li>
+<li><code>dG</code>：删除光标以后所有内容</li>
+<li><code>ggdG</code>：删除全部内容</li>
+<li><code>dd</code>：删除当前行</li>
+<li><code>:x</code>或者<code>ZZ</code>：保存并退出</li>
+<li><code>set nu</code>：显示行号</li>
+</ul>
+<h2 id="sed"><a href="#sed" class="headerlink" title="sed"></a>sed</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#回到当前用户根目录</span></span><br><span class="line"><span class="built_in">cd</span></span><br><span class="line"><span class="comment">#创建t.txt文本文件</span></span><br><span class="line">touch t.txt</span><br><span class="line"><span class="comment">#录入如下内容</span></span><br><span class="line">vim t.txt</span><br><span class="line"><span class="comment">#t.txt内容</span></span><br><span class="line">中国</span><br><span class="line">北京</span><br><span class="line">北京</span><br><span class="line"><span class="comment">#退出并保存</span></span><br><span class="line">esc</span><br><span class="line">ZZ</span><br><span class="line"><span class="comment">#查询替换</span></span><br><span class="line">sed <span class="string">'s/北京/上海/'</span> t.txt</span><br><span class="line"><span class="comment">#输出结果</span></span><br><span class="line">中国</span><br><span class="line">上海</span><br><span class="line">上海</span><br><span class="line"><span class="comment">#直接替换文件内容</span></span><br><span class="line">sed -<span class="keyword">in</span>-place -e <span class="string">'s/abc/cba/g'</span> build.xml</span><br></pre></td></tr></table></figure>
+
+<h2 id="cat-录入文件内容"><a href="#cat-录入文件内容" class="headerlink" title="cat 录入文件内容"></a>cat 录入文件内容</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#&lt;&lt;EOF 表示当遇到EOF时结束输入，他们之间没有空格</span></span><br><span class="line">➜  ~ cat&gt;s.txt&lt;&lt;EOF</span><br><span class="line">heredoc&gt; 中国</span><br><span class="line">heredoc&gt; 北京</span><br><span class="line">heredoc&gt; 朝阳</span><br><span class="line">heredoc&gt; 常营</span><br><span class="line">heredoc&gt; 苹果派</span><br><span class="line">heredoc&gt; EOF</span><br><span class="line">➜  ~ cat s.txt</span><br><span class="line">中国</span><br><span class="line">北京</span><br><span class="line">朝阳</span><br><span class="line">常营</span><br><span class="line">苹果派</span><br></pre></td></tr></table></figure>
+
+<h2 id="查看是否已经安装了某个程序"><a href="#查看是否已经安装了某个程序" class="headerlink" title="查看是否已经安装了某个程序"></a>查看是否已经安装了某个程序</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rpm -qa | grep httpd</span><br></pre></td></tr></table></figure>
+
+<h2 id="cat-显示过滤空行和-开头的"><a href="#cat-显示过滤空行和-开头的" class="headerlink" title="cat 显示过滤空行和#开头的"></a>cat 显示过滤空行和<code>#</code>开头的</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat /etc/redis/6379.conf | grep -v ^<span class="comment"># | grep -v ^$</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="查看通过-yum-安装的某个程序相关文件"><a href="#查看通过-yum-安装的某个程序相关文件" class="headerlink" title="查看通过 yum 安装的某个程序相关文件"></a>查看通过 yum 安装的某个程序相关文件</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rpm -ql nginx</span><br></pre></td></tr></table></figure>
+
+<h2 id="查看可用的安装包"><a href="#查看可用的安装包" class="headerlink" title="查看可用的安装包"></a>查看可用的安装包</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum list all |grep zabbix</span><br></pre></td></tr></table></figure>
+
+<h2 id="命令别名"><a href="#命令别名" class="headerlink" title="命令别名"></a>命令别名</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 临时</span></span><br><span class="line"><span class="built_in">alias</span> c=<span class="string">"clear"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 清屏</span></span><br><span class="line">c</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 永久</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 在~/.bashrc后面添加别名</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">'alias c="clear"'</span> &gt;&gt; ~/.bashrc</span><br><span class="line"></span><br><span class="line"><span class="comment"># 重新加载配置</span></span><br><span class="line"><span class="built_in">source</span> ~/.bashrc</span><br><span class="line"></span><br><span class="line"><span class="comment"># 验证</span></span><br><span class="line">c</span><br></pre></td></tr></table></figure>
+
+<h2 id="RHEL-和-CentOS"><a href="#RHEL-和-CentOS" class="headerlink" title="RHEL 和 CentOS"></a>RHEL 和 CentOS</h2><ul>
+<li>RHEL：Red Hat Enterprise Linux</li>
+<li>CentOS：Community Entprise Operate System</li>
+<li>CentOS 是 RHEL 的克隆版本</li>
+</ul>
+<h2 id="chmod-4710"><a href="#chmod-4710" class="headerlink" title="chmod 4710"></a>chmod 4710</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># s表示suid，这里是4</span></span><br><span class="line"><span class="comment"># r是读，表示4</span></span><br><span class="line"><span class="comment"># w写，表示2</span></span><br><span class="line"><span class="comment"># x执行，表示1</span></span><br><span class="line"><span class="comment"># 加起来就是结果</span></span><br><span class="line"><span class="comment"># 4710，第1个4表示suid/guid,第2个7，4+2+1，依次类推</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># suid意味着如果A用户对属于他自己的shell脚本文件设置了这种权限，那么其他用户在执行这个脚本的时候就拥有了A用户的权限。所以，如果 root用户对某一脚本设置了这一权限的话则其他用户执行该脚本的时候则拥有了root用户权限。</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 如下命令设置了fping对于所有者可以读写执行，所属组能够执行，其他用户没有任何权限；</span></span><br><span class="line"><span class="comment"># 其他用户在执行时将会默认获取root权限</span></span><br><span class="line">chown root:zabbix /usr/sbin/fping</span><br><span class="line">chmod 4710 /usr/sbin/fping</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AC%94%E8%AE%B0/" rel="tag"># 笔记</a>
+              <a href="/tags/tips/" rel="tag"># tips</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/06/26/mongodb/mongodb%E6%9F%A5%E8%AF%A2%E5%B0%8F%E8%AE%A1/" rel="prev" title="mongodb查询小计">
+      <i class="fa fa-chevron-left"></i> mongodb查询小计
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/06/26/docker/Dockerfile%E5%92%8Cdocker-compose%E5%85%B3%E7%B3%BB/" rel="next" title="Dockerfile和docker-compose关系">
+      Dockerfile和docker-compose关系 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#熟记的命令"><span class="nav-number">1.</span> <span class="nav-text">熟记的命令</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#打印环境变量"><span class="nav-number">1.1.</span> <span class="nav-text">打印环境变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#docker-容器操作"><span class="nav-number">1.2.</span> <span class="nav-text">docker 容器操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#grep-过滤"><span class="nav-number">1.3.</span> <span class="nav-text">grep 过滤</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#telnet-查看端口是否联通"><span class="nav-number">1.4.</span> <span class="nav-text">telnet 查看端口是否联通</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ps-过滤进程"><span class="nav-number">1.5.</span> <span class="nav-text">ps 过滤进程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#netstat-查看端口"><span class="nav-number">1.6.</span> <span class="nav-text">netstat 查看端口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#firewall-cmd-防火墙"><span class="nav-number">1.7.</span> <span class="nav-text">firewall-cmd 防火墙</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tar-解压缩文件"><span class="nav-number">1.8.</span> <span class="nav-text">tar 解压缩文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#wget-下载文件"><span class="nav-number">1.9.</span> <span class="nav-text">wget 下载文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#vim-常用操作"><span class="nav-number">1.10.</span> <span class="nav-text">vim 常用操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sed"><span class="nav-number">1.11.</span> <span class="nav-text">sed</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cat-录入文件内容"><span class="nav-number">1.12.</span> <span class="nav-text">cat 录入文件内容</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看是否已经安装了某个程序"><span class="nav-number">1.13.</span> <span class="nav-text">查看是否已经安装了某个程序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cat-显示过滤空行和-开头的"><span class="nav-number">1.14.</span> <span class="nav-text">cat 显示过滤空行和#开头的</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看通过-yum-安装的某个程序相关文件"><span class="nav-number">1.15.</span> <span class="nav-text">查看通过 yum 安装的某个程序相关文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看可用的安装包"><span class="nav-number">1.16.</span> <span class="nav-text">查看可用的安装包</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#命令别名"><span class="nav-number">1.17.</span> <span class="nav-text">命令别名</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RHEL-和-CentOS"><span class="nav-number">1.18.</span> <span class="nav-text">RHEL 和 CentOS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#chmod-4710"><span class="nav-number">1.19.</span> <span class="nav-text">chmod 4710</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Andy Ge</p>
+  <div class="site-description" itemprop="description">勇于积极进取，步入人生的世外桃源</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">728</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">134</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">315</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/andyge" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;andyge" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:geshaofei@126.com" title="E-Mail → mailto:geshaofei@126.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.ruanyifeng.com/" title="http:&#x2F;&#x2F;www.ruanyifeng.com&#x2F;" rel="noopener" target="_blank">阮一峰</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://colobu.com/" title="http:&#x2F;&#x2F;colobu.com&#x2F;" rel="noopener" target="_blank">鸟窝</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.cnblogs.com/hellokuangshen/" title="https:&#x2F;&#x2F;www.cnblogs.com&#x2F;hellokuangshen&#x2F;" rel="noopener" target="_blank">狂神</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://yelog.org/" title="https:&#x2F;&#x2F;yelog.org&#x2F;" rel="noopener" target="_blank">叶落阁</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Andy Ge</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.7.1
+  </div>
+
+        
+
+
+
+
+
+
+  <script>
+  function leancloudSelector(url) {
+    url = encodeURI(url);
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.getAttribute('id'));
+      var title = visitors.getAttribute('data-flag-title');
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .then(() => {
+                leancloudSelector(url).innerText = counter.time + 1;
+              })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              })
+          } else {
+              Counter('post', '/classes/Counter', { title: title, url: url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.getAttribute('id'));
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (let item of results) {
+            let { url, time } = item;
+            leancloudSelector(url).innerText = time;
+          }
+          for (let url of entries) {
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=2TdIb5gRlAVUw24l2W0zWnCj-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method: method,
+          headers: {
+            'X-LC-Id'     : '2TdIb5gRlAVUw24l2W0zWnCj-gzGzoHsz',
+            'X-LC-Key'    : 'cJdJrMLBXsj0ttq0WsL0aA2j',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

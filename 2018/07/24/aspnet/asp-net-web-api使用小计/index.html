@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"swiftist.cn","root":"/","scheme":"Pisces","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"EVBR3H53HW","apiKey":"2abd573a01143a0cc4108fa4d21ae67c","indexName":"swiftist","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="1. 常用 1.1. 路由规则 1.1.1. 默认的路由 1.1.2. 路由匹配 1.1.3. 在方法上自定义路由规则   1.2. 基本技巧 1.2.1. 服务端的 POST,PUT,DELETE 返回数据 1.2.2. 泛型能够在服务端反序列化成功 1.2.3. 从前端传 JSON 值给后端 dynamic 类型     2. 填坑系列 2.1. 对象反序列化 2.1.1. Attrib">
+<meta property="og:type" content="article">
+<meta property="og:title" content="asp.net web api使用小计">
+<meta property="og:url" content="https://swiftist.cn/2018/07/24/aspnet/asp-net-web-api%E4%BD%BF%E7%94%A8%E5%B0%8F%E8%AE%A1/index.html">
+<meta property="og:site_name" content="飞雪轩辕">
+<meta property="og:description" content="1. 常用 1.1. 路由规则 1.1.1. 默认的路由 1.1.2. 路由匹配 1.1.3. 在方法上自定义路由规则   1.2. 基本技巧 1.2.1. 服务端的 POST,PUT,DELETE 返回数据 1.2.2. 泛型能够在服务端反序列化成功 1.2.3. 从前端传 JSON 值给后端 dynamic 类型     2. 填坑系列 2.1. 对象反序列化 2.1.1. Attrib">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://swiftist.cn/images/misc/webapientity.png">
+<meta property="article:published_time" content="2018-07-24T01:23:00.000Z">
+<meta property="article:modified_time" content="2020-03-31T15:07:39.322Z">
+<meta property="article:author" content="Andy Ge">
+<meta property="article:tag" content="笔记">
+<meta property="article:tag" content="WebApi">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://swiftist.cn/images/misc/webapientity.png">
+
+<link rel="canonical" href="https://swiftist.cn/2018/07/24/aspnet/asp-net-web-api%E4%BD%BF%E7%94%A8%E5%B0%8F%E8%AE%A1/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>asp.net web api使用小计 | 飞雪轩辕</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="飞雪轩辕" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">飞雪轩辕</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">人生的乐趣在于把梦想变成现实</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-java">
+
+    <a href="/categories/java/" rel="section"><i class="fa fa-fw fa-th-large"></i>java</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://swiftist.cn/2018/07/24/aspnet/asp-net-web-api%E4%BD%BF%E7%94%A8%E5%B0%8F%E8%AE%A1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Andy Ge">
+      <meta itemprop="description" content="勇于积极进取，步入人生的世外桃源">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="飞雪轩辕">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          asp.net web api使用小计
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-07-24 09:23:00" itemprop="dateCreated datePublished" datetime="2018-07-24T09:23:00+08:00">2018-07-24</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-31 23:07:39" itemprop="dateModified" datetime="2020-03-31T23:07:39+08:00">2020-03-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/WebApi/" itemprop="url" rel="index">
+                    <span itemprop="name">WebApi</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span id="/2018/07/24/aspnet/asp-net-web-api%E4%BD%BF%E7%94%A8%E5%B0%8F%E8%AE%A1/" class="post-meta-item leancloud_visitors" data-flag-title="asp.net web api使用小计" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <!-- TOC -->
+
+<ul>
+<li><a href="#1-常用">1. 常用</a><ul>
+<li><a href="#11-路由规则">1.1. 路由规则</a><ul>
+<li><a href="#111-默认的路由">1.1.1. 默认的路由</a></li>
+<li><a href="#112-路由匹配">1.1.2. 路由匹配</a></li>
+<li><a href="#113-在方法上自定义路由规则">1.1.3. 在方法上自定义路由规则</a></li>
+</ul>
+</li>
+<li><a href="#12-基本技巧">1.2. 基本技巧</a><ul>
+<li><a href="#121-服务端的-postputdelete-返回数据">1.2.1. 服务端的 POST,PUT,DELETE 返回数据</a></li>
+<li><a href="#122-泛型能够在服务端反序列化成功">1.2.2. 泛型能够在服务端反序列化成功</a></li>
+<li><a href="#123-从前端传-json-值给后端-dynamic-类型">1.2.3. 从前端传 JSON 值给后端 dynamic 类型</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#2-填坑系列">2. 填坑系列</a><ul>
+<li><a href="#21-对象反序列化">2.1. 对象反序列化</a><ul>
+<li><a href="#211-attribute-修饰过的对象不能用户前后端传值">2.1.1. Attribute 修饰过的对象不能用户前后端传值</a></li>
+<li><a href="#212-属性大小写不敏感">2.1.2. 属性大小写不敏感</a></li>
+<li><a href="#213-对象反序列化之-entity">2.1.3. 对象反序列化之 Entity</a></li>
+<li><a href="#214-对象反序列化之属性类型不匹配">2.1.4. 对象反序列化之属性类型不匹配</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<!-- /TOC -->
+
+<h1 id="1-常用"><a href="#1-常用" class="headerlink" title="1. 常用"></a>1. 常用</h1><h2 id="1-1-路由规则"><a href="#1-1-路由规则" class="headerlink" title="1.1. 路由规则"></a>1.1. 路由规则</h2><h3 id="1-1-1-默认的路由"><a href="#1-1-1-默认的路由" class="headerlink" title="1.1.1. 默认的路由"></a>1.1.1. 默认的路由</h3><p>如果需要传入多个参数，但是有没有定义对应的 router，解决方法如下：</p>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title">WebApiConfig</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Register</span>(<span class="params">HttpConfiguration config</span>)</span></span><br><span class="line"><span class="function"></span>    &#123;</span><br><span class="line">        <span class="comment">// Web API 配置和服务</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// Web API 路由</span></span><br><span class="line">        config.MapHttpAttributeRoutes();</span><br><span class="line"></span><br><span class="line">        config.Routes.MapHttpRoute(</span><br><span class="line">            name: <span class="string">"DefaultApi"</span>,</span><br><span class="line">            routeTemplate: <span class="string">"api/&#123;controller&#125;/&#123;id&#125;"</span>,<span class="comment">//我们看到只定义了一种路由规则</span></span><br><span class="line">            defaults: <span class="keyword">new</span> &#123; id = RouteParameter.Optional &#125;</span><br><span class="line">        );</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">Application_Start</span>(<span class="params"><span class="keyword">object</span> sender, EventArgs e</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    GlobalConfiguration.Configure(WebApiConfig.Register);</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>所以需要在<code>Controller</code>定义一个 Get 方法，并且参数名称为<code>id</code>，如：</p>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// GET api/&lt;controller&gt;/5</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">string</span> <span class="title">Get</span>(<span class="params"><span class="keyword">string</span> id</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    Util.Log(id);</span><br><span class="line">    <span class="keyword">return</span> <span class="string">"ok"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>但如果定义的 Get 方法参数名称不是<code>id</code>,而是其他的，则不会执行该方法，而是直接采用<code>Get()</code>方法：</p>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// GET api/&lt;controller&gt;/5</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">string</span> <span class="title">Get</span>(<span class="params"><span class="keyword">string</span> info</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    Util.Log(info);</span><br><span class="line">    <span class="keyword">return</span> <span class="string">"ok"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>虽然方法名称为 Get，但是按照<code>GET api/&lt;controller&gt;/5</code>调用，并不执行该方法，要执行该方法的正确调用方式为：<br><code>Get api/&lt;controller&gt;?info=xyz</code>，例如下面的请求方式，可以实现多个参数传入调用。列表请求可以采用连接串的方式，如下：</p>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// GET api/&lt;controller&gt;</span></span><br><span class="line"><span class="comment">// 注意请求URL形式为: `/api/comment?shopId=$&#123;shopId&#125;&amp;skip=$&#123;skip&#125;`,</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> List&lt;CommentWXDTO&gt; <span class="title">Get</span>(<span class="params">Guid shopId, <span class="keyword">int</span> skip, <span class="keyword">int</span> size</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">var</span> list = FacadeService.GetFacade&lt;ICommentFacade&gt;().LoadWXList(shopId, skip, size);</span><br><span class="line">    <span class="keyword">return</span> list;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-1-2-路由匹配"><a href="#1-1-2-路由匹配" class="headerlink" title="1.1.2. 路由匹配"></a>1.1.2. 路由匹配</h3><p>加载购物车列表时，通常传入用户的 ID，所以在写<code>Get</code>方法是签名可能是<code>Get(Guid userId)</code>,但是这样是不能够别匹配的，因为定义的默认规则<code>&quot;api/{controller}/{id}&quot;</code>中，参数是<code>id</code>，所以<code>userId</code>不能够匹配而失败。</p>
+<p><strong>客户端</strong></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> url = <span class="string">`<span class="subst">$&#123;api&#125;</span>/cart/<span class="subst">$&#123;getApp().user.Id&#125;</span>`</span></span><br><span class="line"><span class="keyword">const</span> that = <span class="keyword">this</span></span><br><span class="line">wx.request(&#123;</span><br><span class="line">    url,</span><br><span class="line">    success(res) &#123;</span><br><span class="line">        <span class="keyword">const</span> goods = res.data</span><br><span class="line">        that.setData(&#123; goods &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p><strong>服务端</strong></p>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// GET api/&lt;controller&gt;/userId</span></span><br><span class="line"><span class="comment">//注意该方法的参数名称必须为id，只有这样才会和默认定义的路由规则匹配</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> List&lt;CartDTO&gt; <span class="title">Get</span>(<span class="params">Guid id</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">var</span> userId = id;</span><br><span class="line">    <span class="keyword">var</span> list = FacadeService.GetFacade&lt;ICartFacade&gt;().Load(userId);</span><br><span class="line">    <span class="keyword">return</span> list;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-1-3-在方法上自定义路由规则"><a href="#1-1-3-在方法上自定义路由规则" class="headerlink" title="1.1.3. 在方法上自定义路由规则"></a>1.1.3. 在方法上自定义路由规则</h3><figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">[<span class="meta">Route(<span class="meta-string">"ap/see/&#123;id&#125;/&#123;age:int&#125;"</span>)</span>]</span><br><span class="line">[<span class="meta">HttpGet</span>]</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">string</span> <span class="title">Get</span>(<span class="params"><span class="keyword">int</span> id, <span class="keyword">int</span> age</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">string</span>.Format(<span class="string">"&#123;0&#125;/&#123;1&#125;"</span>, id, age);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">[<span class="meta">Route(<span class="meta-string">"api/suggest/getpath"</span>)</span>]</span><br><span class="line">[<span class="meta">HttpGet</span>]</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">object</span> <span class="title">GetPath</span>(<span class="params">Guid id</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">var</span> path = FacadeService.GetFacade&lt;ISuggestTreeFacade&gt;().GetPath(id);</span><br><span class="line">    <span class="keyword">var</span> kinds = FacadeService.GetFacade&lt;IKindFacade&gt;().LoadAll()</span><br><span class="line">        .Select(e =&gt; <span class="keyword">new</span> KV &#123; K = e.Key.ToString(), V = e.Value &#125;).ToList();</span><br><span class="line">    <span class="keyword">var</span> obj = <span class="keyword">new</span> &#123; Path = path, Kinds = kinds &#125;;</span><br><span class="line">    <span class="keyword">return</span> obj;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="1-2-基本技巧"><a href="#1-2-基本技巧" class="headerlink" title="1.2. 基本技巧"></a>1.2. 基本技巧</h2><h3 id="1-2-1-服务端的-POST-PUT-DELETE-返回数据"><a href="#1-2-1-服务端的-POST-PUT-DELETE-返回数据" class="headerlink" title="1.2.1. 服务端的 POST,PUT,DELETE 返回数据"></a>1.2.1. 服务端的 POST,PUT,DELETE 返回数据</h3><p>服务端的 POST,PUT,DELETE 等这些方法仍然可以返回数据，客户端在<code>success</code>方法接收即可。<br>通过 wx.request 的 responseType 可以定义服务端返回数据的类型，从而进行自动处理。</p>
+<p><strong>客户端</strong></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> data = &#123;</span><br><span class="line">    UserId: gd.user.Id,</span><br><span class="line">    Goods: <span class="built_in">JSON</span>.stringify(goods),</span><br><span class="line">    Address: <span class="built_in">JSON</span>.stringify(address),</span><br><span class="line">    Fare,</span><br><span class="line">    Fee,</span><br><span class="line">    Message,</span><br><span class="line">    TotalFee: Fee + Fare,</span><br><span class="line">    Status: <span class="number">1</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> url = <span class="string">`<span class="subst">$&#123;api&#125;</span>/order/submit`</span></span><br><span class="line"><span class="keyword">const</span> method = <span class="string">'POST'</span></span><br><span class="line">wx.request(&#123;</span><br><span class="line">    url,</span><br><span class="line">    data,</span><br><span class="line">    method,</span><br><span class="line">    responseType: <span class="string">'application/json'</span>,</span><br><span class="line">    success(e) &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(e.data)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p><strong>服务端</strong></p>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">object</span> <span class="title">Post</span>(<span class="params">OrderDTO o</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    Orders orders = <span class="keyword">new</span> Orders</span><br><span class="line">    &#123;</span><br><span class="line">        UserId = o.UserId,</span><br><span class="line">        Goods = o.Goods,</span><br><span class="line">        Address = o.Address,</span><br><span class="line">        Message = o.Message,</span><br><span class="line">        Fare = o.Fare,</span><br><span class="line">        Fee = o.Fee,</span><br><span class="line">        TotalFee = o.TotalFee,</span><br><span class="line">        Status = <span class="number">1</span>,</span><br><span class="line">    &#125;;</span><br><span class="line">    FacadeService.GetFacade&lt;IOrdersFacade&gt;().Create(orders);</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> &#123; Id = orders.Id, Status = <span class="number">1</span> &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>输出</strong></p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123; <span class="attr">"Id"</span>: <span class="string">"a8df82fc-2407-493a-b032-24ff90a46c6f"</span>, <span class="attr">"Status"</span>: <span class="number">1</span> &#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-2-2-泛型能够在服务端反序列化成功"><a href="#1-2-2-泛型能够在服务端反序列化成功" class="headerlink" title="1.2.2. 泛型能够在服务端反序列化成功"></a>1.2.2. 泛型能够在服务端反序列化成功</h3><p>在客户端定义了服务服务端数据结构的数据，提交到服务端，即使是泛型，也能够反序列化成功；</p>
+<p><strong>客户端</strong></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> delIds = []</span><br><span class="line">itemList.forEach(<span class="function"><span class="params">g</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> itm = data[g.GoodsId]</span><br><span class="line">    <span class="keyword">const</span> s = itm.find(<span class="function"><span class="params">x</span> =&gt;</span> x.id == g.SeriesId)</span><br><span class="line">    <span class="keyword">if</span> (s) &#123;</span><br><span class="line">        g.GoodsName = itm.name</span><br><span class="line">        g.SeriesName = s.name</span><br><span class="line">        g.Cover = s.cover</span><br><span class="line">        g.Price = s.price</span><br><span class="line">        g.Stock = s.stock</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        g.remove = <span class="literal">true</span></span><br><span class="line">        delIds.push(&#123; <span class="attr">K</span>: g.GoodsId, <span class="attr">V</span>: g.SeriesId &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br><span class="line"><span class="keyword">const</span> goods = itemList.filter(<span class="function"><span class="params">g</span> =&gt;</span> !g.remove)</span><br><span class="line">that.setData(&#123; goods &#125;)</span><br><span class="line">wx.setStorageSync(<span class="string">'goods'</span>, goods)</span><br><span class="line"><span class="keyword">if</span> (delIds.length &gt; <span class="number">0</span>) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(delIds)</span><br><span class="line">    <span class="keyword">const</span> url = <span class="string">`<span class="subst">$&#123;api&#125;</span>/cart/delRemoved`</span></span><br><span class="line">    <span class="keyword">const</span> method = <span class="string">'POST'</span></span><br><span class="line">    <span class="keyword">const</span> data = delIds</span><br><span class="line">    wx.request(&#123; url, data, method &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>服务端</strong></p>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[<span class="meta">Route(<span class="meta-string">"api/cart/delRemoved"</span>)</span>]</span><br><span class="line">[<span class="meta">HttpPost</span>]</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Post</span>(<span class="params">List&lt;KV&gt; delIds</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> i = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-2-3-从前端传-JSON-值给后端-dynamic-类型"><a href="#1-2-3-从前端传-JSON-值给后端-dynamic-类型" class="headerlink" title="1.2.3. 从前端传 JSON 值给后端 dynamic 类型"></a>1.2.3. 从前端传 JSON 值给后端 dynamic 类型</h3><figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> ResultData <span class="title">Put</span>(<span class="params"><span class="keyword">string</span> id, [FromBody]<span class="keyword">dynamic</span> model</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    res.State = <span class="literal">true</span>;</span><br><span class="line">    res.Message = <span class="string">"OK"</span>;</span><br><span class="line">    res.JsonData = model.USER_NM;<span class="comment">//从前端传来的请求数据</span></span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="2-填坑系列"><a href="#2-填坑系列" class="headerlink" title="2. 填坑系列"></a>2. 填坑系列</h1><h2 id="2-1-对象反序列化"><a href="#2-1-对象反序列化" class="headerlink" title="2.1. 对象反序列化"></a>2.1. 对象反序列化</h2><h3 id="2-1-1-Attribute-修饰过的对象不能用户前后端传值"><a href="#2-1-1-Attribute-修饰过的对象不能用户前后端传值" class="headerlink" title="2.1.1. Attribute 修饰过的对象不能用户前后端传值"></a>2.1.1. Attribute 修饰过的对象不能用户前后端传值</h3><p>例如从服务端返回 Entity 类型对象到客户端，客户端接受的对象结构完全不同于服务端定义。</p>
+<p><strong>服务端</strong></p>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//实体类定义</span></span><br><span class="line">[<span class="meta">Serializable</span>][Table(Name = <span class="string">"Orders"</span>)]</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Orders</span> : <span class="title">EntityBase</span></span><br><span class="line">&#123;</span><br><span class="line">    Guid id = Guid.NewGuid();</span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> 记录标识</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    [<span class="meta">Column(IsPrimaryKey = true, Name = <span class="meta-string">"Id"</span>)</span>]</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">new</span> Guid Id</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">get</span> &#123; <span class="keyword">return</span> id; &#125;</span><br><span class="line">        <span class="keyword">set</span> &#123; id = <span class="keyword">value</span>; &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> 用户ID</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    [<span class="meta">Column(Name = <span class="meta-string">"UserId"</span>, UpdateCheck = UpdateCheck.Never)</span>]</span><br><span class="line">    <span class="keyword">public</span> Guid UserId &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line"></span><br><span class="line">    String _Address = <span class="string">""</span>;</span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> 地址JSON串</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    [<span class="meta">Column(Name = <span class="meta-string">"Address"</span>, UpdateCheck = UpdateCheck.Never)</span>]</span><br><span class="line">    <span class="keyword">public</span> String Address</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">get</span> &#123; <span class="keyword">return</span> _Address; &#125;</span><br><span class="line">        <span class="keyword">set</span> &#123; _Address = <span class="keyword">value</span>; &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    String _Goods = <span class="string">""</span>;</span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> 商品列表的JSON串</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    [<span class="meta">Column(Name = <span class="meta-string">"Goods"</span>, UpdateCheck = UpdateCheck.Never)</span>]</span><br><span class="line">    <span class="keyword">public</span> String Goods</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">get</span> &#123; <span class="keyword">return</span> _Goods; &#125;</span><br><span class="line">        <span class="keyword">set</span> &#123; _Goods = <span class="keyword">value</span>; &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> 运费</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    [<span class="meta">Column(Name = <span class="meta-string">"Fare"</span>, UpdateCheck = UpdateCheck.Never, DbType = <span class="meta-string">"decimal(8,2)"</span>)</span>]</span><br><span class="line">    <span class="keyword">public</span> Decimal Fare &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> 总价</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    [<span class="meta">Column(Name = <span class="meta-string">"Fee"</span>, UpdateCheck = UpdateCheck.Never, DbType = <span class="meta-string">"decimal(10,2)"</span>)</span>]</span><br><span class="line">    <span class="keyword">public</span> Decimal Fee &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> 总金额</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    [<span class="meta">Column(Name = <span class="meta-string">"TotalFee"</span>, UpdateCheck = UpdateCheck.Never, DbType = <span class="meta-string">"decimal(10,2)"</span>)</span>]</span><br><span class="line">    <span class="keyword">public</span> Decimal TotalFee &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line"></span><br><span class="line">    String _Message = <span class="string">""</span>;</span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> 商家留言</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    [<span class="meta">Column(Name = <span class="meta-string">"Message"</span>, UpdateCheck = UpdateCheck.Never)</span>]</span><br><span class="line">    <span class="keyword">public</span> String Message</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">get</span> &#123; <span class="keyword">return</span> _Message; &#125;</span><br><span class="line">        <span class="keyword">set</span> &#123; _Message = <span class="keyword">value</span>; &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> 状态：1：未支付；2：待发货；4：待签收；8：待评价；16：已完成；</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    [<span class="meta">Column(Name = <span class="meta-string">"Status"</span>, UpdateCheck = UpdateCheck.Never)</span>]</span><br><span class="line">    <span class="keyword">public</span> Int32 Status &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line"></span><br><span class="line">    DateTime _CreatedTime = DateTime.Now;</span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> 提交时间</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    [<span class="meta">Column(Name = <span class="meta-string">"CreatedTime"</span>, UpdateCheck = UpdateCheck.Never)</span>]</span><br><span class="line">    <span class="keyword">public</span> DateTime CreatedTime</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">get</span> &#123; <span class="keyword">return</span> _CreatedTime; &#125;</span><br><span class="line">        <span class="keyword">set</span> &#123; _CreatedTime = <span class="keyword">value</span>; &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//返回方法</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Orders <span class="title">Get</span>(<span class="params">Guid id</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">var</span> orders = FacadeService.GetFacade&lt;IOrdersFacade&gt;().Get(id);</span><br><span class="line">    <span class="keyword">return</span> orders;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>客户端</strong></p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"id"</span>: <span class="string">"4f29f275-06b1-4f58-be10-a73f7d5ec66d"</span>,</span><br><span class="line">    <span class="attr">"&lt;UserId&gt;k__BackingField"</span>: <span class="string">"03f34a3a-b293-4023-a5fa-543ea99cf79d"</span>,</span><br><span class="line">    <span class="attr">"_Address"</span>: <span class="string">"&#123;\"userName\":\"张三\",\"nationalCode\":\"510000\",\"telNumber\":\"020-81167888\",\"postalCode\":\"510000\",\"provinceName\":\"广东省\",\"cityName\":\"广州市\",\"countyName\":\"海珠区\",\"detailInfo\":\"新港中路397号\"&#125;"</span>,</span><br><span class="line">    <span class="attr">"_Goods"</span>: <span class="string">"[&#123;\"GoodsId\":\"b5a387c1-0046-4f79-8a39-386fe311f109\",\"SeriesId\":\"89ff14fd-1dc9-5053-e065-e67460d2ceac\",\"Quantity\":1,\"GoodsName\":\"正宗五常黑米健康一生的早餐无污染产后病后**补虚黑米糊500g。 给我们的五脏六腑进贡——黑米是健康一生的早餐\",\"SeriesName\":\"黑晶小稻米\",\"Cover\":\"http://localhost:27855/FD/Nail/4368bf50-b70d-47c4-a032-76295ae8191f.png\",\"Price\":45,\"Stock\":4&#125;,&#123;\"GoodsId\":\"5a2e866c-5e4e-4ede-bee9-eed4b5fac2e3\",\"SeriesId\":\"3e006ac1-e33b-c286-ce8a-a6a9979e2051\",\"Quantity\":2,\"GoodsName\":\"原生态新疆和田大枣特级 2500g 土枣未漂洗 纯天然晾晒无污染 特价数量有限哦 五斤装包邮\",\"SeriesName\":\"精选金装200克\",\"Cover\":\"https://klx.weiqiao.cn/FD/Nail/afda2da6-9a3b-4d59-82fb-408922b1ee6a.png\",\"Price\":33,\"Stock\":2&#125;,&#123;\"GoodsId\":\"5a2e866c-5e4e-4ede-bee9-eed4b5fac2e3\",\"SeriesId\":\"70e272b5-b87d-d397-c0bc-dbc45a68e413\",\"Quantity\":1,\"GoodsName\":\"原生态新疆和田大枣特级 2500g 土枣未漂洗 纯天然晾晒无污染 特价数量有限哦 五斤装包邮\",\"SeriesName\":\"精选金装500克\",\"Cover\":\"https://klx.weiqiao.cn/FD/Nail/8371af7c-2197-4452-98d1-476b8794a2c4.png\",\"Price\":3,\"Stock\":4&#125;]"</span>,</span><br><span class="line">    <span class="attr">"&lt;Fare&gt;k__BackingField"</span>: <span class="number">20</span>,</span><br><span class="line">    <span class="attr">"&lt;Fee&gt;k__BackingField"</span>: <span class="number">114</span>,</span><br><span class="line">    <span class="attr">"&lt;TotalFee&gt;k__BackingField"</span>: <span class="number">134</span>,</span><br><span class="line">    <span class="attr">"_Message"</span>: <span class="string">""</span>,</span><br><span class="line">    <span class="attr">"&lt;Status&gt;k__BackingField"</span>: <span class="number">1</span>,</span><br><span class="line">    <span class="attr">"_CreatedTime"</span>: <span class="string">"2018-09-18T11:48:17.567"</span>,</span><br><span class="line">    <span class="attr">"&lt;Id&gt;k__BackingField"</span>: <span class="string">"00000000-0000-0000-0000-000000000000"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>截图</strong><br><img src="/images/misc/webapientity.png" alt="">;</p>
+<h3 id="2-1-2-属性大小写不敏感"><a href="#2-1-2-属性大小写不敏感" class="headerlink" title="2.1.2. 属性大小写不敏感"></a>2.1.2. 属性大小写不敏感</h3><p>从客户端传送给服务端的对象，属性的大小写不敏感。下面的例子中，客户端 DTO 的属性小写开头，服务端属性大写开头，但是能够够转换成功。</p>
+<p><strong>客户端</strong></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> data = &#123;</span><br><span class="line">    faved: <span class="keyword">this</span>.data.faved,</span><br><span class="line">    userId: <span class="keyword">this</span>.user.Id,</span><br><span class="line">    goodsId: <span class="keyword">this</span>.goodsId</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> that = <span class="keyword">this</span></span><br><span class="line">wx.request(&#123;</span><br><span class="line">    url: <span class="string">`<span class="subst">$&#123;api&#125;</span>/zan`</span>,</span><br><span class="line">    method: <span class="string">'POST'</span>,</span><br><span class="line">    data,</span><br><span class="line">    header: &#123;</span><br><span class="line">        <span class="string">'content-type'</span>: <span class="string">'application/json'</span></span><br><span class="line">    &#125;,</span><br><span class="line">    success() &#123;</span><br><span class="line">        that.updateZan = <span class="literal">false</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p><strong>服务端</strong></p>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">ZanDTO</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">bool</span> Faved &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">    <span class="keyword">public</span> Guid GoodsId &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">    <span class="keyword">public</span> Guid UserId &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Post</span>(<span class="params">ZanDTO dto</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    FacadeService.GetFacade&lt;IItemZanFacade&gt;().Zan(dto.UserId, dto.GoodsId, dto.Faved);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-1-3-对象反序列化之-Entity"><a href="#2-1-3-对象反序列化之-Entity" class="headerlink" title="2.1.3. 对象反序列化之 Entity"></a>2.1.3. 对象反序列化之 Entity</h3><p>通常在客户端向服务器端传回 JSON 对象，但在服务器端要还原成对等的 C#对象，如果采用的是 Entity 的话，在还原失败，还原的对象类型一定要是纯 C#对象，如 DTO。</p>
+<p><strong>客户端</strong></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> &#123; <span class="attr">name</span>: SeriesName, <span class="attr">cover</span>: Cover, <span class="attr">price</span>: Price &#125; = <span class="keyword">this</span>.series</span><br><span class="line"><span class="keyword">const</span> data = &#123;</span><br><span class="line">    UserId: getApp().globalData.user.Id,</span><br><span class="line">    GoodsId: <span class="keyword">this</span>.goodsId,</span><br><span class="line">    GoodsName: <span class="keyword">this</span>.data.goods.Name,</span><br><span class="line">    SeriesName,</span><br><span class="line">    Cover,</span><br><span class="line">    Price,</span><br><span class="line">    Quantity: <span class="keyword">this</span>.data.number</span><br><span class="line">&#125;</span><br><span class="line">wx.request(&#123;</span><br><span class="line">    url: <span class="string">`<span class="subst">$&#123;api&#125;</span>/cart`</span>,</span><br><span class="line">    method: <span class="string">'POST'</span>,</span><br><span class="line">    data,</span><br><span class="line">    header: &#123;</span><br><span class="line">        <span class="string">'content-type'</span>: <span class="string">'application/json'</span></span><br><span class="line">    &#125;,</span><br><span class="line">    success: <span class="function"><span class="keyword">function</span>(<span class="params">res</span>) </span>&#123;</span><br><span class="line">        wx.showToast(&#123; <span class="attr">title</span>: <span class="string">'已添加到购物车'</span> &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p><strong>服务端</strong></p>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Post</span>(<span class="params">CartDTO cart</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    FacadeService.GetFacade&lt;ICartFacade&gt;().Add(cart);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//如果是Cart对象(Entity)则不能反序列化成功</span></span><br></pre></td></tr></table></figure>
+
+<p>主要是因为 Entity 经过 Attribute 修饰后有影响：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;GoodsId&gt;k__BackingField:"5a2e866c-5e4e-4ede-bee9-eed4b5fac2e3"</span><br><span class="line">&lt;Id&gt;k__BackingField:"00000000-0000-0000-0000-000000000000"</span><br><span class="line">&lt;Price&gt;k__BackingField:2</span><br><span class="line">&lt;Quantity&gt;k__BackingField:1</span><br><span class="line">&lt;UserId&gt;k__BackingField:"03f34a3a-b293-4023-a5fa-543ea99cf79d"</span><br><span class="line">id:"893648de-b196-4669-8985-25cb3964c3ca"</span><br><span class="line">_Cover:"http://localhost:27855/FD/Nail/17034fdb-6dbe-431b-9049-f18c37d2ec8c.png"</span><br><span class="line">_CreatedTime:"2018-09-16T17:14:09.8"</span><br><span class="line">_GoodsName:"原生态新疆和田大枣特级 2500g 土枣未漂洗 纯天然晾晒无污染 特价数量有限哦 五斤装包邮"</span><br><span class="line">_SeriesName:"精选普装200克"</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-1-4-对象反序列化之属性类型不匹配"><a href="#2-1-4-对象反序列化之属性类型不匹配" class="headerlink" title="2.1.4. 对象反序列化之属性类型不匹配"></a>2.1.4. 对象反序列化之属性类型不匹配</h3><p>如果从客户端传递给服务对象某个属性类型前后端不一致，也会导致服务端转换失败。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> data = &#123;</span><br><span class="line">    UserId: gd.user.Id,</span><br><span class="line">    Goods: <span class="built_in">JSON</span>.stringify(goods),</span><br><span class="line">    Address,</span><br><span class="line">    <span class="comment">//Address: JSON.stringify(address),</span></span><br><span class="line">    Fare,</span><br><span class="line">    Fee,</span><br><span class="line">    Message,</span><br><span class="line">    TotalFee: Fee + Fare,</span><br><span class="line">    Status: <span class="number">1</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> url = <span class="string">`<span class="subst">$&#123;api&#125;</span>/order/submit`</span></span><br><span class="line"><span class="keyword">const</span> method = <span class="string">'POST'</span></span><br><span class="line">wx.request(&#123;</span><br><span class="line">    url,</span><br><span class="line">    data,</span><br><span class="line">    method,</span><br><span class="line">    success(e) &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(e)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//DTO定义，注意Address是字符串类型，</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">OrderDTO</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> Guid UserId &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">string</span> Address &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">string</span> Goods &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">decimal</span> Fee &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">decimal</span> Fare &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">decimal</span> TotalFee &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">string</span> Message &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">int</span> Status &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//控制器</span></span><br><span class="line">[<span class="meta">Route(<span class="meta-string">"api/order/submit"</span>)</span>]</span><br><span class="line">[<span class="meta">HttpPost</span>]</span><br><span class="line"><span class="function"><span class="keyword">public</span> Guid <span class="title">Post</span>(<span class="params">OrderDTO o</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">//由于客户端传递过来的Address是对象类型，而DTO定义的Address为字符串，两者不匹配，所以转换失败</span></span><br><span class="line">    Orders orders = <span class="keyword">new</span> Orders</span><br><span class="line">    &#123;</span><br><span class="line">        UserId = o.UserId,</span><br><span class="line">        Goods = o.Goods,</span><br><span class="line">        Address = o.Address,</span><br><span class="line">        Message = o.Message,</span><br><span class="line">        Fare = o.Fare,</span><br><span class="line">        Fee = o.Fee,</span><br><span class="line">        TotalFee = o.TotalFee,</span><br><span class="line">        Status = <span class="number">1</span>,</span><br><span class="line">    &#125;;</span><br><span class="line">    FacadeService.GetFacade&lt;IOrdersFacade&gt;().Create(orders);</span><br><span class="line">    <span class="keyword">return</span> orders.Id;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>注意：前端需要对 address 进行 JSON.stringify，服务端才能反序列化成功。</p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AC%94%E8%AE%B0/" rel="tag"># 笔记</a>
+              <a href="/tags/WebApi/" rel="tag"># WebApi</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/07/24/csharp/LINQ%E5%B7%A6%E8%81%94%E7%A4%BA%E4%BE%8B%E4%BB%A3%E7%A0%81/" rel="prev" title="LINQ左联示例代码">
+      <i class="fa fa-chevron-left"></i> LINQ左联示例代码
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/07/24/es/%E5%8C%BA%E5%88%86slice-splice%E5%92%8Csplit%E6%96%B9%E6%B3%95/" rel="next" title="区分slice,splice和split方法">
+      区分slice,splice和split方法 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-常用"><span class="nav-number">1.</span> <span class="nav-text">1. 常用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-路由规则"><span class="nav-number">1.1.</span> <span class="nav-text">1.1. 路由规则</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-1-默认的路由"><span class="nav-number">1.1.1.</span> <span class="nav-text">1.1.1. 默认的路由</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-2-路由匹配"><span class="nav-number">1.1.2.</span> <span class="nav-text">1.1.2. 路由匹配</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-3-在方法上自定义路由规则"><span class="nav-number">1.1.3.</span> <span class="nav-text">1.1.3. 在方法上自定义路由规则</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-基本技巧"><span class="nav-number">1.2.</span> <span class="nav-text">1.2. 基本技巧</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-1-服务端的-POST-PUT-DELETE-返回数据"><span class="nav-number">1.2.1.</span> <span class="nav-text">1.2.1. 服务端的 POST,PUT,DELETE 返回数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-2-泛型能够在服务端反序列化成功"><span class="nav-number">1.2.2.</span> <span class="nav-text">1.2.2. 泛型能够在服务端反序列化成功</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-3-从前端传-JSON-值给后端-dynamic-类型"><span class="nav-number">1.2.3.</span> <span class="nav-text">1.2.3. 从前端传 JSON 值给后端 dynamic 类型</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-填坑系列"><span class="nav-number">2.</span> <span class="nav-text">2. 填坑系列</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-对象反序列化"><span class="nav-number">2.1.</span> <span class="nav-text">2.1. 对象反序列化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-1-Attribute-修饰过的对象不能用户前后端传值"><span class="nav-number">2.1.1.</span> <span class="nav-text">2.1.1. Attribute 修饰过的对象不能用户前后端传值</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-2-属性大小写不敏感"><span class="nav-number">2.1.2.</span> <span class="nav-text">2.1.2. 属性大小写不敏感</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-3-对象反序列化之-Entity"><span class="nav-number">2.1.3.</span> <span class="nav-text">2.1.3. 对象反序列化之 Entity</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-4-对象反序列化之属性类型不匹配"><span class="nav-number">2.1.4.</span> <span class="nav-text">2.1.4. 对象反序列化之属性类型不匹配</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Andy Ge</p>
+  <div class="site-description" itemprop="description">勇于积极进取，步入人生的世外桃源</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">728</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">134</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">315</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/andyge" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;andyge" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:geshaofei@126.com" title="E-Mail → mailto:geshaofei@126.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.ruanyifeng.com/" title="http:&#x2F;&#x2F;www.ruanyifeng.com&#x2F;" rel="noopener" target="_blank">阮一峰</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://colobu.com/" title="http:&#x2F;&#x2F;colobu.com&#x2F;" rel="noopener" target="_blank">鸟窝</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.cnblogs.com/hellokuangshen/" title="https:&#x2F;&#x2F;www.cnblogs.com&#x2F;hellokuangshen&#x2F;" rel="noopener" target="_blank">狂神</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://yelog.org/" title="https:&#x2F;&#x2F;yelog.org&#x2F;" rel="noopener" target="_blank">叶落阁</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Andy Ge</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.7.1
+  </div>
+
+        
+
+
+
+
+
+
+  <script>
+  function leancloudSelector(url) {
+    url = encodeURI(url);
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.getAttribute('id'));
+      var title = visitors.getAttribute('data-flag-title');
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .then(() => {
+                leancloudSelector(url).innerText = counter.time + 1;
+              })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              })
+          } else {
+              Counter('post', '/classes/Counter', { title: title, url: url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.getAttribute('id'));
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (let item of results) {
+            let { url, time } = item;
+            leancloudSelector(url).innerText = time;
+          }
+          for (let url of entries) {
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=2TdIb5gRlAVUw24l2W0zWnCj-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method: method,
+          headers: {
+            'X-LC-Id'     : '2TdIb5gRlAVUw24l2W0zWnCj-gzGzoHsz',
+            'X-LC-Key'    : 'cJdJrMLBXsj0ttq0WsL0aA2j',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

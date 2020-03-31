@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"swiftist.cn","root":"/","scheme":"Pisces","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"EVBR3H53HW","apiKey":"2abd573a01143a0cc4108fa4d21ae67c","indexName":"swiftist","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="1. 概述 大多应用中，可通过消息服务中间件来提升系统异步通信、扩展解耦能力  1.1. 消息服务中两个重要概念消息代理（message broker）和目的地（destination） 当消息发送者发送消息以后，将由消息代理接管，消息代理保证消息传递到指定目 的地。 1.2. 消息队列主要有两种形式的目的地1.2.1. 队列（queue）：点对点消息通信（point-to-point）1.2.2">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring Boot与消息 JMS、AMQP、RabbitMQ简单概述">
+<meta property="og:url" content="https://swiftist.cn/2019/03/08/java/SpringBoot%E4%B8%8E%E6%B6%88%E6%81%AFJMS%E3%80%81AMQP%E3%80%81RabbitMQ%E7%AE%80%E5%8D%95%E6%A6%82%E8%BF%B0/index.html">
+<meta property="og:site_name" content="飞雪轩辕">
+<meta property="og:description" content="1. 概述 大多应用中，可通过消息服务中间件来提升系统异步通信、扩展解耦能力  1.1. 消息服务中两个重要概念消息代理（message broker）和目的地（destination） 当消息发送者发送消息以后，将由消息代理接管，消息代理保证消息传递到指定目 的地。 1.2. 消息队列主要有两种形式的目的地1.2.1. 队列（queue）：点对点消息通信（point-to-point）1.2.2">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://swiftist.cn/images/owl/2018082621093820.png">
+<meta property="og:image" content="https://swiftist.cn/2019/03/08/images/owl/20180826211015952.png">
+<meta property="og:image" content="https://swiftist.cn/2019/03/08/images/owl/20140410230348859.png">
+<meta property="og:image" content="https://swiftist.cn/2019/03/08/images/owl/20140410230404281.png">
+<meta property="article:published_time" content="2019-03-08T12:43:05.000Z">
+<meta property="article:modified_time" content="2020-03-31T15:07:39.365Z">
+<meta property="article:author" content="Andy Ge">
+<meta property="article:tag" content="java">
+<meta property="article:tag" content="JMS">
+<meta property="article:tag" content="RabbitMQ">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://swiftist.cn/images/owl/2018082621093820.png">
+
+<link rel="canonical" href="https://swiftist.cn/2019/03/08/java/SpringBoot%E4%B8%8E%E6%B6%88%E6%81%AFJMS%E3%80%81AMQP%E3%80%81RabbitMQ%E7%AE%80%E5%8D%95%E6%A6%82%E8%BF%B0/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>Spring Boot与消息 JMS、AMQP、RabbitMQ简单概述 | 飞雪轩辕</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="飞雪轩辕" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">飞雪轩辕</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">人生的乐趣在于把梦想变成现实</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-java">
+
+    <a href="/categories/java/" rel="section"><i class="fa fa-fw fa-th-large"></i>java</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://swiftist.cn/2019/03/08/java/SpringBoot%E4%B8%8E%E6%B6%88%E6%81%AFJMS%E3%80%81AMQP%E3%80%81RabbitMQ%E7%AE%80%E5%8D%95%E6%A6%82%E8%BF%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Andy Ge">
+      <meta itemprop="description" content="勇于积极进取，步入人生的世外桃源">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="飞雪轩辕">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Spring Boot与消息 JMS、AMQP、RabbitMQ简单概述
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-03-08 20:43:05" itemprop="dateCreated datePublished" datetime="2019-03-08T20:43:05+08:00">2019-03-08</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-31 23:07:39" itemprop="dateModified" datetime="2020-03-31T23:07:39+08:00">2020-03-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/java/" itemprop="url" rel="index">
+                    <span itemprop="name">java</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span id="/2019/03/08/java/SpringBoot%E4%B8%8E%E6%B6%88%E6%81%AFJMS%E3%80%81AMQP%E3%80%81RabbitMQ%E7%AE%80%E5%8D%95%E6%A6%82%E8%BF%B0/" class="post-meta-item leancloud_visitors" data-flag-title="Spring Boot与消息 JMS、AMQP、RabbitMQ简单概述" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="1-概述"><a href="#1-概述" class="headerlink" title="1. 概述"></a>1. 概述</h1><blockquote>
+<p>大多应用中，可通过消息服务中间件来提升系统异步通信、扩展解耦能力</p>
+</blockquote>
+<h2 id="1-1-消息服务中两个重要概念"><a href="#1-1-消息服务中两个重要概念" class="headerlink" title="1.1. 消息服务中两个重要概念"></a>1.1. 消息服务中两个重要概念</h2><p>消息代理（message broker）和目的地（destination） 当消息发送者发送消息以后，将由消息代理接管，消息代理保证消息传递到指定目 的地。</p>
+<h2 id="1-2-消息队列主要有两种形式的目的地"><a href="#1-2-消息队列主要有两种形式的目的地" class="headerlink" title="1.2. 消息队列主要有两种形式的目的地"></a>1.2. 消息队列主要有两种形式的目的地</h2><h3 id="1-2-1-队列（queue）：点对点消息通信（point-to-point）"><a href="#1-2-1-队列（queue）：点对点消息通信（point-to-point）" class="headerlink" title="1.2.1. 队列（queue）：点对点消息通信（point-to-point）"></a>1.2.1. 队列（queue）：点对点消息通信（point-to-point）</h3><h3 id="1-2-2-主题（topic）：发布（publish）-订阅（subscribe）消息通信"><a href="#1-2-2-主题（topic）：发布（publish）-订阅（subscribe）消息通信" class="headerlink" title="1.2.2. 主题（topic）：发布（publish）/订阅（subscribe）消息通信"></a>1.2.2. 主题（topic）：发布（publish）/订阅（subscribe）消息通信</h3><p><img src="/images/owl/2018082621093820.png" alt="截图"></p>
+<p><img src="../../images/owl/20180826211015952.png" alt="截图"></p>
+<h2 id="1-3-点对点式"><a href="#1-3-点对点式" class="headerlink" title="1.3. 点对点式"></a>1.3. 点对点式</h2><p>消息发送者发送消息，消息代理将其放入一个队列中，消息接收者从队列中获取消息内容， 消息读取后被移出队列，消息只有唯一的发送者和接受者，但并不是说只能有一个接收者。</p>
+<h2 id="1-4-发布订阅式"><a href="#1-4-发布订阅式" class="headerlink" title="1.4. 发布订阅式"></a>1.4. 发布订阅式</h2><p>发送者（发布者）发送消息到主题，多个接收者（订阅者）监听（订阅）这个主题，那么 就会在消息到达时同时收到消息</p>
+<h2 id="1-5-JMS（Java-Message-Service）JAVA-消息服务"><a href="#1-5-JMS（Java-Message-Service）JAVA-消息服务" class="headerlink" title="1.5. JMS（Java Message Service）JAVA 消息服务"></a>1.5. JMS（Java Message Service）JAVA 消息服务</h2><p>基于 JVM 消息代理的规范。ActiveMQ、HornetMQ 是 JMS 实现。</p>
+<h2 id="1-6-AMQP（Advanced-Message-Queuing-Protocol）"><a href="#1-6-AMQP（Advanced-Message-Queuing-Protocol）" class="headerlink" title="1.6. AMQP（Advanced Message Queuing Protocol）"></a>1.6. AMQP（Advanced Message Queuing Protocol）</h2><p>高级消息队列协议，也是一个消息代理的规范，兼容 JMS – RabbitMQ 是 AMQP 的实现。</p>
+<h2 id="1-7-JMS-与-AMQP-对比"><a href="#1-7-JMS-与-AMQP-对比" class="headerlink" title="1.7. JMS 与 AMQP 对比"></a>1.7. JMS 与 AMQP 对比</h2><h3 id="1-7-1-JMS"><a href="#1-7-1-JMS" class="headerlink" title="1.7.1. JMS"></a>1.7.1. JMS</h3><p>通常而言提到 JMS（Java MessageService）实际上是指 JMS API。JMS 是由 Sun 公司早期提出的消息标准，旨在为 java 应用提供统一的消息操作，包括 create、send、receive</p>
+<p>等。JMS 已经成为 Java Enterprise Edition 的一部分。从使用角度看，JMS 和 JDBC 担任差不多的角色，用户都是根据相应的接口可以和实现了 JMS 的服务进行通信，进行相关的操作。</p>
+<p>JMS 通常包含如下一些角色：</p>
+<!-- markdownlint-disable MD033 -->
+<table border="1" cellspacing="0" cellpadding="0"><tbody><tr><td valign="top" ><p><strong><span style="font-family:'Microsoft YaHei'">Elements</span></strong></p></td><td valign="top"><p><strong><span style="font-family:'Microsoft YaHei'">Notes</span></strong></p></td></tr><tr><td valign="top"><p><span style="font-family:'Microsoft YaHei'">JMS provider</span></p></td><td valign="top"><p><span style="font-family:'Microsoft YaHei'">实现了JMS接口的<a href="https://www.baidu.com/s?wd=%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6&amp;tn=24004469_oem_dg&amp;rsv_dl=gh_pl_sl_csd" target="_blank">消息中间件</a>，如ActiveMQ</span></p></td></tr><tr><td valign="top"><p><span style="font-family:'Microsoft YaHei'">JMS client</span></p></td><td valign="top"><p><span style="font-family:'Microsoft YaHei'">生产或者消费消息的应用</span></p></td></tr><tr><td valign="top"><p><span style="font-family:'Microsoft YaHei'">JMS producer/publisher</span></p></td><td valign="top"><p><span style="font-family:'Microsoft YaHei'">JMS消息生产者</span></p></td></tr><tr><td valign="top"><p><span style="font-family:'Microsoft YaHei'">JMS consumer/subscriber</span></p></td><td valign="top"><p><span style="font-family:'Microsoft YaHei'">JMS消息消费者</span></p></td></tr><tr><td valign="top"><p><span style="font-family:'Microsoft YaHei'">JMS message</span></p></td><td valign="top"><p><span style="font-family:'Microsoft YaHei'">消息，在各个JMS client传输的对象；</span></p></td></tr><tr><td valign="top"><p><span style="font-family:'Microsoft YaHei'">JMS queue</span></p></td><td valign="top"><p><span style="font-family:'Microsoft YaHei'">Provider存放等待被消费的消息的地方</span></p></td></tr><tr><td valign="top"><p><span style="font-family:'Microsoft YaHei'">JMS topic</span></p></td><td valign="top"><p><span style="font-family:'Microsoft YaHei'">一种提供多个订阅者消费消息的一种机制；在MQ中常常被提到，topic模式。</span></p></td></tr></tbody></table>
+
+<p>JMS 提供了两种消息模型，peer-2-peer(点对点)以及 publish-subscribe（发布订阅）模型。当采用点对点模型时，消息将发送到一个队列，该队列的消息只能被一个消费者消费。而采用发布订阅模型时，消息可以被多个消费者消费。在发布订阅模型中，生产者和消费者完全独立，不需要感知对方的存在。</p>
+<p>消息如何从 producer 端达到 consumer 端由 message-routing 来决定。在 JMS 中，消息路由非常简单，由 producer 和 consumer 链接到同一个 queue（p2p）或者 topic（pub/sub）来实现消息的路由。JMSconsumer 同时支持 message selector（消息选择器），通过消息选择器，consumer 可以只消费那些通过了 selector 筛选的消息。在 JMS 兄中，消息路由机制的图示如下：<br><img src="../../images/owl/20140410230348859.png" alt="截图"></p>
+<p>常见的消息队列，大部分都实现了 JMS API，可以担任 JMS provider 的角色，如 ActiveMQ，Redis 以及 RabbitMQ 等。</p>
+<h3 id="1-7-2-AMQP"><a href="#1-7-2-AMQP" class="headerlink" title="1.7.2. AMQP"></a>1.7.2. AMQP</h3><p>AMQP（advanced message queuing protocol）在 2003 年时被提出，最早用于解决金融领不同平台之间的消息传递交互问题。顾名思义，AMQP 是一种协议，更准确的说是一种 binary wire-level protocol（链接协议）。这是其和 JMS 的本质差别，AMQP 不从 API 层进行限定，而是直接定义网络交换的数据格式。这使得实现了 AMQP 的 provider 天然性就是跨平台的。意味着我们可以使用 Java 的 AMQP provider，同时使用一个 python 的 producer 加一个 rubby 的 consumer。从这一点看，AQMP 可以用 http 来进行类比，不关心实现的语言，只要大家都按照相应的数据格式去发送报文请求，不同语言的 client 均可以和不同语言的 server 链接。</p>
+<p>在 AMQP 中，消息路由（messagerouting）和 JMS 存在一些差别，在 AMQP 中增加了 Exchange 和 binding 的角色。producer 将消息发送给 Exchange，binding 决定 Exchange 的消息应该发送到那个 queue，而 consumer 直接从 queue 中消费消息。queue 和 exchange 的 bind 有 consumer 来决定。AMQP 的 routing scheme 图示过程如下：</p>
+<p><img src="../../images/owl/20140410230404281.png" alt="配图"></p>
+<p>目前 AMQP 逐渐成为消息队列的一个标准协议，当前比较流行的 rabbitmq、stormmq 都使用了 AMQP 实现。</p>
+<h3 id="1-7-3-最后将-JMS-和-AMQP-的各项对比如下"><a href="#1-7-3-最后将-JMS-和-AMQP-的各项对比如下" class="headerlink" title="1.7.3. 最后将 JMS 和 AMQP 的各项对比如下"></a>1.7.3. 最后将 JMS 和 AMQP 的各项对比如下</h3><table><tbody><tr class="firstRow"><td style="vertical-align:top;width:100px"></td><td style="vertical-align:top;word-break:break-all"><p>JMS</p></td><td style="vertical-align:top;word-break:break-all"><p>AMQP</p></td></tr><tr><td style="vertical-align:top"><p>定义</p></td><td style="vertical-align:top"><p>Java api</p></td><td style="vertical-align:top"><p>网络线级协议</p></td></tr><tr><td style="vertical-align:top"><p>跨语言</p></td><td style="vertical-align:top"><p>否</p></td><td style="vertical-align:top"><p>是</p></td></tr><tr><td style="vertical-align:top"><p><a href="https://www.baidu.com/s?wd=%E8%B7%A8%E5%B9%B3%E5%8F%B0&tn=24004469_oem_dg&rsv_dl=gh_pl_sl_csd" target="_blank">跨平台</a></p></td><td style="vertical-align:top"><p>否</p></td><td style="vertical-align:top"><p>是</p></td></tr><tr><td style="vertical-align:top"><p>Model</p></td><td style="vertical-align:top"><p>提供两种消息模型：</p><p>（1）、Peer-2-Peer</p><p>（2）、Pub/sub</p></td><td style="vertical-align:top"><p>提供了五种消息模型：</p><p>（1）、direct exchange</p><p>（2）、fanout exchange</p><p>（3）、topic change</p><p>（4）、headers exchange</p><p>（5）、system exchange</p><p>本质来讲，后四种和JMS的pub/sub模型没有太大差别，仅是在路由机制上做了更详细的划分；</p></td></tr><tr><td style="vertical-align:top"><p>支持消息类型</p></td><td style="vertical-align:top"><p>多种消息类型：</p><p>TextMessage</p><p>MapMessage</p><p>BytesMessage</p><p>StreamMessage</p><p>ObjectMessage</p><p>Message （只有消息头和属性）</p></td><td style="vertical-align:top"><p>byte[]</p><p>当实际应用时，有复杂的消息，可以将消息序列化后发送。</p></td></tr><tr><td style="vertical-align:top"><p>综合评价</p></td><td style="vertical-align:top"><p>JMS 定义了JAVA API层面的标准；在java体系中，多个client均可以通过JMS进行交互，不需要应用修改代码，但是其对跨平台的支持较差；</p></td><td style="vertical-align:top"><p>AMQP定义了wire-level层的协议标准；天然具有跨平台、跨语言特性。</p></td></tr></tbody></table>
+
+<h2 id="1-8-Spring-支持"><a href="#1-8-Spring-支持" class="headerlink" title="1.8. Spring 支持"></a>1.8. Spring 支持</h2><ul>
+<li><p>spring-jms 提供了对 JMS 的支持</p>
+</li>
+<li><p>spring-rabbit 提供了对 AMQP 的支持</p>
+</li>
+<li><p>需要 ConnectionFactory 的实现来连接消息代理</p>
+</li>
+<li><p>提供 JmsTemplate、RabbitTemplate 来发送消息</p>
+</li>
+<li><p>@JmsListener（JMS）、@RabbitListener（AMQP）注解在方法上监听消息代理发布的消息</p>
+</li>
+<li><p>@EnableJms、@EnableRabbit 开启支持</p>
+</li>
+</ul>
+<h2 id="1-9-Spring-Boot-自动配置"><a href="#1-9-Spring-Boot-自动配置" class="headerlink" title="1.9. Spring Boot 自动配置"></a>1.9. Spring Boot 自动配置</h2><ul>
+<li><p>JmsAutoConfiguration</p>
+</li>
+<li><p>RabbitAutoConfiguration</p>
+</li>
+</ul>
+<p>参考文档：</p>
+<p>1、 <a href="http://en.wikipedia.org/wiki/AMQP" target="_blank" rel="noopener">http://en.wikipedia.org/wiki/AMQP</a></p>
+<p>2、 <a href="http://en.wikipedia.org/wiki/Java_Message_Service" target="_blank" rel="noopener">http://en.wikipedia.org/wiki/Java_Message_Service</a></p>
+<p>3、 <a href="http://www.bytespring.com/blog/understanding-differences-between-amqp-and-jms" target="_blank" rel="noopener">http://www.bytespring.com/blog/understanding-differences-between-amqp-and-jms</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/java/" rel="tag"># java</a>
+              <a href="/tags/JMS/" rel="tag"># JMS</a>
+              <a href="/tags/RabbitMQ/" rel="tag"># RabbitMQ</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/03/08/wx/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E4%B9%8B%E5%8F%91%E9%80%81%E6%A8%A1%E6%9D%BF%E6%B6%88%E6%81%AF%EF%BC%88%E9%80%9A%E8%BF%87openid%E6%8E%A8%E9%80%81%E6%B6%88%E6%81%AF%E7%BB%99%E7%94%A8%E6%88%B7%EF%BC%89/" rel="prev" title="微信小程序之发送模板消息（通过openid推送消息给用户）">
+      <i class="fa fa-chevron-left"></i> 微信小程序之发送模板消息（通过openid推送消息给用户）
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/03/08/java/%E5%BC%82%E6%AD%A5%E6%B6%88%E6%81%AF%E4%BC%A0%E9%80%92%E6%8A%80%E6%9C%AF%E7%9A%84%E6%AF%94%E8%BE%83%EF%BC%9AJMS%E3%80%81AMQP%E5%92%8CMQTT/" rel="next" title="异步消息传递技术的比较：JMS、AMQP和MQTT">
+      异步消息传递技术的比较：JMS、AMQP和MQTT <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-概述"><span class="nav-number">1.</span> <span class="nav-text">1. 概述</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-消息服务中两个重要概念"><span class="nav-number">1.1.</span> <span class="nav-text">1.1. 消息服务中两个重要概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-消息队列主要有两种形式的目的地"><span class="nav-number">1.2.</span> <span class="nav-text">1.2. 消息队列主要有两种形式的目的地</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-1-队列（queue）：点对点消息通信（point-to-point）"><span class="nav-number">1.2.1.</span> <span class="nav-text">1.2.1. 队列（queue）：点对点消息通信（point-to-point）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-2-主题（topic）：发布（publish）-订阅（subscribe）消息通信"><span class="nav-number">1.2.2.</span> <span class="nav-text">1.2.2. 主题（topic）：发布（publish）&#x2F;订阅（subscribe）消息通信</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-3-点对点式"><span class="nav-number">1.3.</span> <span class="nav-text">1.3. 点对点式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-4-发布订阅式"><span class="nav-number">1.4.</span> <span class="nav-text">1.4. 发布订阅式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-5-JMS（Java-Message-Service）JAVA-消息服务"><span class="nav-number">1.5.</span> <span class="nav-text">1.5. JMS（Java Message Service）JAVA 消息服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-6-AMQP（Advanced-Message-Queuing-Protocol）"><span class="nav-number">1.6.</span> <span class="nav-text">1.6. AMQP（Advanced Message Queuing Protocol）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-7-JMS-与-AMQP-对比"><span class="nav-number">1.7.</span> <span class="nav-text">1.7. JMS 与 AMQP 对比</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-7-1-JMS"><span class="nav-number">1.7.1.</span> <span class="nav-text">1.7.1. JMS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-7-2-AMQP"><span class="nav-number">1.7.2.</span> <span class="nav-text">1.7.2. AMQP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-7-3-最后将-JMS-和-AMQP-的各项对比如下"><span class="nav-number">1.7.3.</span> <span class="nav-text">1.7.3. 最后将 JMS 和 AMQP 的各项对比如下</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-8-Spring-支持"><span class="nav-number">1.8.</span> <span class="nav-text">1.8. Spring 支持</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-9-Spring-Boot-自动配置"><span class="nav-number">1.9.</span> <span class="nav-text">1.9. Spring Boot 自动配置</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Andy Ge</p>
+  <div class="site-description" itemprop="description">勇于积极进取，步入人生的世外桃源</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">728</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">134</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">315</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/andyge" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;andyge" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:geshaofei@126.com" title="E-Mail → mailto:geshaofei@126.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.ruanyifeng.com/" title="http:&#x2F;&#x2F;www.ruanyifeng.com&#x2F;" rel="noopener" target="_blank">阮一峰</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://colobu.com/" title="http:&#x2F;&#x2F;colobu.com&#x2F;" rel="noopener" target="_blank">鸟窝</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.cnblogs.com/hellokuangshen/" title="https:&#x2F;&#x2F;www.cnblogs.com&#x2F;hellokuangshen&#x2F;" rel="noopener" target="_blank">狂神</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://yelog.org/" title="https:&#x2F;&#x2F;yelog.org&#x2F;" rel="noopener" target="_blank">叶落阁</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Andy Ge</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.7.1
+  </div>
+
+        
+
+
+
+
+
+
+  <script>
+  function leancloudSelector(url) {
+    url = encodeURI(url);
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.getAttribute('id'));
+      var title = visitors.getAttribute('data-flag-title');
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .then(() => {
+                leancloudSelector(url).innerText = counter.time + 1;
+              })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              })
+          } else {
+              Counter('post', '/classes/Counter', { title: title, url: url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.getAttribute('id'));
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (let item of results) {
+            let { url, time } = item;
+            leancloudSelector(url).innerText = time;
+          }
+          for (let url of entries) {
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=2TdIb5gRlAVUw24l2W0zWnCj-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method: method,
+          headers: {
+            'X-LC-Id'     : '2TdIb5gRlAVUw24l2W0zWnCj-gzGzoHsz',
+            'X-LC-Key'    : 'cJdJrMLBXsj0ttq0WsL0aA2j',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

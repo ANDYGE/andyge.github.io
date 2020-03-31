@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"swiftist.cn","root":"/","scheme":"Pisces","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"EVBR3H53HW","apiKey":"2abd573a01143a0cc4108fa4d21ae67c","indexName":"swiftist","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="在讲解基础知识的过程中，我们也要动手去写。而 Java 发展到现在，可以帮助我们写程序，构建，发布的工具有一大堆。今天就来讨论一下构建工具。在开始之前，我们先讲点别的。 如何学习琳琅满目的框架和工具学 Java 的新人，最头疼的事情，莫过于工具太多，挑花了眼。不管你要做什么，几乎都要面临各种各样的选择。我是应该选 hibernate 呢？还是 mybatis。我新建一个工程，要不要加上 sprin">
+<meta property="og:type" content="article">
+<meta property="og:title" content="构建工具的进化：ant, maven, gradle">
+<meta property="og:url" content="https://swiftist.cn/2016/12/22/java/%E6%9E%84%E5%BB%BA%E5%B7%A5%E5%85%B7%E7%9A%84%E8%BF%9B%E5%8C%96%EF%BC%9Aant,%20maven,%20gradle/index.html">
+<meta property="og:site_name" content="飞雪轩辕">
+<meta property="og:description" content="在讲解基础知识的过程中，我们也要动手去写。而 Java 发展到现在，可以帮助我们写程序，构建，发布的工具有一大堆。今天就来讨论一下构建工具。在开始之前，我们先讲点别的。 如何学习琳琅满目的框架和工具学 Java 的新人，最头疼的事情，莫过于工具太多，挑花了眼。不管你要做什么，几乎都要面临各种各样的选择。我是应该选 hibernate 呢？还是 mybatis。我新建一个工程，要不要加上 sprin">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://swiftist.cn/images/java/gradle0.jpg">
+<meta property="og:image" content="https://swiftist.cn/2016/12/22/images/java/gradle1.jpg">
+<meta property="og:image" content="https://swiftist.cn/2016/12/22/images/java/gradle2.jpg">
+<meta property="article:published_time" content="2016-12-21T22:43:08.000Z">
+<meta property="article:modified_time" content="2020-03-31T15:07:39.369Z">
+<meta property="article:author" content="Andy Ge">
+<meta property="article:tag" content="笔记">
+<meta property="article:tag" content="maven">
+<meta property="article:tag" content="gradle">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://swiftist.cn/images/java/gradle0.jpg">
+
+<link rel="canonical" href="https://swiftist.cn/2016/12/22/java/%E6%9E%84%E5%BB%BA%E5%B7%A5%E5%85%B7%E7%9A%84%E8%BF%9B%E5%8C%96%EF%BC%9Aant,%20maven,%20gradle/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>构建工具的进化：ant, maven, gradle | 飞雪轩辕</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="飞雪轩辕" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">飞雪轩辕</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">人生的乐趣在于把梦想变成现实</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-java">
+
+    <a href="/categories/java/" rel="section"><i class="fa fa-fw fa-th-large"></i>java</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://swiftist.cn/2016/12/22/java/%E6%9E%84%E5%BB%BA%E5%B7%A5%E5%85%B7%E7%9A%84%E8%BF%9B%E5%8C%96%EF%BC%9Aant,%20maven,%20gradle/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Andy Ge">
+      <meta itemprop="description" content="勇于积极进取，步入人生的世外桃源">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="飞雪轩辕">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          构建工具的进化：ant, maven, gradle
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2016-12-22 06:43:08" itemprop="dateCreated datePublished" datetime="2016-12-22T06:43:08+08:00">2016-12-22</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-31 23:07:39" itemprop="dateModified" datetime="2020-03-31T23:07:39+08:00">2020-03-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/java/" itemprop="url" rel="index">
+                    <span itemprop="name">java</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span id="/2016/12/22/java/%E6%9E%84%E5%BB%BA%E5%B7%A5%E5%85%B7%E7%9A%84%E8%BF%9B%E5%8C%96%EF%BC%9Aant,%20maven,%20gradle/" class="post-meta-item leancloud_visitors" data-flag-title="构建工具的进化：ant, maven, gradle" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>在讲解基础知识的过程中，我们也要动手去写。而 Java 发展到现在，可以帮助我们写程序，构建，发布的工具有一大堆。今天就来讨论一下构建工具。在开始之前，我们先讲点别的。</p>
+<h2 id="如何学习琳琅满目的框架和工具"><a href="#如何学习琳琅满目的框架和工具" class="headerlink" title="如何学习琳琅满目的框架和工具"></a>如何学习琳琅满目的框架和工具</h2><p>学 Java 的新人，最头疼的事情，莫过于工具太多，挑花了眼。不管你要做什么，几乎都要面临各种各样的选择。我是应该选 hibernate 呢？还是 mybatis。我新建一个工程，要不要加上 spring?mvc, tx 都是什么？tomcat，jetty 是什么？网络编程要不要用 netty？要在服务端布署多个机器，用 akka 行不行？DMQ 呢？protobuf 是什么鬼？类似的问题还有很多。</p>
+<p>如果利用搜索引擎，想去看看这些工具分别是干嘛的，会发现，搜索结果五花八门，说什么的都有，甚至有些说法都相互矛盾。造成这些乱象的原因，一是 Java 的应用过于广泛，在不同的软件体系中都能看到 Java 的身影，而不同的需求，会使用不同的工具，甚至是同样的工具，在不同的环境下，都会有不同的用法。二是，Java 的流行已经有很长时间了，随着时间的推移，肯定会有很多工具没有跟上历史的潮流而慢慢被淘汰。比如 J2EE 现在的市场占有率只有不足 5%。再比如 java swing 的图形界面编程，现在几乎没有公司再使用 swing 进行图形界面编程了，最早，互联网公司就几乎没有采用过 swing 的方案。swing 只在某些企业级软件里发挥作用，而随着 HTML5 的兴起，越来越多的软件公司也把自己的界面搬到 web 前端，现在的 html5 对 2d, 3d 都有非常好的支持，而一套简洁的 CSS 就能定制出漂亮的界面。所以 swing 被 html5 挤出历史进程实属正常。再比如 JSF，JavaFX 等等，也算是出师未捷身先死。有用的，没用的一堆堆地都堆到新手面前，新手的感觉肯定就是“那叫一个乱”啊。</p>
+<a id="more"></a>
+
+<p>说到这里，吐槽一下，某些培训机构和出版机构。为了凑篇幅，还会把一些已经不常用的技术加上，这就给新手们，尤其是自学的新手们带来误导，以为这些东西很重要。例如《Java 核心技术》这本书的第一卷里，还为 swing 准备了大段的篇幅，甚至还有 awt，而这些东西早就不应该被列入学习计划了。这一点《Java 编程思想》会好一点，在第 4 版里，图形界面编程已经压缩到最后一章了，做为参考提醒一下读者，Java 里还有这么个玩意。</p>
+<p>关于这些框架，工具的学习，我这里有一个建议：什么都别学，从基础开始，把根基搞扎实了。然后自己动手做工程，遇到问题了，再去学习会更好。我觉得一个好的老师，不是手把手地把知识教给你，而是能够指出问题的所在。我举一个例子。我之前指导过一个师弟学习 Java，我让他自己用 socket 写一个 web server ，他使用了一个线程一个连接的原始的线程方案，并且使用本机测试，开了十来个客户端，觉得还不错。我就告诉他，你这样的测试是不对的，你要去找一个 client 端的 benchmark，或者自己写个工具，创建成百上千个连接，然后再看看你的 web server 的表现如何。后来，他发现，当创建几百个连接以后，服务端几乎就跑不动了。然后，我就提醒他，可以考虑一下，业界有哪些解决方案。这时候，他找到了 nio，netty， 线程池等等方案。然后自己去重构，重构过程中，发现逻辑和页面合在一起，很难处理，又引入了 spring mvc，为了操作数据库，又引入了 hibernate 等等。</p>
+<p>回顾他学习的过程可以发现，对于工具和框架，被动地学习会比主动地学习效果好。到了不得不学的时候再去学习，有具体的场景，学起来必然事半功倍。我再举一个例子，上次在北京和朋友一起吃饭，他抱怨说 Java 不好招。我说，北京那么多培训班，新人一把一把地，不是随便招吗？他就讲了自己的面试经历。有一个小伙子，简历上写了熟悉 servlet, spring，ibatis 等框架。他就和这个小伙子聊怎么用这些框架，小伙子答的还可以。然后他就问到了 http 协议和 Java 中的 Proxy(这是实现 Spring 的核心机制)以及 reflection，小伙子就答不上来了。这就有点舍本逐末了，且不说，是不是所有公司都会使用 spring，就算 spring 是标准配置，被写到 Java 语言标准中去，那也不能基础太薄弱了，出了诡异 BUG，都不知道怎么查。框架这个东西，遇到问题再去学吧，如果你跟着框架走，三天两头有新的东西出来，你只能疲于奔命。今天出个 rabbitmq，你要学，明天出个 kafka，你还要学，没准哪天又出来个什么样的新 DMQ，你还是得学。这学到什么时候是个头了。</p>
+<p>回到今天的主题，我们讨论三个构建工程用的工具。</p>
+<h2 id="构建工具"><a href="#构建工具" class="headerlink" title="构建工具"></a>构建工具</h2><p>我们要写一个 Java 程序，一般的步骤也就是编译，测试，打包。这个构建的过程，如果文件比较少，我们可以手动使用 java, javac, jar 命令去做这些事情。但当工程越来越大，文件越来越多，这个事情就不是那么地令人开心了。因为这些命令往往都是很机械的操作。但是我们可以把机械的东西交给机器去做。</p>
+<h3 id="ant"><a href="#ant" class="headerlink" title="ant"></a>ant</h3><p>在 linux 上，有一个工具叫 make。我们可以通过编写 Makefile 来执行工程的构建。windows 上相应的工具是 nmake。这个工具写起来比较罗嗦，所以从早期，Java 的构建就没有选择它，而是新建了一个叫做 ant 的工具。ant 的思想和 makefile 比较像。定义一个任务，规定它的依赖，然后就可以通过 ant 来执行这个任务了。我们通过例子看一下。下面列出一个 ant 工具所使用的 build.xml:</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="UTF-8" ?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">project</span> <span class="attr">name</span>=<span class="string">"HelloWorld"</span> <span class="attr">default</span>=<span class="string">"run"</span> <span class="attr">basedir</span>=<span class="string">"."</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"src"</span> <span class="attr">value</span>=<span class="string">"src"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"dest"</span> <span class="attr">value</span>=<span class="string">"classes"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"jarfile"</span> <span class="attr">value</span>=<span class="string">"hello.jar"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">target</span> <span class="attr">name</span>=<span class="string">"init"</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">mkdir</span> <span class="attr">dir</span>=<span class="string">"$&#123;dest&#125;"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">target</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">target</span> <span class="attr">name</span>=<span class="string">"compile"</span> <span class="attr">depends</span>=<span class="string">"init"</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">javac</span> <span class="attr">srcdir</span>=<span class="string">"$&#123;src&#125;"</span> <span class="attr">destdir</span>=<span class="string">"$&#123;dest&#125;"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">target</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">target</span> <span class="attr">name</span>=<span class="string">"build"</span> <span class="attr">depends</span>=<span class="string">"compile"</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">jar</span> <span class="attr">jarfile</span>=<span class="string">"$&#123;jarfile&#125;"</span> <span class="attr">basedir</span>=<span class="string">"$&#123;dest&#125;"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">target</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">target</span> <span class="attr">name</span>=<span class="string">"test"</span> <span class="attr">depends</span>=<span class="string">"build"</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">java</span> <span class="attr">classname</span>=<span class="string">"test.ant.HelloWorld"</span> <span class="attr">classpath</span>=<span class="string">"$&#123;hello_jar&#125;"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">target</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">target</span> <span class="attr">name</span>=<span class="string">"clean"</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">delete</span> <span class="attr">dir</span>=<span class="string">"$&#123;dest&#125;"</span> /&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">delete</span> <span class="attr">file</span>=<span class="string">"$&#123;hello_jar&#125;"</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">target</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">project</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>可以看到 ant 的构建脚本还是比较清楚的。ant 定义了五个任务，init, compile, build, test, clean。每个任务做什么都定义清楚了。打包之前要先编译，所以通过 depends 来指定依赖的路径。如果在命令行里执行 ant build，那就会先执行 compile，而 compile 又依赖于 init，所以就会先执行 init。看起来很合理，对吧？有了这个东西以后，我们只要一条命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ant <span class="built_in">test</span></span><br></pre></td></tr></table></figure>
+
+<p>就可以执行编程，打包，测试了。为开发者带来了很大的便利。</p>
+<p>但是 ant 有一个很致命的缺陷，那就是没办法管理依赖。我们一个工程，要使用很多第三方工具，不同的工具，不同的版本。每次打包都要自己手动去把正确的版本拷到 lib 下面去，不用说，这个工作既枯燥还特别容易出错。为了解决这个问题，maven 闪亮登场。</p>
+<h3 id="maven"><a href="#maven" class="headerlink" title="maven"></a>maven</h3><p>maven 最核心的改进就在于提出仓库这个概念。我可以把所有依赖的包，都放到仓库里去，在我的工程管理文件里，标明我需要什么什么包，什么什么版本。在构建的时候，maven 就自动帮我把这些包打到我的包里来了。我们再也不用操心着自己去管理几十上百个 jar 文件了。</p>
+<p>这了达到这个目标，maven 提出，要给每个包都标上坐标，这样，便于在仓库里进行查找。所以，使用 maven 构建和发布的包都会按照这个约定定义自己的坐标，例如：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">project</span> <span class="attr">...xmlns...</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>cn.hinus.recruit<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>Example<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>0.1.0-SNAPSHOT<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>junit<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>junit<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>4.10<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">project</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>这样，我就定义了我自己的包的坐标是<strong>cn.hinus.recruit:Example:0.1.0-SNAPSHOT</strong>，而我的工程要依赖<strong>junit:junit:4.10</strong>。那么 maven 就会自动去帮我把 junit 打包进来。如果我本地没有 junit，maven 还会帮我去网上下载。下载的地方就是远程仓库，我们可以通过 repository 标签来指定远程仓库。</p>
+<p>maven 里抛弃了 ant 中通过 target 定义任务的做法，而是引入了生命周期的概念。这个问题要讲下去，就是一个大的话题了。我们暂时放一下。因为我们要看今天的最终 BOSS，gradle</p>
+<h3 id="Gradle"><a href="#Gradle" class="headerlink" title="Gradle"></a>Gradle</h3><p>maven 已经很好了，可以满足绝大多数工程的构建。那为什么我们还需要新的构建工具呢？第一，maven 是使用 xml 进行配置的，语法不简洁。第二，最关键的，maven 在约定优于配置这条路上走太远了。就是说，maven 不鼓励你自己定义任务，它要求用户在 maven 的生命周期中使用插件的方式去工作。这有点像设计模式中的模板方法模式。说通俗一点，就是我使用 maven 的话，想灵活地定义自己的任务是不行的。基于这个原因，gradle 做了很多改进。</p>
+<p>gradle 并不是另起炉灶，它充分地使用了 maven 的现有资源。继承了 maven 中仓库，坐标，依赖这些核心概念。文件的布局也和 maven 相同。但同时，它又继承了 ant 中 target 的概念，我们又可以重新定义自己的任务了。(gradle 中叫做 task)</p>
+<p>我们来体验一下，新建一个空目录，在命令行，执行</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gradle init --<span class="built_in">type</span> java-library</span><br></pre></td></tr></table></figure>
+
+<p>可以看到新创建了一个工程，工程根目录下，有这几项：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">build.gradle  gradle  settings.gradle  src</span><br></pre></td></tr></table></figure>
+
+<p>我们看一下，build.gradle 的内容：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Apply the java plugin to add support for Java</span></span><br><span class="line">apply <span class="string">plugin:</span> <span class="string">'java'</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// In this section you declare where to find the dependencies of your project</span></span><br><span class="line">repositories &#123;</span><br><span class="line">    <span class="comment">// Use 'jcenter' for resolving your dependencies.</span></span><br><span class="line">    <span class="comment">// You can declare any Maven/Ivy/file repository here.</span></span><br><span class="line">    jcenter()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// In this section you declare the dependencies for your production and test code</span></span><br><span class="line">dependencies &#123;</span><br><span class="line">    <span class="comment">// The production code uses the SLF4J logging API at compile time</span></span><br><span class="line">    compile <span class="string">'org.slf4j:slf4j-api:1.7.21'</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// Declare the dependency for your favourite test framework you want to use in your tests.</span></span><br><span class="line">    <span class="comment">// TestNG is also supported by the Gradle Test task. Just change the</span></span><br><span class="line">    <span class="comment">// testCompile dependency to testCompile 'org.testng:testng:6.8.1' and add</span></span><br><span class="line">    <span class="comment">// 'test.useTestNG()' to your build script.</span></span><br><span class="line">    testCompile <span class="string">'junit:junit:4.12'</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>内容很简单，引入了 java 插件，指定仓库，指定依赖。可以看到依赖的设定相比起 xml 的写法，变得大大简化了。</p>
+<p>使用 gradle，任务又变成了核心概念了。我们就来体验一下任务。</p>
+<p>在 build.gradle 里添加这样的任务：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">task hello &lt;&lt; &#123;</span><br><span class="line">    println <span class="string">'welcome to gradle'</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后在命令行执行</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gradle -q hello</span><br></pre></td></tr></table></figure>
+
+<p>就可以看见打印一行”welcome to gradle”。在使用 maven 构建的时候，如果想临时对某一个构建任务加一点 log，会是个非常困难的事情 。但在 gradle 里，就变得非常简单，因为 gradle 的背后其实是 groovy 这个编程语言在起作用。为了验证这一点，我们再改一下：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">task hello &lt;&lt; &#123;</span><br><span class="line">    <span class="number">3.</span>times &#123;</span><br><span class="line">        println <span class="string">'welcome to gradle'</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后执行<strong>gradle -q hello</strong>，就可以看到连续打印了三行。使用脚本语言进行构建，这几乎给了我们任何的能力，我们可以在构建的时候做任何的事情，甚至你可以直接让 gradle 帮你做表达式求值 :)</p>
+<h2 id="导入到-IDE"><a href="#导入到-IDE" class="headerlink" title="导入到 IDE"></a>导入到 IDE</h2><p>在 Java 的开发中，我们不可能脱离集成开发环境(Integrated Develop Environment)。因为 IDE 提供了代码补全和方便的代码跳转，这是普通的文本编辑软件（比如 vim）很难做到的。所以我们还是要通过 ide 来进行代码开发。</p>
+<p>以前在 ide 里使用 spring 的时候，我们要手动下载 spring 的包，如果 spring 依赖了其他的第三方的库，我们还要去下载那个库并且添加到 IDE 中去。现在，我们就不必再这样做了。只需要在 build.gradle 里定义好依赖，然后更新它，IDE 就可以自动帮我们把包导进来。</p>
+<p>例如，我要在新建的工程里使用 spring，只需要在 build.gradle 里添加一行：</p>
+<p><img src="/images/java/gradle0.jpg" alt=""></p>
+<p>然后，在 gradle 窗口里，点击更新：</p>
+<p><img src="../../images/java/gradle1.jpg" alt=""></p>
+<p>然后，intellij 就自动把 spring 所依赖的所有包都下载下来了。</p>
+<p><img src="../../images/java/gradle2.jpg" alt=""></p>
+<p>非常方便。<br>好了，今天的课程就到这里了。作业：</p>
+<p>使用 gradle 新建一个工程，并把它导入到你喜欢的 IDE 中去。添加 spring 依赖，并更新，观察一下，gradle 的工作方式。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AC%94%E8%AE%B0/" rel="tag"># 笔记</a>
+              <a href="/tags/maven/" rel="tag"># maven</a>
+              <a href="/tags/gradle/" rel="tag"># gradle</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2016/12/10/nginx/autoStart/" rel="prev" title="Linux(CentOS)下设置nginx开机自动启动和chkconfig管理">
+      <i class="fa fa-chevron-left"></i> Linux(CentOS)下设置nginx开机自动启动和chkconfig管理
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2016/12/22/pm2/pm2Tips/" rel="next" title="pm2使用小计">
+      pm2使用小计 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#如何学习琳琅满目的框架和工具"><span class="nav-number">1.</span> <span class="nav-text">如何学习琳琅满目的框架和工具</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#构建工具"><span class="nav-number">2.</span> <span class="nav-text">构建工具</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ant"><span class="nav-number">2.1.</span> <span class="nav-text">ant</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#maven"><span class="nav-number">2.2.</span> <span class="nav-text">maven</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Gradle"><span class="nav-number">2.3.</span> <span class="nav-text">Gradle</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#导入到-IDE"><span class="nav-number">3.</span> <span class="nav-text">导入到 IDE</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Andy Ge</p>
+  <div class="site-description" itemprop="description">勇于积极进取，步入人生的世外桃源</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">728</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">134</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">315</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/andyge" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;andyge" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:geshaofei@126.com" title="E-Mail → mailto:geshaofei@126.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.ruanyifeng.com/" title="http:&#x2F;&#x2F;www.ruanyifeng.com&#x2F;" rel="noopener" target="_blank">阮一峰</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://colobu.com/" title="http:&#x2F;&#x2F;colobu.com&#x2F;" rel="noopener" target="_blank">鸟窝</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.cnblogs.com/hellokuangshen/" title="https:&#x2F;&#x2F;www.cnblogs.com&#x2F;hellokuangshen&#x2F;" rel="noopener" target="_blank">狂神</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://yelog.org/" title="https:&#x2F;&#x2F;yelog.org&#x2F;" rel="noopener" target="_blank">叶落阁</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Andy Ge</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.7.1
+  </div>
+
+        
+
+
+
+
+
+
+  <script>
+  function leancloudSelector(url) {
+    url = encodeURI(url);
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.getAttribute('id'));
+      var title = visitors.getAttribute('data-flag-title');
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .then(() => {
+                leancloudSelector(url).innerText = counter.time + 1;
+              })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              })
+          } else {
+              Counter('post', '/classes/Counter', { title: title, url: url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.getAttribute('id'));
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (let item of results) {
+            let { url, time } = item;
+            leancloudSelector(url).innerText = time;
+          }
+          for (let url of entries) {
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=2TdIb5gRlAVUw24l2W0zWnCj-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method: method,
+          headers: {
+            'X-LC-Id'     : '2TdIb5gRlAVUw24l2W0zWnCj-gzGzoHsz',
+            'X-LC-Key'    : 'cJdJrMLBXsj0ttq0WsL0aA2j',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

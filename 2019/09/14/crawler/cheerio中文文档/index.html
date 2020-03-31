@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"swiftist.cn","root":"/","scheme":"Pisces","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"EVBR3H53HW","apiKey":"2abd573a01143a0cc4108fa4d21ae67c","indexName":"swiftist","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="这篇参考手册是对 cheerio 官方文档 的中文翻译  cheerio 是 jquery 核心功能的一个快速灵活而又简洁的实现，主要是为了用在服务器端需要对 DOM 进行操作的地方  简介cheerio 是专为服务器设计的核心 jQuery 的快速，灵活和精益实现。他可以像 jquery 一样操作字符串。 让你在服务器端和 html 愉快的玩耍 12345678var cheerio &#x3D; req">
+<meta property="og:type" content="article">
+<meta property="og:title" content="cheerio中文文档">
+<meta property="og:url" content="https://swiftist.cn/2019/09/14/crawler/cheerio%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3/index.html">
+<meta property="og:site_name" content="飞雪轩辕">
+<meta property="og:description" content="这篇参考手册是对 cheerio 官方文档 的中文翻译  cheerio 是 jquery 核心功能的一个快速灵活而又简洁的实现，主要是为了用在服务器端需要对 DOM 进行操作的地方  简介cheerio 是专为服务器设计的核心 jQuery 的快速，灵活和精益实现。他可以像 jquery 一样操作字符串。 让你在服务器端和 html 愉快的玩耍 12345678var cheerio &#x3D; req">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-09-14T02:12:58.000Z">
+<meta property="article:modified_time" content="2020-03-31T15:07:39.328Z">
+<meta property="article:author" content="Andy Ge">
+<meta property="article:tag" content="crawler">
+<meta property="article:tag" content="cheerio">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://swiftist.cn/2019/09/14/crawler/cheerio%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>cheerio中文文档 | 飞雪轩辕</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="飞雪轩辕" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">飞雪轩辕</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">人生的乐趣在于把梦想变成现实</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-java">
+
+    <a href="/categories/java/" rel="section"><i class="fa fa-fw fa-th-large"></i>java</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://swiftist.cn/2019/09/14/crawler/cheerio%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Andy Ge">
+      <meta itemprop="description" content="勇于积极进取，步入人生的世外桃源">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="飞雪轩辕">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          cheerio中文文档
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-09-14 10:12:58" itemprop="dateCreated datePublished" datetime="2019-09-14T10:12:58+08:00">2019-09-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-31 23:07:39" itemprop="dateModified" datetime="2020-03-31T23:07:39+08:00">2020-03-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/crawler/" itemprop="url" rel="index">
+                    <span itemprop="name">crawler</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span id="/2019/09/14/crawler/cheerio%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3/" class="post-meta-item leancloud_visitors" data-flag-title="cheerio中文文档" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>这篇参考手册是对 cheerio <a href="https://cheerio.js.org/" target="_blank" rel="noopener">官方文档</a> 的中文翻译</p>
+<blockquote>
+<p>cheerio 是 jquery 核心功能的一个快速灵活而又简洁的实现，主要是为了用在服务器端需要对 DOM 进行操作的地方</p>
+</blockquote>
+<h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>cheerio 是专为服务器设计的核心 jQuery 的快速，灵活和精益实现。他可以像 jquery 一样操作字符串。</p>
+<p>让你在服务器端和 html 愉快的玩耍</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> cheerio = <span class="built_in">require</span>(<span class="string">'cheerio'</span>),</span><br><span class="line">    $ = cheerio.load(<span class="string">'&lt;h2 class = "title"&gt;Hello world&lt;/h2&gt;'</span>)</span><br><span class="line"></span><br><span class="line">$(<span class="string">'h2.title'</span>).text(<span class="string">'Hello there!'</span>)</span><br><span class="line">$(<span class="string">'h2'</span>).addClass(<span class="string">'welcome'</span>)</span><br><span class="line"></span><br><span class="line">$.html()</span><br><span class="line"><span class="comment">//=&gt; &lt;h2 class = "title welcome"&gt;Hello there!&lt;/h2&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install cheerio</span><br></pre></td></tr></table></figure>
+
+<a id="more"></a>
+
+<h3 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h3><ul>
+<li><p><strong><em>熟悉的语法</em></strong>：cheerio 实现了 jQuery 的一个子集，去掉了 jQuery 中所有与 DOM 不一致或者是用来填浏览器的坑的东西，重现了 jQuery 最美妙的 API</p>
+</li>
+<li><p><strong><em>快到没朋友</em></strong>：cheerio 使用了及其简洁而又标准的 DOM 模型， 因此对文档的转换，操作，渲染都极其的高效。基本的端到端测试显示它的速度至少是 JSDOM 的 8 倍</p>
+</li>
+<li><p><strong><em>极其灵活</em></strong>：cheerio 使用了<a href="https://github.com/FB55" target="_blank" rel="noopener">@FB55</a>编写的非常兼容的<a href="https://github.com/fb55/htmlparser2" target="_blank" rel="noopener">htmlparser2</a>，因此它可以解析几乎所有的 HTML 和 XML</p>
+</li>
+</ul>
+<h3 id="关于-JSDOM"><a href="#关于-JSDOM" class="headerlink" title="关于 JSDOM"></a>关于 JSDOM</h3><p>cheerio 产生的原因是出于对 JSDOM 的失望，主要体现在以下三点：</p>
+<ul>
+<li><p><strong><em>JSDOM 的解析规则太过于严格</em></strong>：JSDOM 的解析器无法处理现在许多的流行网站的内容</p>
+</li>
+<li><p><strong><em>JSDOM 太慢了</em></strong>：解析大的网站甚至可以产生可察觉的延迟</p>
+</li>
+<li><p><strong><em>JSDOM 太过于重量级</em></strong>：JSDOM 的目标是提供与浏览器一样的 DOM 环境，但是我们往往不需要这样。我们需要的只是一种简单，熟悉的方式来操作我们的 HTML</p>
+</li>
+</ul>
+<h3 id="什么时候你应该用-JSDOM"><a href="#什么时候你应该用-JSDOM" class="headerlink" title="什么时候你应该用 JSDOM"></a>什么时候你应该用 JSDOM</h3><p>cheerio 并非万能，当你需要一个浏览器一样的环境时，你最好还是用 JSDOM，尤其是你需要进行自动化的功能测试时</p>
+<h3 id="API"><a href="#API" class="headerlink" title="API"></a>API</h3><p>后面的例子中用到的 HTML 模板如下：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">ul</span> <span class="attr">id</span>=<span class="string">"fruits"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">li</span> <span class="attr">class</span>=<span class="string">"apple"</span>&gt;</span>Apple<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">li</span> <span class="attr">class</span>=<span class="string">"orange"</span>&gt;</span>Orange<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">li</span> <span class="attr">class</span>=<span class="string">"pear"</span>&gt;</span>Pear<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="解析-html（load）"><a href="#解析-html（load）" class="headerlink" title="解析 html（load）"></a>解析 html（load）</h4><p>首先你需要先加载你的 HTML。jQuery 会自动完成这一步，因为 jQuery 操作的 DOM 是固定的。但是在使用 cheerio 时我们要手动加载我们的 HTML 文档</p>
+<p>首选的方式如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> cheerio = <span class="built_in">require</span>(<span class="string">'cheerio'</span>),</span><br><span class="line">    $ = cheerio.load(<span class="string">'&lt;ul id = "fruits"&gt;...&lt;/ul&gt;'</span>)</span><br></pre></td></tr></table></figure>
+
+<p>其次，直接把 HTML 字符串作为上下文也是可以的：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ = <span class="built_in">require</span>(<span class="string">'cheerio'</span>)</span><br><span class="line">$(<span class="string">'ul'</span>, <span class="string">'&lt;ul id = "fruits"&gt;...&lt;/ul&gt;'</span>)</span><br></pre></td></tr></table></figure>
+
+<p>或者把 HTML 字符串作为 root</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ = <span class="built_in">require</span>(<span class="string">'cheerio'</span>)</span><br><span class="line">$(<span class="string">'li'</span>, <span class="string">'ul'</span>, <span class="string">'&lt;ul id = "fruits"&gt;...&lt;/ul&gt;'</span>)</span><br></pre></td></tr></table></figure>
+
+<p>如果你需要自定义一些解析选项，你可以多传递一个对象给 load 方法：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ = cheerio.load(<span class="string">'&lt;ul id = "fruits"&gt;...&lt;/ul&gt;'</span>, &#123;</span><br><span class="line">    ignoreWhitespace: <span class="literal">true</span>,</span><br><span class="line">    xmlMode: <span class="literal">true</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>更多的解析选项可以参考<a href="https://github.com/fb55/domhandler" target="_blank" rel="noopener">domhandler</a>和<a href="https://github.com/fb55/htmlparser2/wiki/Parser-options" target="_blank" rel="noopener">parser-options</a></p>
+<h4 id="选择器（selectors）"><a href="#选择器（selectors）" class="headerlink" title="选择器（selectors）"></a>选择器（selectors）</h4><p>cheerio 的选择器几乎和 jQuery 一模一样，所以语法上十分相像</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$(selector, [context], [root])</span><br></pre></td></tr></table></figure>
+
+<p><strong>selector</strong>在<strong>context</strong>的范围内搜索，<strong>context</strong>的范围又包含在<strong>root</strong>的范围内。<strong>selector</strong>和<strong>context</strong>可以是一个字符串，DOM 元素，DOM 数组或者 cheerio 实例。<strong>root</strong>一般是一个 HTML 文档字符串</p>
+<p>选择器是文档遍历和操作的起点。如同在 jQuery 中一样，它是选择元素节点最重要的方法，但是在 jQuery 中选择器建立在 CSS 选择器标准库上。cheerio 的选择器实现了大部分的方法</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">$(<span class="string">'.apple'</span>, <span class="string">'#fruits'</span>).text()</span><br><span class="line"><span class="comment">//=&gt; Apple</span></span><br><span class="line"></span><br><span class="line">$(<span class="string">'ul .pear'</span>).attr(<span class="string">'class'</span>)</span><br><span class="line"><span class="comment">//=&gt; pear</span></span><br><span class="line"></span><br><span class="line">$(<span class="string">'li[class=orange]'</span>).html()</span><br><span class="line"><span class="comment">//=&gt; &lt;li class = "orange"&gt;Orange&lt;/li&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="属性操作（atrributes）"><a href="#属性操作（atrributes）" class="headerlink" title="属性操作（atrributes）"></a>属性操作（atrributes）</h4><p>用来获取和更改属性的方法：</p>
+<p><strong>.attr(name, value)</strong></p>
+<p>这个方法用来获取和设置属性。获取第一个符合匹配的元素的属性值。如果某个属性值被设置成 null，那么该属性会被移除。你也可以把<strong>map</strong>和<strong>function</strong>作为参数传递进去，就像在 jQuery 中一样</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$(<span class="string">'ul'</span>).attr(<span class="string">'id'</span>)</span><br><span class="line"><span class="comment">//=&gt; fruits</span></span><br><span class="line"></span><br><span class="line">$(<span class="string">'.apple'</span>)</span><br><span class="line">    .attr(<span class="string">'id'</span>, <span class="string">'favorite'</span>)</span><br><span class="line">    .html()</span><br><span class="line"><span class="comment">//=&gt; &lt;li class = "apple" id = "favorite"&gt;Apple&lt;/li&gt;</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>更多信息请查看 <a href="http://api.jquery.com/attr/" target="_blank" rel="noopener">http://api.jquery.com/attr/</a></p>
+</blockquote>
+<p><strong>.removeAtrr(name)</strong></p>
+<p>移除名为 name 的属性</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$(<span class="string">'.pear'</span>)</span><br><span class="line">    .removeAttr(<span class="string">'class'</span>)</span><br><span class="line">    .html()</span><br><span class="line"><span class="comment">//=&gt; &lt;li&gt;Pear&lt;/li&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>.hasClass(className)</strong></p>
+<p>检查元素是否含有此类名</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">$(<span class="string">'.pear'</span>).hasClass(<span class="string">'pear'</span>)</span><br><span class="line"><span class="comment">//=&gt; true</span></span><br><span class="line"></span><br><span class="line">$(<span class="string">'apple'</span>).hasClass(<span class="string">'fruit'</span>)</span><br><span class="line"><span class="comment">//=&gt; false</span></span><br><span class="line"></span><br><span class="line">$(<span class="string">'li'</span>).hasClass(<span class="string">'pear'</span>)</span><br><span class="line"><span class="comment">//=&gt; true</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>.addClass(className)</strong></p>
+<p>添加类名到所有的匹配元素，可以用函数作为参数</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">$(<span class="string">'.pear'</span>)</span><br><span class="line">    .addClass(<span class="string">'fruit'</span>)</span><br><span class="line">    .html()</span><br><span class="line"><span class="comment">//=&gt; &lt;li class = "pear fruit"&gt;Pear&lt;/li&gt;</span></span><br><span class="line"></span><br><span class="line">$(<span class="string">'.apple'</span>)</span><br><span class="line">    .addClass(<span class="string">'fruit red'</span>)</span><br><span class="line">    .html()</span><br><span class="line"><span class="comment">//=&gt; &lt;li class = "apple fruit red"&gt;Apple&lt;/li&gt;</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>参见 <a href="http://api.jquery.com/addClass/" target="_blank" rel="noopener">http://api.jquery.com/addClass/</a></p>
+</blockquote>
+<p><strong>.remoteClass([className])</strong></p>
+<p>移除一个或者多个（空格分隔）的类名，如果 className 为空，则所有的类名都会被移除，可以传递函数作为参数</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">$(<span class="string">'.pear'</span>)</span><br><span class="line">    .removeClass(<span class="string">'pear'</span>)</span><br><span class="line">    .html()</span><br><span class="line"><span class="comment">//=&gt; &lt;li class = ""&gt;Pear&lt;/li&gt;</span></span><br><span class="line"></span><br><span class="line">$(<span class="string">'.apple'</span>)</span><br><span class="line">    .addClass(<span class="string">'red'</span>)</span><br><span class="line">    .removeClass()</span><br><span class="line">    .html()</span><br><span class="line"><span class="comment">//=&gt; &lt;li class = ""&gt;Apple&lt;/li&gt;</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>参见 <a href="http://api.jquery.com/removeClass/" target="_blank" rel="noopener">http://api.jquery.com/removeClass/</a></p>
+</blockquote>
+<h4 id="遍历"><a href="#遍历" class="headerlink" title="遍历"></a>遍历</h4><p><strong>.find(selector)</strong></p>
+<p>在当前元素集合中选择符合选择器规则的元素集合</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$(<span class="string">'#fruits'</span>).find(<span class="string">'li'</span>).length</span><br><span class="line"><span class="comment">//=&gt; 3</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>.parent()</strong></p>
+<p>获取元素集合第一个元素的父元素</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$(<span class="string">'.pear'</span>)</span><br><span class="line">    .parent()</span><br><span class="line">    .attr(<span class="string">'id'</span>)</span><br><span class="line"><span class="comment">//=&gt; fruits</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>.next()</strong></p>
+<p>选择当前元素的下一个兄弟元素</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$(<span class="string">'.apple'</span>)</span><br><span class="line">    .next()</span><br><span class="line">    .hasClass(<span class="string">'orange'</span>)</span><br><span class="line"><span class="comment">//=&gt; true</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>.prev()</strong></p>
+<p>同<strong>.next()</strong>相反</p>
+<p><strong>.siblings()</strong></p>
+<p>获取元素集合中第一个元素的所有兄弟元素，不包含它自己</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$(<span class="string">'.pear'</span>).siblings().length</span><br><span class="line"><span class="comment">//=&gt; 2</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>.children( selector )</strong></p>
+<p><strong>.each( function(index, element) )</strong></p>
+<p>遍历函数返回 false 即可终止遍历</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> fruits = []</span><br><span class="line"></span><br><span class="line">$(<span class="string">'li'</span>).each(<span class="function"><span class="keyword">function</span>(<span class="params">i, elem</span>) </span>&#123;</span><br><span class="line">    fruits[i] = $(<span class="keyword">this</span>).text()</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">fruits.join(<span class="string">', '</span>)</span><br><span class="line"><span class="comment">//=&gt; Apple, Orange, Pear</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>.map( function(index, element) )</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">$(<span class="string">'li'</span>)</span><br><span class="line">    .map(<span class="function"><span class="keyword">function</span>(<span class="params">i, el</span>) </span>&#123;</span><br><span class="line">        <span class="comment">// this === el</span></span><br><span class="line">        <span class="keyword">return</span> $(<span class="keyword">this</span>).attr(<span class="string">'class'</span>)</span><br><span class="line">    &#125;)</span><br><span class="line">    .get()</span><br><span class="line">    .join(<span class="string">', '</span>)</span><br><span class="line"><span class="comment">//=&gt; apple, orange, pear</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>.filter( selector )</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$(<span class="string">'li'</span>)</span><br><span class="line">    .filter(<span class="string">'.orange'</span>)</span><br><span class="line">    .attr(<span class="string">'class'</span>)</span><br><span class="line"><span class="comment">//=&gt; orange</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>.filter( function(index) )</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$(<span class="string">'li'</span>)</span><br><span class="line">    .filter(<span class="function"><span class="keyword">function</span>(<span class="params">i, el</span>) </span>&#123;</span><br><span class="line">        <span class="comment">// this === el</span></span><br><span class="line">        <span class="keyword">return</span> $(<span class="keyword">this</span>).attr(<span class="string">'class'</span>) === <span class="string">'orange'</span></span><br><span class="line">    &#125;)</span><br><span class="line">    .attr(<span class="string">'class'</span>)</span><br><span class="line"><span class="comment">//=&gt; orange</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>.first()</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$(<span class="string">'#fruits'</span>)</span><br><span class="line">    .children()</span><br><span class="line">    .first()</span><br><span class="line">    .text()</span><br><span class="line"><span class="comment">//=&gt; Apple</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>.last()</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$(<span class="string">'#fruits'</span>)</span><br><span class="line">    .children()</span><br><span class="line">    .last()</span><br><span class="line">    .text()</span><br><span class="line"><span class="comment">//=&gt; Pear</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>.eq( i )</strong></p>
+<p>缩小元素集合，可以用负数表示倒数第 i 个元素被保留</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">$(<span class="string">'li'</span>)</span><br><span class="line">    .eq(<span class="number">0</span>)</span><br><span class="line">    .text()</span><br><span class="line"><span class="comment">//=&gt; Apple</span></span><br><span class="line"></span><br><span class="line">$(<span class="string">'li'</span>)</span><br><span class="line">    .eq(<span class="number">-1</span>)</span><br><span class="line">    .text()</span><br><span class="line"><span class="comment">//=&gt; Pear</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="操作-DOM"><a href="#操作-DOM" class="headerlink" title="操作 DOM"></a>操作 DOM</h4><p>操作 DOM 结构的方法</p>
+<p><strong>.append( content, [content, …] )</strong></p>
+<p><strong>.prepend( content, [content, …] )</strong></p>
+<p><strong>.after( content, [content, …] )</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">$(<span class="string">'.apple'</span>).after(<span class="string">'&lt;li class = "plum"&gt;Plum&lt;/li&gt;'</span>)</span><br><span class="line">$.html()</span><br><span class="line"><span class="comment">//=&gt;  &lt;ul id = "fruits"&gt;</span></span><br><span class="line"><span class="comment">//      &lt;li class = "apple"&gt;Apple&lt;/li&gt;</span></span><br><span class="line"><span class="comment">//      &lt;li class = "plum"&gt;Plum&lt;/li&gt;</span></span><br><span class="line"><span class="comment">//      &lt;li class = "orange"&gt;Orange&lt;/li&gt;</span></span><br><span class="line"><span class="comment">//      &lt;li class = "pear"&gt;Pear&lt;/li&gt;</span></span><br><span class="line"><span class="comment">//    &lt;/ul&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>.before( content, [content, …] )</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">$(<span class="string">'.apple'</span>).before(<span class="string">'&lt;li class = "plum"&gt;Plum&lt;/li&gt;'</span>)</span><br><span class="line">$.html()</span><br><span class="line"><span class="comment">//=&gt;  &lt;ul id = "fruits"&gt;</span></span><br><span class="line"><span class="comment">//      &lt;li class = "plum"&gt;Plum&lt;/li&gt;</span></span><br><span class="line"><span class="comment">//      &lt;li class = "apple"&gt;Apple&lt;/li&gt;</span></span><br><span class="line"><span class="comment">//      &lt;li class = "orange"&gt;Orange&lt;/li&gt;</span></span><br><span class="line"><span class="comment">//      &lt;li class = "pear"&gt;Pear&lt;/li&gt;</span></span><br><span class="line"><span class="comment">//    &lt;/ul&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>.remove( [selector] )</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$(<span class="string">'.pear'</span>).remove()</span><br><span class="line">$.html()</span><br><span class="line"><span class="comment">//=&gt;  &lt;ul id = "fruits"&gt;</span></span><br><span class="line"><span class="comment">//      &lt;li class = "apple"&gt;Apple&lt;/li&gt;</span></span><br><span class="line"><span class="comment">//      &lt;li class = "orange"&gt;Orange&lt;/li&gt;</span></span><br><span class="line"><span class="comment">//    &lt;/ul&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>.replaceWith( content )</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> plum = $(<span class="string">'&lt;li class = "plum"&gt;Plum&lt;/li&gt;'</span>)</span><br><span class="line">$(<span class="string">'.pear'</span>).replaceWith(plum)</span><br><span class="line">$.html()</span><br><span class="line"><span class="comment">//=&gt; &lt;ul id = "fruits"&gt;</span></span><br><span class="line"><span class="comment">//     &lt;li class = "apple"&gt;Apple&lt;/li&gt;</span></span><br><span class="line"><span class="comment">//     &lt;li class = "orange"&gt;Orange&lt;/li&gt;</span></span><br><span class="line"><span class="comment">//     &lt;li class = "plum"&gt;Plum&lt;/li&gt;</span></span><br><span class="line"><span class="comment">//   &lt;/ul&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>.empty()</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$(<span class="string">'ul'</span>).empty()</span><br><span class="line">$.html()</span><br><span class="line"><span class="comment">//=&gt;  &lt;ul id = "fruits"&gt;&lt;/ul&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>.html( [htmlString] )</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$(<span class="string">'.orange'</span>).html()</span><br><span class="line"><span class="comment">//=&gt; Orange</span></span><br><span class="line"></span><br><span class="line">$(<span class="string">'#fruits'</span>)</span><br><span class="line">    .html(<span class="string">'&lt;li class = "mango"&gt;Mango&lt;/li&gt;'</span>)</span><br><span class="line">    .html()</span><br><span class="line"><span class="comment">//=&gt; &lt;li class="mango"&gt;Mango&lt;/li&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>.text( [textString] )</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$(<span class="string">'.orange'</span>).text()</span><br><span class="line"><span class="comment">//=&gt; Orange</span></span><br><span class="line"></span><br><span class="line">$(<span class="string">'ul'</span>).text()</span><br><span class="line"><span class="comment">//=&gt;  Apple</span></span><br><span class="line"><span class="comment">//    Orange</span></span><br><span class="line"><span class="comment">//    Pear</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="解析和渲染"><a href="#解析和渲染" class="headerlink" title="解析和渲染"></a>解析和渲染</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$.html()</span><br><span class="line"><span class="comment">//=&gt;  &lt;ul id = "fruits"&gt;</span></span><br><span class="line"><span class="comment">//      &lt;li class = "apple"&gt;Apple&lt;/li&gt;</span></span><br><span class="line"><span class="comment">//      &lt;li class = "orange"&gt;Orange&lt;/li&gt;</span></span><br><span class="line"><span class="comment">//      &lt;li class = "pear"&gt;Pear&lt;/li&gt;</span></span><br><span class="line"><span class="comment">//    &lt;/ul&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>输出包含自己在内的 HTML（outer HTML）</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$.html(<span class="string">'.pear'</span>)</span><br><span class="line"><span class="comment">//=&gt; &lt;li class = "pear"&gt;Pear&lt;/li&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="杂项"><a href="#杂项" class="headerlink" title="杂项"></a>杂项</h4><p><strong>.toArray()</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$(<span class="string">'li'</span>).toArray()</span><br><span class="line"><span class="comment">//=&gt; [ &#123;...&#125;, &#123;...&#125;, &#123;...&#125; ]</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>.clone()</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> moreFruit = $(<span class="string">'#fruits'</span>).clone()</span><br></pre></td></tr></table></figure>
+
+<h4 id="常用工具"><a href="#常用工具" class="headerlink" title="常用工具"></a>常用工具</h4><p><strong>$.root()</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$.root()</span><br><span class="line">    .append(<span class="string">'&lt;ul id="vegetables"&gt;&lt;/ul&gt;'</span>)</span><br><span class="line">    .html()</span><br><span class="line"><span class="comment">//=&gt; &lt;ul id="fruits"&gt;...&lt;/ul&gt;&lt;ul id="vegetables"&gt;&lt;/ul&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>$.contains( container, contained )</strong></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/crawler/" rel="tag"># crawler</a>
+              <a href="/tags/cheerio/" rel="tag"># cheerio</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/09/14/hexo/Hexo%E6%B8%B2%E6%9F%93%E6%97%B6%E6%8E%92%E9%99%A4%E9%83%A8%E5%88%86%E6%96%87%E4%BB%B6%E6%88%96%E7%9B%AE%E5%BD%95/" rel="prev" title="Hexo渲染时排除部分文件或目录">
+      <i class="fa fa-chevron-left"></i> Hexo渲染时排除部分文件或目录
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/09/14/crawler/%E4%B8%80%E4%B8%AAnodejs%E5%AE%9E%E7%8E%B0%E7%9A%84%E7%88%AC%E8%99%AB/" rel="next" title="一个nodejs实现的爬虫">
+      一个nodejs实现的爬虫 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装"><span class="nav-number">2.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#特点"><span class="nav-number">3.</span> <span class="nav-text">特点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关于-JSDOM"><span class="nav-number">4.</span> <span class="nav-text">关于 JSDOM</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#什么时候你应该用-JSDOM"><span class="nav-number">5.</span> <span class="nav-text">什么时候你应该用 JSDOM</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#API"><span class="nav-number">6.</span> <span class="nav-text">API</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#解析-html（load）"><span class="nav-number">6.1.</span> <span class="nav-text">解析 html（load）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#选择器（selectors）"><span class="nav-number">6.2.</span> <span class="nav-text">选择器（selectors）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#属性操作（atrributes）"><span class="nav-number">6.3.</span> <span class="nav-text">属性操作（atrributes）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#遍历"><span class="nav-number">6.4.</span> <span class="nav-text">遍历</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#操作-DOM"><span class="nav-number">6.5.</span> <span class="nav-text">操作 DOM</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#解析和渲染"><span class="nav-number">6.6.</span> <span class="nav-text">解析和渲染</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#杂项"><span class="nav-number">6.7.</span> <span class="nav-text">杂项</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#常用工具"><span class="nav-number">6.8.</span> <span class="nav-text">常用工具</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Andy Ge</p>
+  <div class="site-description" itemprop="description">勇于积极进取，步入人生的世外桃源</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">728</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">134</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">315</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/andyge" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;andyge" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:geshaofei@126.com" title="E-Mail → mailto:geshaofei@126.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.ruanyifeng.com/" title="http:&#x2F;&#x2F;www.ruanyifeng.com&#x2F;" rel="noopener" target="_blank">阮一峰</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://colobu.com/" title="http:&#x2F;&#x2F;colobu.com&#x2F;" rel="noopener" target="_blank">鸟窝</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.cnblogs.com/hellokuangshen/" title="https:&#x2F;&#x2F;www.cnblogs.com&#x2F;hellokuangshen&#x2F;" rel="noopener" target="_blank">狂神</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://yelog.org/" title="https:&#x2F;&#x2F;yelog.org&#x2F;" rel="noopener" target="_blank">叶落阁</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Andy Ge</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.7.1
+  </div>
+
+        
+
+
+
+
+
+
+  <script>
+  function leancloudSelector(url) {
+    url = encodeURI(url);
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.getAttribute('id'));
+      var title = visitors.getAttribute('data-flag-title');
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .then(() => {
+                leancloudSelector(url).innerText = counter.time + 1;
+              })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              })
+          } else {
+              Counter('post', '/classes/Counter', { title: title, url: url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.getAttribute('id'));
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (let item of results) {
+            let { url, time } = item;
+            leancloudSelector(url).innerText = time;
+          }
+          for (let url of entries) {
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=2TdIb5gRlAVUw24l2W0zWnCj-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method: method,
+          headers: {
+            'X-LC-Id'     : '2TdIb5gRlAVUw24l2W0zWnCj-gzGzoHsz',
+            'X-LC-Key'    : 'cJdJrMLBXsj0ttq0WsL0aA2j',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

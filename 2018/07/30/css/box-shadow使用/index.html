@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"swiftist.cn","root":"/","scheme":"Pisces","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"EVBR3H53HW","apiKey":"2abd573a01143a0cc4108fa4d21ae67c","indexName":"swiftist","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="box-shadow 前言box-shadow 是 css3 的一个新属性，用来实现阴影效果，阴影分为内阴影和外阴影两个效果，可以通过逗号添加多个阴影效果。 box-shadow 阴影用法1box-shadow: inset offset-x offset-y blur-radius spread-radius color, ....;  box-shadow 参数解释@1：inset 有 ins">
+<meta property="og:type" content="article">
+<meta property="og:title" content="box-shadow使用">
+<meta property="og:url" content="https://swiftist.cn/2018/07/30/css/box-shadow%E4%BD%BF%E7%94%A8/index.html">
+<meta property="og:site_name" content="飞雪轩辕">
+<meta property="og:description" content="box-shadow 前言box-shadow 是 css3 的一个新属性，用来实现阴影效果，阴影分为内阴影和外阴影两个效果，可以通过逗号添加多个阴影效果。 box-shadow 阴影用法1box-shadow: inset offset-x offset-y blur-radius spread-radius color, ....;  box-shadow 参数解释@1：inset 有 ins">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://swiftist.cn/images/css/sb1.png">
+<meta property="og:image" content="https://swiftist.cn/2018/07/30/images/css/sb2.png">
+<meta property="og:image" content="https://swiftist.cn/2018/07/30/images/css/sb3.png">
+<meta property="og:image" content="https://swiftist.cn/2018/07/30/images/css/sb4.png">
+<meta property="og:image" content="https://swiftist.cn/2018/07/30/images/css/sb5.png">
+<meta property="og:image" content="https://swiftist.cn/2018/07/30/images/css/sb6.png">
+<meta property="og:image" content="https://swiftist.cn/2018/07/30/images/css/sb7.png">
+<meta property="og:image" content="https://swiftist.cn/2018/07/30/images/css/sb8.png">
+<meta property="og:image" content="https://swiftist.cn/2018/07/30/images/css/sb9.png">
+<meta property="og:image" content="https://swiftist.cn/2018/07/30/images/css/sb10.png">
+<meta property="og:image" content="https://swiftist.cn/2018/07/30/images/css/sb11.png">
+<meta property="article:published_time" content="2018-07-30T03:10:43.000Z">
+<meta property="article:modified_time" content="2020-03-31T15:07:39.330Z">
+<meta property="article:author" content="Andy Ge">
+<meta property="article:tag" content="css">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://swiftist.cn/images/css/sb1.png">
+
+<link rel="canonical" href="https://swiftist.cn/2018/07/30/css/box-shadow%E4%BD%BF%E7%94%A8/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>box-shadow使用 | 飞雪轩辕</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="飞雪轩辕" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">飞雪轩辕</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">人生的乐趣在于把梦想变成现实</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-java">
+
+    <a href="/categories/java/" rel="section"><i class="fa fa-fw fa-th-large"></i>java</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://swiftist.cn/2018/07/30/css/box-shadow%E4%BD%BF%E7%94%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Andy Ge">
+      <meta itemprop="description" content="勇于积极进取，步入人生的世外桃源">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="飞雪轩辕">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          box-shadow使用
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-07-30 11:10:43" itemprop="dateCreated datePublished" datetime="2018-07-30T11:10:43+08:00">2018-07-30</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-31 23:07:39" itemprop="dateModified" datetime="2020-03-31T23:07:39+08:00">2020-03-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/css/" itemprop="url" rel="index">
+                    <span itemprop="name">css</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span id="/2018/07/30/css/box-shadow%E4%BD%BF%E7%94%A8/" class="post-meta-item leancloud_visitors" data-flag-title="box-shadow使用" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="box-shadow-前言"><a href="#box-shadow-前言" class="headerlink" title="box-shadow 前言"></a>box-shadow 前言</h1><p>box-shadow 是 css3 的一个新属性，用来实现阴影效果，阴影分为内阴影和外阴影两个效果，可以通过逗号添加多个阴影效果。</p>
+<h2 id="box-shadow-阴影用法"><a href="#box-shadow-阴影用法" class="headerlink" title="box-shadow 阴影用法"></a>box-shadow 阴影用法</h2><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">box-shadow</span>: <span class="selector-tag">inset</span> <span class="selector-tag">offset-x</span> <span class="selector-tag">offset-y</span> <span class="selector-tag">blur-radius</span> <span class="selector-tag">spread-radius</span> <span class="selector-tag">color</span>, ....;</span><br></pre></td></tr></table></figure>
+
+<h2 id="box-shadow-参数解释"><a href="#box-shadow-参数解释" class="headerlink" title="box-shadow 参数解释"></a>box-shadow 参数解释</h2><p><code>@1：inset</code></p>
+<p>有 inset 则为内阴影，没有 insert 则为外阴影，默认为外阴影。</p>
+<p><code>@2：offset-x</code></p>
+<p>横向阴影的大小，正值阴影在右边，负值阴影在左边，0 的时候阴影中盒子后面，看不见的，如果有 blur-radius 值会有模糊效果。</p>
+<p><code>@3：offset-y</code></p>
+<p>纵向阴影的大小，值同 offset-x。</p>
+<p><code>@4：blur-radius</code></p>
+<p>阴影的模糊程度，值越大，阴影越模糊。</p>
+<p><code>@5：spread-radius</code></p>
+<p>阴影的扩大缩小，正值时，阴影扩大；负值时，阴影缩小，默认为 0，和盒子同样大。</p>
+<a id="more"></a>
+
+<h2 id="box-shadow-实例应用中的探讨"><a href="#box-shadow-实例应用中的探讨" class="headerlink" title="box-shadow 实例应用中的探讨"></a>box-shadow 实例应用中的探讨</h2><h3 id="内阴影的使用"><a href="#内阴影的使用" class="headerlink" title="内阴影的使用"></a>内阴影的使用</h3><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.shadowdemo</span> &#123;</span><br><span class="line">    <span class="attribute">width</span>: <span class="number">120px</span>;</span><br><span class="line">    <span class="attribute">height</span>: <span class="number">120px</span>;</span><br><span class="line">    <span class="attribute">background</span>: <span class="number">#faf223</span>;</span><br><span class="line">    <span class="attribute">box-shadow</span>: inset <span class="number">2px</span> <span class="number">2px</span> <span class="number">8px</span> <span class="number">#065eaf</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>效果如下：<br><img src="/images/css/sb1.png" alt=""></p>
+<p>使用 insert 的时候 offset-x,offset-y 的值的意义和外阴影是相反的，正值是左边，上边。负值是右边，下边。</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.shadowdemo</span> &#123;</span><br><span class="line">    <span class="attribute">width</span>: <span class="number">120px</span>;</span><br><span class="line">    <span class="attribute">height</span>: <span class="number">120px</span>;</span><br><span class="line">    <span class="attribute">background</span>: <span class="number">#faf223</span>;</span><br><span class="line">    <span class="attribute">box-shadow</span>: inset -<span class="number">2px</span> -<span class="number">2px</span> <span class="number">8px</span> <span class="number">#065eaf</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>效果如下：<br><img src="../../images/css/sb2.png" alt=""></p>
+<p>很想我们的立体按钮。</p>
+<p>以此，我们可以利用 box-shadow 特性实现一个 3D 立体效果，效果如下</p>
+<p><img src="../../images/css/sb3.png" alt=""></p>
+<p>不够真切？你可以<a href="http://www.webfront-js.com/showDemo/box-shadow%E5%AE%9E%E7%8E%B0%E7%AB%8B%E4%BD%93%E6%8C%89%E9%92%AE.html" target="_blank" rel="noopener">点击查看 box-shadow 的 3D 按钮</a>。</p>
+<p>代码如下：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">style</span>&gt;</span></span><br><span class="line"><span class="css">    <span class="selector-class">.shadowdemo</span> &#123;</span></span><br><span class="line">        display: inline-block;</span><br><span class="line">        line-height: 33px;</span><br><span class="line">        height: 36px;</span><br><span class="line">        padding: 0 2em;</span><br><span class="line">        font-size: 13px;</span><br><span class="line"><span class="css">        <span class="selector-tag">background</span>: <span class="selector-id">#0c58a7</span>;</span></span><br><span class="line"><span class="css">        <span class="selector-tag">box-shadow</span>: <span class="selector-tag">inset</span> <span class="selector-tag">-3px</span> <span class="selector-tag">-3px</span> 2<span class="selector-tag">px</span> <span class="selector-id">#050533</span>;</span></span><br><span class="line">        text-decoration: none;</span><br><span class="line"><span class="css">        <span class="selector-tag">color</span>: <span class="selector-id">#fff</span>;</span></span><br><span class="line">        border-radius: 4px;</span><br><span class="line">        vertical-align: middle;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="css">    <span class="selector-class">.shadowdemo</span><span class="selector-pseudo">:active</span> &#123;</span></span><br><span class="line">        line-height: 39px;</span><br><span class="line"><span class="css">        <span class="selector-tag">box-shadow</span>: <span class="selector-tag">inset</span> 2<span class="selector-tag">px</span> 3<span class="selector-tag">px</span> 2<span class="selector-tag">px</span> <span class="selector-id">#050533</span>;</span></span><br><span class="line">    &#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"javascript:;"</span> <span class="attr">class</span>=<span class="string">"shadowdemo"</span>&gt;</span>我是按钮<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>我们用：active 伪类来实现按下时效果的动画，通过 box-shadow 的 inset 的内阴影的转换，形成视界上突出和凹陷的效果。这里值得讲的是 height 和 line-height 的使用，height 用来定死高度，然后通过 line-height 的高度变化实现 active 时文字的下移效果，更逼真 3D 效果。</p>
+<p>没有按下时：line-height=height-offsety,</p>
+<p>按下 active 时：line-height=height+offsety。</p>
+<h3 id="外阴影的使用"><a href="#外阴影的使用" class="headerlink" title="外阴影的使用"></a>外阴影的使用</h3><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.outshadow</span> &#123;</span><br><span class="line">    <span class="attribute">width</span>: <span class="number">120px</span>;</span><br><span class="line">    <span class="attribute">height</span>: <span class="number">120px</span>;</span><br><span class="line">    <span class="attribute">background</span>: <span class="number">#0c58a7</span>;</span><br><span class="line">    <span class="attribute">box-shadow</span>: <span class="number">4px</span> <span class="number">4px</span> <span class="number">8px</span> <span class="number">#000</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>效果如下：</p>
+<p><img src="../../images/css/sb4.png" alt=""></p>
+<p>这个外阴影是我们常用的效果，蓝色的 div 看起来很有浮于页面的上层。</p>
+<p>下面我们来个例子看一下 spread-radius 阴影扩大缩小的作用</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.outshadow</span> &#123;</span><br><span class="line">    <span class="attribute">width</span>: <span class="number">120px</span>;</span><br><span class="line">    <span class="attribute">height</span>: <span class="number">120px</span>;</span><br><span class="line">    <span class="attribute">background</span>: <span class="number">#0c58a7</span>;</span><br><span class="line">    <span class="attribute">box-shadow</span>: <span class="number">4px</span> <span class="number">4px</span> <span class="number">8px</span> <span class="number">6px</span> <span class="number">#000</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>效果如下：</p>
+<p><img src="../../images/css/sb5.png" alt=""></p>
+<p>这里的代码比上一个外阴影多了 6px 的 spread-radius 的扩大阴影。我们可以看到他的作用是把阴影的大小向外扩大了，左边和上边也出现了明显的阴影效果。</p>
+<p>阴影的单位我们还可以使用 rgba 等有透明效果的阴影。</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.outshadow</span> &#123;</span><br><span class="line">    <span class="attribute">width</span>: <span class="number">120px</span>;</span><br><span class="line">    <span class="attribute">height</span>: <span class="number">120px</span>;</span><br><span class="line">    <span class="attribute">background</span>: <span class="number">#0c58a7</span>;</span><br><span class="line">    <span class="attribute">box-shadow</span>: <span class="number">4px</span> <span class="number">4px</span> <span class="number">8px</span> <span class="built_in">rgba</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0.5</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>效果如下：</p>
+<p><img src="../../images/css/sb6.png" alt=""></p>
+<p>效果明显比#000 的阴影效果轻很多。阴影效果会跟随元素的圆角也会显示圆角的阴影。并且外阴影效果会和外阴影合并，内阴影效果会和内阴影合并，外阴影效果不会和内阴影效果不会合并。</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.outshadow</span> &#123;</span><br><span class="line">    <span class="attribute">width</span>: <span class="number">120px</span>;</span><br><span class="line">    <span class="attribute">height</span>: <span class="number">120px</span>;</span><br><span class="line">    <span class="attribute">background</span>: <span class="number">#0c58a7</span>;</span><br><span class="line">    <span class="attribute">border-radius</span>: <span class="number">8px</span>;</span><br><span class="line">    <span class="attribute">box-shadow</span>: <span class="number">4px</span> <span class="number">4px</span> <span class="number">8px</span> <span class="built_in">rgba</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0.5</span>), <span class="number">4px</span> <span class="number">5px</span> <span class="number">3px</span> <span class="number">#05a623</span>,</span><br><span class="line">        inset <span class="number">4px</span> <span class="number">4px</span> <span class="number">8px</span> <span class="number">#000</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>效果如下：</p>
+<p><img src="../../images/css/sb7.png" alt=""></p>
+<p>外阴影的黑色和绿色合并了，但是没有和内阴影合并，并且无论是内阴影，外阴影都是跟随了 div 的圆角产生了圆角效果。</p>
+<h3 id="box-shadow-四周阴影实现"><a href="#box-shadow-四周阴影实现" class="headerlink" title="box-shadow 四周阴影实现"></a>box-shadow 四周阴影实现</h3><p>通过对 box-shadow 使用的理解，我们想要一个 div 的四周都有阴影的话，可能首先想到的是通过 box-shadow 的四周阴影叠加来实现。</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.outshadow</span> &#123;</span><br><span class="line">    <span class="attribute">width</span>: <span class="number">120px</span>;</span><br><span class="line">    <span class="attribute">height</span>: <span class="number">120px</span>;</span><br><span class="line">    <span class="attribute">background</span>: <span class="number">#0c58a7</span>;</span><br><span class="line">    <span class="attribute">box-shadow</span>: <span class="number">6px</span> <span class="number">6px</span> <span class="number">8px</span> <span class="built_in">rgba</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0.8</span>), -<span class="number">6px</span> -<span class="number">6px</span> <span class="number">8px</span> <span class="built_in">rgba</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0.8</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>效果如下：</p>
+<p><img src="../../images/css/sb8.png" alt=""></p>
+<p>很明显，这个四周阴影的效果很不符合预期，缺少了 2 个角的阴影，这种方式实现四周阴影是不行的。但是 box-shadow 还有一个属性 spread-radius 用来扩大阴影，我们可以借助它来实现四周阴影。</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.outshadow</span> &#123;</span><br><span class="line">    <span class="attribute">width</span>: <span class="number">120px</span>;</span><br><span class="line">    <span class="attribute">height</span>: <span class="number">120px</span>;</span><br><span class="line">    <span class="attribute">background</span>: <span class="number">#0c58a7</span>;</span><br><span class="line">    <span class="attribute">box-shadow</span>: <span class="number">0px</span> <span class="number">0px</span> <span class="number">8px</span> <span class="number">6px</span> <span class="built_in">rgba</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0.8</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>效果如下：</p>
+<p><img src="../../images/css/sb9.png" alt=""></p>
+<p>这个四周阴影的效果实现的很好，这里我们 offset-x,offset-y 都设置为 0，也就是阴影都在 div 后面，我们通过第 4 个参数 spread-radius 来扩大阴影的范围，让它向四周扩大 6px，那么就能实现四周阴影的效果。</p>
+<h3 id="box-shadow-单边阴影实现"><a href="#box-shadow-单边阴影实现" class="headerlink" title="box-shadow 单边阴影实现"></a>box-shadow 单边阴影实现</h3><p>box-shadow 的单边阴影效果的实现同样要借助 spread-radius 参数来实现。</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.outshadow</span> &#123;</span><br><span class="line">    <span class="attribute">width</span>: <span class="number">120px</span>;</span><br><span class="line">    <span class="attribute">height</span>: <span class="number">120px</span>;</span><br><span class="line">    <span class="attribute">background</span>: <span class="number">#0c58a7</span>;</span><br><span class="line">    <span class="attribute">box-shadow</span>: <span class="number">8px</span> <span class="number">2px</span> <span class="number">4px</span> -<span class="number">2px</span> <span class="built_in">rgba</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0.8</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>效果如下：</p>
+<p><img src="../../images/css/sb10.png" alt=""></p>
+<p>实现原理很简单，右边阴影 8px，下边阴影 2px，我们通过 spread-radius 把阴影范围缩小了 2px，那么下边阴影就隐藏到了 div 元素的后面，右边的阴影留在外面的就剩下了 6px。这样单边阴影的效果就实现了，你可以根据需要选择哪个边有阴影。不过如果你细心的话可以看到下面还是有略微的阴影效果，这个是 blur-radius 造成的，那么我们的 spread-radius 要设置为 2px+6px=8px，那么下边就完全没有阴影了。</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.outshadow</span> &#123;</span><br><span class="line">    <span class="attribute">width</span>: <span class="number">120px</span>;</span><br><span class="line">    <span class="attribute">height</span>: <span class="number">120px</span>;</span><br><span class="line">    <span class="attribute">background</span>: <span class="number">#0c58a7</span>;</span><br><span class="line">    <span class="attribute">box-shadow</span>: <span class="number">8px</span> <span class="number">2px</span> <span class="number">2px</span> -<span class="number">4px</span> <span class="built_in">rgba</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0.8</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>效果如下：</p>
+<p><img src="../../images/css/sb11.png" alt=""></p>
+<p>仔细看这个，下面完全没有一点阴影的迹象了。</p>
+<p>写了一个 demo,你可以<a href="http://www.webfront-js.com/showDemo/%E5%9B%9B%E5%91%A8%E9%98%B4%E5%BD%B1%E5%92%8C%E5%8D%95%E8%BE%B9%E9%98%B4%E5%BD%B1%E7%9A%84%E6%95%88%E6%9E%9C.html" target="_blank" rel="noopener">点击查看 box-shadow 单边阴影和四周阴影的效果</a>。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/css/" rel="tag"># css</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/07/28/wx/%E5%BE%AE%E4%BF%A1%E5%BC%80%E5%8F%91%E5%B0%8F%E8%AE%A1/" rel="prev" title="微信开发小计">
+      <i class="fa fa-chevron-left"></i> 微信开发小计
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/08/02/css/%E5%B8%B8%E7%94%A8CSS%E6%95%88%E6%9E%9C%E9%9B%86%E9%94%A6/" rel="next" title="常用CSS效果集锦">
+      常用CSS效果集锦 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#box-shadow-前言"><span class="nav-number">1.</span> <span class="nav-text">box-shadow 前言</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#box-shadow-阴影用法"><span class="nav-number">1.1.</span> <span class="nav-text">box-shadow 阴影用法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#box-shadow-参数解释"><span class="nav-number">1.2.</span> <span class="nav-text">box-shadow 参数解释</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#box-shadow-实例应用中的探讨"><span class="nav-number">1.3.</span> <span class="nav-text">box-shadow 实例应用中的探讨</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#内阴影的使用"><span class="nav-number">1.3.1.</span> <span class="nav-text">内阴影的使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#外阴影的使用"><span class="nav-number">1.3.2.</span> <span class="nav-text">外阴影的使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#box-shadow-四周阴影实现"><span class="nav-number">1.3.3.</span> <span class="nav-text">box-shadow 四周阴影实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#box-shadow-单边阴影实现"><span class="nav-number">1.3.4.</span> <span class="nav-text">box-shadow 单边阴影实现</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Andy Ge</p>
+  <div class="site-description" itemprop="description">勇于积极进取，步入人生的世外桃源</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">728</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">134</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">315</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/andyge" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;andyge" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:geshaofei@126.com" title="E-Mail → mailto:geshaofei@126.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.ruanyifeng.com/" title="http:&#x2F;&#x2F;www.ruanyifeng.com&#x2F;" rel="noopener" target="_blank">阮一峰</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://colobu.com/" title="http:&#x2F;&#x2F;colobu.com&#x2F;" rel="noopener" target="_blank">鸟窝</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.cnblogs.com/hellokuangshen/" title="https:&#x2F;&#x2F;www.cnblogs.com&#x2F;hellokuangshen&#x2F;" rel="noopener" target="_blank">狂神</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://yelog.org/" title="https:&#x2F;&#x2F;yelog.org&#x2F;" rel="noopener" target="_blank">叶落阁</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Andy Ge</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.7.1
+  </div>
+
+        
+
+
+
+
+
+
+  <script>
+  function leancloudSelector(url) {
+    url = encodeURI(url);
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.getAttribute('id'));
+      var title = visitors.getAttribute('data-flag-title');
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .then(() => {
+                leancloudSelector(url).innerText = counter.time + 1;
+              })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              })
+          } else {
+              Counter('post', '/classes/Counter', { title: title, url: url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.getAttribute('id'));
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (let item of results) {
+            let { url, time } = item;
+            leancloudSelector(url).innerText = time;
+          }
+          for (let url of entries) {
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=2TdIb5gRlAVUw24l2W0zWnCj-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method: method,
+          headers: {
+            'X-LC-Id'     : '2TdIb5gRlAVUw24l2W0zWnCj-gzGzoHsz',
+            'X-LC-Key'    : 'cJdJrMLBXsj0ttq0WsL0aA2j',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

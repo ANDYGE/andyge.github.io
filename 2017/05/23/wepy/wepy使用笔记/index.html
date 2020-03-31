@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"swiftist.cn","root":"/","scheme":"Pisces","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"EVBR3H53HW","apiKey":"2abd573a01143a0cc4108fa4d21ae67c","indexName":"swiftist","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="微信开发者工具配置1、使用微信开发者工具–&gt;添加项目，项目目录请选择dist目录。2、微信开发者工具–&gt;项目–&gt;关闭ES6转ES5。 重要：漏掉此项会运行报错。3、微信开发者工具–&gt;项目–&gt;关闭上传代码时样式自动补全。 重要：某些情况下漏掉此项也会运行报错。4、微信开发者工具–&gt;项目–&gt;关闭代码压缩上传。 重要：开启后，会导致真机computed, pro">
+<meta property="og:type" content="article">
+<meta property="og:title" content="wepy使用笔记">
+<meta property="og:url" content="https://swiftist.cn/2017/05/23/wepy/wepy%E4%BD%BF%E7%94%A8%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:site_name" content="飞雪轩辕">
+<meta property="og:description" content="微信开发者工具配置1、使用微信开发者工具–&gt;添加项目，项目目录请选择dist目录。2、微信开发者工具–&gt;项目–&gt;关闭ES6转ES5。 重要：漏掉此项会运行报错。3、微信开发者工具–&gt;项目–&gt;关闭上传代码时样式自动补全。 重要：某些情况下漏掉此项也会运行报错。4、微信开发者工具–&gt;项目–&gt;关闭代码压缩上传。 重要：开启后，会导致真机computed, pro">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2017-05-23T00:26:50.000Z">
+<meta property="article:modified_time" content="2020-03-31T15:07:39.462Z">
+<meta property="article:author" content="Andy Ge">
+<meta property="article:tag" content="parse">
+<meta property="article:tag" content="wepy">
+<meta property="article:tag" content="wechat">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://swiftist.cn/2017/05/23/wepy/wepy%E4%BD%BF%E7%94%A8%E7%AC%94%E8%AE%B0/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>wepy使用笔记 | 飞雪轩辕</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="飞雪轩辕" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">飞雪轩辕</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">人生的乐趣在于把梦想变成现实</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-java">
+
+    <a href="/categories/java/" rel="section"><i class="fa fa-fw fa-th-large"></i>java</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://swiftist.cn/2017/05/23/wepy/wepy%E4%BD%BF%E7%94%A8%E7%AC%94%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Andy Ge">
+      <meta itemprop="description" content="勇于积极进取，步入人生的世外桃源">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="飞雪轩辕">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          wepy使用笔记
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-05-23 08:26:50" itemprop="dateCreated datePublished" datetime="2017-05-23T08:26:50+08:00">2017-05-23</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-31 23:07:39" itemprop="dateModified" datetime="2020-03-31T23:07:39+08:00">2020-03-31</time>
+              </span>
+
+          
+            <span id="/2017/05/23/wepy/wepy%E4%BD%BF%E7%94%A8%E7%AC%94%E8%AE%B0/" class="post-meta-item leancloud_visitors" data-flag-title="wepy使用笔记" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="微信开发者工具配置"><a href="#微信开发者工具配置" class="headerlink" title="微信开发者工具配置"></a>微信开发者工具配置</h1><p>1、使用微信开发者工具–&gt;添加项目，项目目录请选择dist目录。<br>2、微信开发者工具–&gt;项目–&gt;关闭ES6转ES5。 重要：漏掉此项会运行报错。<br>3、微信开发者工具–&gt;项目–&gt;关闭上传代码时样式自动补全。 重要：某些情况下漏掉此项也会运行报错。<br>4、微信开发者工具–&gt;项目–&gt;关闭代码压缩上传。 重要：开启后，会导致真机computed, props.sync 等等属性失效。<br>5、开启开发环境不校验请求域名、TLS版本以及HTTPS证书。</p>
+<h1 id="API-Promise化"><a href="#API-Promise化" class="headerlink" title="API Promise化"></a>API Promise化</h1><h2 id="app-wpy处理"><a href="#app-wpy处理" class="headerlink" title="app.wpy处理"></a>app.wpy处理</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">#app.wpy文件中添加</span><br><span class="line"><span class="keyword">import</span> <span class="string">'wepy-async-function'</span></span><br><span class="line"></span><br><span class="line">#constructor()代码如下：</span><br><span class="line"><span class="keyword">constructor</span> () &#123;</span><br><span class="line">  <span class="keyword">super</span>()</span><br><span class="line">  <span class="keyword">this</span>.use(<span class="string">"requestfix"</span>); <span class="comment">//修复小程序请求并发问题。</span></span><br><span class="line">  <span class="keyword">this</span>.use(<span class="string">"promisify"</span>); <span class="comment">//使用wepy.xxx的方式请求小程序原生API都将Promise化，注意一旦promise化，wepy.XXX(&#123;success,fail,complete&#125;)将不再支持。</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="副作用"><a href="#副作用" class="headerlink" title="副作用"></a>副作用</h2><ol>
+<li>一旦采用了promise的方式，wx.getUserInfo({success,fail,complete})换成wepy.getUserInfo({success,fail,complete})之后，success等将不再执行。只能采用 const data = await wepy.getUserInfo();的方式。</li>
+<li>wepy.asyncMethod返回的仅仅是success的参数，对于失败则不执行，会通过异常抛出。</li>
+</ol>
+<a id="more"></a>
+
+<h1 id="parse支持"><a href="#parse支持" class="headerlink" title="parse支持"></a>parse支持</h1><h2 id="1-src目录下创建js文件夹"><a href="#1-src目录下创建js文件夹" class="headerlink" title="1. src目录下创建js文件夹"></a>1. src目录下创建js文件夹</h2><h3 id="拷贝文件"><a href="#拷贝文件" class="headerlink" title="拷贝文件"></a>拷贝文件</h3><ul>
+<li>parse.js，parse封装，注意其中的Parse.serverURL为实际可以用的parse服务</li>
+<li>parselib.js，parsejs，其中针对网络请求，本地存储做了针对微信的适应</li>
+<li>parsezip.js，parselib.js的压缩版，发布时采用这个</li>
+<li>utils.js，常用的工具类</li>
+</ul>
+<h2 id="2-使用parse"><a href="#2-使用parse" class="headerlink" title="2. 使用parse"></a>2. 使用parse</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">#在使用页面中添加parse引用</span><br><span class="line"><span class="keyword">import</span> Parse <span class="keyword">from</span> <span class="string">'../js/parse'</span></span><br><span class="line">#methods方法</span><br><span class="line"><span class="keyword">async</span> hello(name) &#123;</span><br><span class="line">  <span class="keyword">const</span> payload = &#123; name &#125;;</span><br><span class="line">  <span class="keyword">const</span> retval = <span class="keyword">await</span> Parse.Cloud.run(<span class="string">"hello"</span>, payload);</span><br><span class="line">  wx.showToast(&#123;</span><br><span class="line">    title: retval,</span><br><span class="line">    icon: <span class="string">"success"</span>,</span><br><span class="line">    duration: <span class="number">2000</span></span><br><span class="line">  &#125;);</span><br><span class="line">&#125;,</span><br><span class="line"><span class="keyword">async</span> addPerson() &#123;</span><br><span class="line">  <span class="keyword">const</span> person = <span class="keyword">new</span> Parse.Object(<span class="string">"Person"</span>);</span><br><span class="line">  person.set(<span class="string">"name"</span>, <span class="string">"zhang"</span>);</span><br><span class="line">  person.set(<span class="string">"age"</span>, <span class="number">40</span>);</span><br><span class="line">  <span class="keyword">await</span> person.save();</span><br><span class="line">&#125;,</span><br><span class="line"><span class="keyword">async</span> personCount() &#123;</span><br><span class="line">  <span class="keyword">const</span> data = <span class="keyword">await</span> Parse.Cloud.run(<span class="string">"personCount"</span>);</span><br><span class="line">  wx.showToast(&#123; <span class="attr">title</span>: data.total + <span class="string">""</span> &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-拷贝parselib-js到发布目录的js文件夹中"><a href="#3-拷贝parselib-js到发布目录的js文件夹中" class="headerlink" title="3. 拷贝parselib.js到发布目录的js文件夹中"></a>3. 拷贝parselib.js到发布目录的js文件夹中</h2><blockquote>
+<p>因为parselib.js的不符合modulepath规范，在wepy build的时候没有复制，所以需要手工拷贝</p>
+</blockquote>
+<h1 id="git管理"><a href="#git管理" class="headerlink" title="git管理"></a>git管理</h1><h2 id="1-需要首先设置-gitignore"><a href="#1-需要首先设置-gitignore" class="headerlink" title="1. 需要首先设置.gitignore"></a>1. 需要首先设置.gitignore</h2><h3 id="gitignore内容如下："><a href="#gitignore内容如下：" class="headerlink" title=".gitignore内容如下："></a>.gitignore内容如下：</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># OSX</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line">.DS_Store</span><br><span class="line"></span><br><span class="line"><span class="comment"># IntelliJ</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line">.idea</span><br><span class="line"></span><br><span class="line"><span class="comment"># node.js</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line">node_modules/</span><br><span class="line">npm-debug.log</span><br><span class="line">yarn-error.log</span><br><span class="line"></span><br><span class="line"><span class="comment"># WePY</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line">dist</span><br><span class="line">*.wpy___jb_tmp___</span><br><span class="line">.wepycache</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-在gitlab-com上面创建项目"><a href="#2-在gitlab-com上面创建项目" class="headerlink" title="2. 在gitlab.com上面创建项目"></a>2. 在gitlab.com上面创建项目</h2><h2 id="3-执行如下代码添加到git管理"><a href="#3-执行如下代码添加到git管理" class="headerlink" title="3. 执行如下代码添加到git管理"></a>3. 执行如下代码添加到git管理</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> existing_folder</span><br><span class="line">git init</span><br><span class="line">git remote add origin git@gitlab.com:andyshaofei/wepyapp.git</span><br><span class="line">git add .</span><br><span class="line">git commit -m <span class="string">"Initial commit"</span></span><br><span class="line">git pull origin master --allow-unrelated-histories</span><br><span class="line">git push -u origin master</span><br></pre></td></tr></table></figure>
+
+<h1 id="常用特性"><a href="#常用特性" class="headerlink" title="常用特性"></a>常用特性</h1><h2 id="获取wepy-app实例对象"><a href="#获取wepy-app实例对象" class="headerlink" title="获取wepy.app实例对象"></a>获取wepy.app实例对象</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wepy.$instance.globalData.disabled</span><br></pre></td></tr></table></figure>
+
+<h2 id="获取微信app实例对象"><a href="#获取微信app实例对象" class="headerlink" title="获取微信app实例对象"></a>获取微信app实例对象</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wepy.$instance.$wxapp === getApp() <span class="comment">//true</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="事件"><a href="#事件" class="headerlink" title="事件"></a>事件</h1><h2 id="broadcast"><a href="#broadcast" class="headerlink" title="$broadcast"></a>$broadcast</h2><p>$broadcast事件是由父组件发起，所有子组件都会收到此广播事件，除非事件被手动取消。事件广播的顺序为广度优先搜索顺序。</p>
+<h2 id="emit"><a href="#emit" class="headerlink" title="$emit"></a>$emit</h2><p>$emit与$broadcast正好相反，事件发起组件的所有祖先组件会依次接收到$emit事件。</p>
+<h2 id="invoke"><a href="#invoke" class="headerlink" title="$invoke"></a>$invoke</h2><p>$invoke是一个页面或组件对另一个组件中的方法的直接调用，通过传入组件路径找到相应的组件，然后再调用其方法。其返回的是一个promise对象：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> promise = <span class="keyword">this</span>.$invoke(<span class="string">'toast'</span>, <span class="string">'show'</span>, &#123;</span><br><span class="line">  title: <span class="string">'自定义标题'</span>,</span><br><span class="line">  img: <span class="string">'https://raw.githubusercontent.com/kiinlam/wetoast/master/images/star.png'</span></span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">promise.then(<span class="function">(<span class="params">d</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'toast done'</span>)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h2 id="组件自定义事件处理函数"><a href="#组件自定义事件处理函数" class="headerlink" title="组件自定义事件处理函数"></a>组件自定义事件处理函数</h2><p>可以通过使用.user修饰符为自定义组件绑定事件，如：<code>@customEvent.user=”myFn”</code><br>其中，@表示事件修饰符，customEvent 表示事件名称，.user表示事件后缀。<br>.user: 绑定用户自定义组件事件，通过$emit触发。注意，如果用了自定义事件，则events中对应的监听函数不会再执行。</p>
+<h1 id="Redux"><a href="#Redux" class="headerlink" title="Redux"></a>Redux</h1><p>有两个重要的概念<code>state</code>和<code>action</code>，<code>state</code>中包含的是数据，<code>action</code>是触发数据的变化。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/parse/" rel="tag"># parse</a>
+              <a href="/tags/wepy/" rel="tag"># wepy</a>
+              <a href="/tags/wechat/" rel="tag"># wechat</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/05/22/mongodb/docker%E4%B8%ADmongodb/" rel="prev" title="访问docker中的Mongdb">
+      <i class="fa fa-chevron-left"></i> 访问docker中的Mongdb
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/05/23/react/react%E7%BB%84%E5%BB%BA%E6%B8%B2%E6%9F%93%E5%88%86%E6%9E%90/" rel="next" title="react组建渲染分析">
+      react组建渲染分析 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#微信开发者工具配置"><span class="nav-number">1.</span> <span class="nav-text">微信开发者工具配置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#API-Promise化"><span class="nav-number">2.</span> <span class="nav-text">API Promise化</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#app-wpy处理"><span class="nav-number">2.1.</span> <span class="nav-text">app.wpy处理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#副作用"><span class="nav-number">2.2.</span> <span class="nav-text">副作用</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#parse支持"><span class="nav-number">3.</span> <span class="nav-text">parse支持</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-src目录下创建js文件夹"><span class="nav-number">3.1.</span> <span class="nav-text">1. src目录下创建js文件夹</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#拷贝文件"><span class="nav-number">3.1.1.</span> <span class="nav-text">拷贝文件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-使用parse"><span class="nav-number">3.2.</span> <span class="nav-text">2. 使用parse</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-拷贝parselib-js到发布目录的js文件夹中"><span class="nav-number">3.3.</span> <span class="nav-text">3. 拷贝parselib.js到发布目录的js文件夹中</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#git管理"><span class="nav-number">4.</span> <span class="nav-text">git管理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-需要首先设置-gitignore"><span class="nav-number">4.1.</span> <span class="nav-text">1. 需要首先设置.gitignore</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#gitignore内容如下："><span class="nav-number">4.1.1.</span> <span class="nav-text">.gitignore内容如下：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-在gitlab-com上面创建项目"><span class="nav-number">4.2.</span> <span class="nav-text">2. 在gitlab.com上面创建项目</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-执行如下代码添加到git管理"><span class="nav-number">4.3.</span> <span class="nav-text">3. 执行如下代码添加到git管理</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#常用特性"><span class="nav-number">5.</span> <span class="nav-text">常用特性</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#获取wepy-app实例对象"><span class="nav-number">5.1.</span> <span class="nav-text">获取wepy.app实例对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#获取微信app实例对象"><span class="nav-number">5.2.</span> <span class="nav-text">获取微信app实例对象</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#事件"><span class="nav-number">6.</span> <span class="nav-text">事件</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#broadcast"><span class="nav-number">6.1.</span> <span class="nav-text">$broadcast</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#emit"><span class="nav-number">6.2.</span> <span class="nav-text">$emit</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#invoke"><span class="nav-number">6.3.</span> <span class="nav-text">$invoke</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#组件自定义事件处理函数"><span class="nav-number">6.4.</span> <span class="nav-text">组件自定义事件处理函数</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Redux"><span class="nav-number">7.</span> <span class="nav-text">Redux</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Andy Ge</p>
+  <div class="site-description" itemprop="description">勇于积极进取，步入人生的世外桃源</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">728</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">134</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">315</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/andyge" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;andyge" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:geshaofei@126.com" title="E-Mail → mailto:geshaofei@126.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.ruanyifeng.com/" title="http:&#x2F;&#x2F;www.ruanyifeng.com&#x2F;" rel="noopener" target="_blank">阮一峰</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://colobu.com/" title="http:&#x2F;&#x2F;colobu.com&#x2F;" rel="noopener" target="_blank">鸟窝</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.cnblogs.com/hellokuangshen/" title="https:&#x2F;&#x2F;www.cnblogs.com&#x2F;hellokuangshen&#x2F;" rel="noopener" target="_blank">狂神</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://yelog.org/" title="https:&#x2F;&#x2F;yelog.org&#x2F;" rel="noopener" target="_blank">叶落阁</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Andy Ge</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.7.1
+  </div>
+
+        
+
+
+
+
+
+
+  <script>
+  function leancloudSelector(url) {
+    url = encodeURI(url);
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.getAttribute('id'));
+      var title = visitors.getAttribute('data-flag-title');
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .then(() => {
+                leancloudSelector(url).innerText = counter.time + 1;
+              })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              })
+          } else {
+              Counter('post', '/classes/Counter', { title: title, url: url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.getAttribute('id'));
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (let item of results) {
+            let { url, time } = item;
+            leancloudSelector(url).innerText = time;
+          }
+          for (let url of entries) {
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=2TdIb5gRlAVUw24l2W0zWnCj-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method: method,
+          headers: {
+            'X-LC-Id'     : '2TdIb5gRlAVUw24l2W0zWnCj-gzGzoHsz',
+            'X-LC-Key'    : 'cJdJrMLBXsj0ttq0WsL0aA2j',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

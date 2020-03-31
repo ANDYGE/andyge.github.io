@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"swiftist.cn","root":"/","scheme":"Pisces","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"EVBR3H53HW","apiKey":"2abd573a01143a0cc4108fa4d21ae67c","indexName":"swiftist","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="多表查询在 spring data jpa 中有两种实现方式，第一种是利用 hibernate 的级联查询来实现，第二种是创建一个结果集的接口来接收连表查询后的结果，这里介绍第二种方式。 一、一对一映射实体 UserInfo ：用户。 实体 Address：家庭住址。 这里通过外键的方式(一个实体通过外键关联到另一个实体的主键)来实现一对一关联。 实体类1、实体类 UserInfo.java123">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring Data JPA 实现多表关联查询">
+<meta property="og:url" content="https://swiftist.cn/2018/12/27/SpringJPA/Spring-Data-JPA-%E5%AE%9E%E7%8E%B0%E5%A4%9A%E8%A1%A8%E5%85%B3%E8%81%94%E6%9F%A5%E8%AF%A2/index.html">
+<meta property="og:site_name" content="飞雪轩辕">
+<meta property="og:description" content="多表查询在 spring data jpa 中有两种实现方式，第一种是利用 hibernate 的级联查询来实现，第二种是创建一个结果集的接口来接收连表查询后的结果，这里介绍第二种方式。 一、一对一映射实体 UserInfo ：用户。 实体 Address：家庭住址。 这里通过外键的方式(一个实体通过外键关联到另一个实体的主键)来实现一对一关联。 实体类1、实体类 UserInfo.java123">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-12-27T00:26:52.000Z">
+<meta property="article:modified_time" content="2020-03-31T15:07:39.317Z">
+<meta property="article:author" content="Andy Ge">
+<meta property="article:tag" content="jpa">
+<meta property="article:tag" content="owl">
+<meta property="article:tag" content="springboot">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://swiftist.cn/2018/12/27/SpringJPA/Spring-Data-JPA-%E5%AE%9E%E7%8E%B0%E5%A4%9A%E8%A1%A8%E5%85%B3%E8%81%94%E6%9F%A5%E8%AF%A2/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>Spring Data JPA 实现多表关联查询 | 飞雪轩辕</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="飞雪轩辕" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">飞雪轩辕</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">人生的乐趣在于把梦想变成现实</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-java">
+
+    <a href="/categories/java/" rel="section"><i class="fa fa-fw fa-th-large"></i>java</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://swiftist.cn/2018/12/27/SpringJPA/Spring-Data-JPA-%E5%AE%9E%E7%8E%B0%E5%A4%9A%E8%A1%A8%E5%85%B3%E8%81%94%E6%9F%A5%E8%AF%A2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Andy Ge">
+      <meta itemprop="description" content="勇于积极进取，步入人生的世外桃源">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="飞雪轩辕">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Spring Data JPA 实现多表关联查询
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-12-27 08:26:52" itemprop="dateCreated datePublished" datetime="2018-12-27T08:26:52+08:00">2018-12-27</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-31 23:07:39" itemprop="dateModified" datetime="2020-03-31T23:07:39+08:00">2020-03-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/jpa/" itemprop="url" rel="index">
+                    <span itemprop="name">jpa</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span id="/2018/12/27/SpringJPA/Spring-Data-JPA-%E5%AE%9E%E7%8E%B0%E5%A4%9A%E8%A1%A8%E5%85%B3%E8%81%94%E6%9F%A5%E8%AF%A2/" class="post-meta-item leancloud_visitors" data-flag-title="Spring Data JPA 实现多表关联查询" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>多表查询在 spring data jpa 中有两种实现方式，第一种是利用 hibernate 的级联查询来实现，第二种是创建一个结果集的接口来接收连表查询后的结果，这里介绍第二种方式。</p>
+<h1 id="一、一对一映射"><a href="#一、一对一映射" class="headerlink" title="一、一对一映射"></a>一、一对一映射</h1><p>实体 UserInfo ：用户。</p>
+<p>实体 Address：家庭住址。</p>
+<p>这里通过外键的方式(一个实体通过外键关联到另一个实体的主键)来实现一对一关联。</p>
+<h2 id="实体类"><a href="#实体类" class="headerlink" title="实体类"></a>实体类</h2><h2 id="1、实体类-UserInfo-java"><a href="#1、实体类-UserInfo-java" class="headerlink" title="1、实体类 UserInfo.java"></a>1、实体类 UserInfo.java</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.johnfnash.learn.domain;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.Serializable;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.persistence.Entity;</span><br><span class="line"><span class="keyword">import</span> javax.persistence.GeneratedValue;</span><br><span class="line"><span class="keyword">import</span> javax.persistence.GenerationType;</span><br><span class="line"><span class="keyword">import</span> javax.persistence.Id;</span><br><span class="line"><span class="keyword">import</span> javax.persistence.Table;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Entity</span></span><br><span class="line"><span class="meta">@Table</span>(name=<span class="string">"tb_user"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UserInfo</span> <span class="keyword">implements</span> <span class="title">Serializable</span> </span>&#123;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">long</span> serialVersionUID = <span class="number">8283950216116626180L</span>;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Id</span></span><br><span class="line">  <span class="meta">@GeneratedValue</span>(strategy=GenerationType.IDENTITY)</span><br><span class="line">  <span class="keyword">private</span> Long userId;</span><br><span class="line">  <span class="keyword">private</span> String name;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">int</span> age;</span><br><span class="line">  <span class="keyword">private</span> String sex;</span><br><span class="line">  <span class="keyword">private</span> String email;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 与 Address 的关联</span></span><br><span class="line">  <span class="keyword">private</span> Long addressId;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="title">UserInfo</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="title">UserInfo</span><span class="params">(String name, <span class="keyword">int</span> age, String sex, String email, Long addressId)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>();</span><br><span class="line">    <span class="keyword">this</span>.name = name;</span><br><span class="line">    <span class="keyword">this</span>.age = age;</span><br><span class="line">    <span class="keyword">this</span>.sex = sex;</span><br><span class="line">    <span class="keyword">this</span>.email = email;</span><br><span class="line">    <span class="keyword">this</span>.addressId = addressId;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// getter, setter</span></span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> String.format(<span class="string">"UserInfo [userId=%d, name=%s, age=%s, sex=%s, email=%s]"</span>, userId, name, age, sex, email);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-实体类-Address-java"><a href="#2-实体类-Address-java" class="headerlink" title="2. 实体类 Address.java"></a>2. 实体类 Address.java</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.johnfnash.learn.domain;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.persistence.Entity;</span><br><span class="line"><span class="keyword">import</span> javax.persistence.GeneratedValue;</span><br><span class="line"><span class="keyword">import</span> javax.persistence.GenerationType;</span><br><span class="line"><span class="keyword">import</span> javax.persistence.Id;</span><br><span class="line"><span class="keyword">import</span> javax.persistence.Table;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Entity</span></span><br><span class="line"><span class="meta">@Table</span>(name = <span class="string">"tb_address"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Address</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Id</span></span><br><span class="line">  <span class="meta">@GeneratedValue</span>(strategy = GenerationType.IDENTITY)</span><br><span class="line">  <span class="keyword">private</span> Long addressId;</span><br><span class="line">  <span class="keyword">private</span> String areaCode;</span><br><span class="line">  <span class="keyword">private</span> String country;</span><br><span class="line">  <span class="keyword">private</span> String province;</span><br><span class="line">  <span class="keyword">private</span> String city;</span><br><span class="line">  <span class="keyword">private</span> String area;</span><br><span class="line">  <span class="keyword">private</span> String detailAddress;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="title">Address</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="title">Address</span><span class="params">(String areaCode, String country, String province, String city, String area,</span></span></span><br><span class="line"><span class="function"><span class="params">      String detailAddress)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>();</span><br><span class="line">    <span class="keyword">this</span>.areaCode = areaCode;</span><br><span class="line">    <span class="keyword">this</span>.country = country;</span><br><span class="line">    <span class="keyword">this</span>.province = province;</span><br><span class="line">    <span class="keyword">this</span>.city = city;</span><br><span class="line">    <span class="keyword">this</span>.area = area;</span><br><span class="line">    <span class="keyword">this</span>.detailAddress = detailAddress;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// getter, setter</span></span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">"Address [addressId="</span> + addressId + <span class="string">", areaCode="</span> + areaCode + <span class="string">", country="</span> + country + <span class="string">", province="</span></span><br><span class="line">        + province + <span class="string">", city="</span> + city + <span class="string">", area="</span> + area + <span class="string">", detailAddress="</span> + detailAddress + <span class="string">"]"</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Dao-层"><a href="#Dao-层" class="headerlink" title="Dao 层"></a>Dao 层</h2><h2 id="1、UserInfoRepository-java"><a href="#1、UserInfoRepository-java" class="headerlink" title="1、UserInfoRepository.java"></a>1、UserInfoRepository.java</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.johnfnash.learn.repository;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.springframework.data.jpa.repository.JpaRepository;</span><br><span class="line"><span class="keyword">import</span> org.springframework.data.jpa.repository.Query;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.johnfnash.learn.domain.UserInfo;</span><br><span class="line"><span class="keyword">import</span> com.johnfnash.learn.domain.ViewInfo;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">UserInfoRepository</span> <span class="keyword">extends</span> <span class="title">JpaRepository</span>&lt;<span class="title">UserInfo</span>, <span class="title">Long</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Query</span>(value = <span class="string">"SELECT new com.johnfnash.learn.domain.ViewInfo(u, a) FROM UserInfo u, Address a WHERE u.addressId = a.addressId"</span>)</span><br><span class="line">  <span class="function"><span class="keyword">public</span> List&lt;ViewInfo&gt; <span class="title">findViewInfo</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注：这里的 ViewInfo 类用来一个用来接收多表查询结果集的类（使用 new + 完整类名构造函数）<br>代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.johnfnash.learn.domain;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.Serializable;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ViewInfo</span> <span class="keyword">implements</span> <span class="title">Serializable</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">long</span> serialVersionUID = -<span class="number">6347911007178390219L</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">private</span> UserInfo userInfo;</span><br><span class="line">  <span class="keyword">private</span> Address address;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="title">ViewInfo</span><span class="params">()</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="title">ViewInfo</span><span class="params">(UserInfo userInfo)</span> </span>&#123;</span><br><span class="line">    Address address = <span class="keyword">new</span> Address();</span><br><span class="line">    <span class="keyword">this</span>.userInfo = userInfo;</span><br><span class="line">    <span class="keyword">this</span>.address = address;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="title">ViewInfo</span><span class="params">(Address address)</span> </span>&#123;</span><br><span class="line">    UserInfo userInfo = <span class="keyword">new</span> UserInfo();</span><br><span class="line">    <span class="keyword">this</span>.userInfo = userInfo;</span><br><span class="line">    <span class="keyword">this</span>.address = address;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="title">ViewInfo</span><span class="params">(UserInfo userInfo, Address address)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.userInfo = userInfo;</span><br><span class="line">    <span class="keyword">this</span>.address = address;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// getter, setter</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-AddressRepository-java"><a href="#2-AddressRepository-java" class="headerlink" title="2. AddressRepository.java"></a>2. AddressRepository.java</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.johnfnash.learn.repository;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.springframework.data.jpa.repository.JpaRepository;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.johnfnash.learn.domain.Address;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">AddressRepository</span> <span class="keyword">extends</span> <span class="title">JpaRepository</span>&lt;<span class="title">Address</span>, <span class="title">Long</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="测试代码"><a href="#测试代码" class="headerlink" title="测试代码"></a>测试代码</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.johnfnash.learn;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.junit.After;</span><br><span class="line"><span class="keyword">import</span> org.junit.Before;</span><br><span class="line"><span class="keyword">import</span> org.junit.Test;</span><br><span class="line"><span class="keyword">import</span> org.junit.runner.RunWith;</span><br><span class="line"><span class="keyword">import</span> org.springframework.beans.factory.annotation.Autowired;</span><br><span class="line"><span class="keyword">import</span> org.springframework.boot.test.context.SpringBootTest;</span><br><span class="line"><span class="keyword">import</span> org.springframework.test.context.junit4.SpringRunner;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.johnfnash.learn.domain.Address;</span><br><span class="line"><span class="keyword">import</span> com.johnfnash.learn.domain.UserInfo;</span><br><span class="line"><span class="keyword">import</span> com.johnfnash.learn.domain.ViewInfo;</span><br><span class="line"><span class="keyword">import</span> com.johnfnash.learn.repository.AddressRepository;</span><br><span class="line"><span class="keyword">import</span> com.johnfnash.learn.repository.UserInfoRepository;</span><br><span class="line"></span><br><span class="line"><span class="meta">@RunWith</span>(SpringRunner<span class="class">.<span class="keyword">class</span>)</span></span><br><span class="line"><span class="class">@<span class="title">SpringBootTest</span></span></span><br><span class="line"><span class="class"><span class="title">public</span> <span class="title">class</span> <span class="title">UserInfoRepositoryTests</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> UserInfoRepository userInfoRepository;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Autowired</span></span><br><span class="line">  <span class="keyword">private</span> AddressRepository addressRepository;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Before</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        Address addr1 = <span class="keyword">new</span> Address(<span class="string">"027"</span>,<span class="string">"CN"</span>,<span class="string">"HuBei"</span>, <span class="string">"WuHan"</span>,<span class="string">"WuChang"</span>, <span class="string">"123 street"</span>);</span><br><span class="line">        Address addr2 = <span class="keyword">new</span> Address(<span class="string">"023"</span>,<span class="string">"CN"</span>,<span class="string">"ChongQing"</span>, <span class="string">"ChongQing"</span>,<span class="string">"YuBei"</span>, <span class="string">"123 road"</span>);</span><br><span class="line">        addressRepository.save(addr1);</span><br><span class="line">        addressRepository.save(addr2);</span><br><span class="line"></span><br><span class="line">        UserInfo user1 = <span class="keyword">new</span> UserInfo(<span class="string">"ZS"</span>, <span class="number">21</span>,<span class="string">"Male"</span>,<span class="string">"123@xx.com"</span>, addr1.getAddressId());</span><br><span class="line">        UserInfo user2 = <span class="keyword">new</span> UserInfo(<span class="string">"Ww"</span>, <span class="number">25</span>,<span class="string">"Male"</span>,<span class="string">"234@xx.com"</span>, addr2.getAddressId());</span><br><span class="line">        userInfoRepository.save(user1);</span><br><span class="line">        userInfoRepository.save(user2);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@After</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">deleteAll</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    userInfoRepository.deleteAll();</span><br><span class="line"></span><br><span class="line">    addressRepository.deleteAll();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Test</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testQuery</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    List&lt;ViewInfo&gt; viewInfos = userInfoRepository.findViewInfo();</span><br><span class="line">    <span class="keyword">for</span> (ViewInfo viewInfo : viewInfos) &#123;</span><br><span class="line">      System.out.println(viewInfo.getUserInfo());</span><br><span class="line">      System.out.println(viewInfo.getAddress());</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>查询相关的 sql 如下：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Hibernate: <span class="keyword">select</span> userinfo0_.user_id <span class="keyword">as</span> col_0_0_, address1_.address_id <span class="keyword">as</span> col_1_0_ <span class="keyword">from</span> tb_user userinfo0_ <span class="keyword">cross</span> <span class="keyword">join</span> tb_address address1_ <span class="keyword">where</span> userinfo0_.address_id=address1_.address_id</span><br><span class="line">Hibernate: <span class="keyword">select</span> userinfo0_.user_id <span class="keyword">as</span> user_id1_4_0_, userinfo0_.address_id <span class="keyword">as</span> address_2_4_0_, userinfo0_.age <span class="keyword">as</span> age3_4_0_, userinfo0_.email <span class="keyword">as</span> email4_4_0_, userinfo0_.name <span class="keyword">as</span> name5_4_0_, userinfo0_.sex <span class="keyword">as</span> sex6_4_0_ <span class="keyword">from</span> tb_user userinfo0_ <span class="keyword">where</span> userinfo0_.user_id=?</span><br><span class="line">Hibernate: <span class="keyword">select</span> address0_.address_id <span class="keyword">as</span> address_1_3_0_, address0_.area <span class="keyword">as</span> area2_3_0_, address0_.area_code <span class="keyword">as</span> area_cod3_3_0_, address0_.city <span class="keyword">as</span> city4_3_0_, address0_.country <span class="keyword">as</span> country5_3_0_, address0_.detail_address <span class="keyword">as</span> detail_a6_3_0_, address0_.province <span class="keyword">as</span> province7_3_0_ <span class="keyword">from</span> tb_address address0_ <span class="keyword">where</span> address0_.address_id=?</span><br><span class="line">Hibernate: <span class="keyword">select</span> userinfo0_.user_id <span class="keyword">as</span> user_id1_4_0_, userinfo0_.address_id <span class="keyword">as</span> address_2_4_0_, userinfo0_.age <span class="keyword">as</span> age3_4_0_, userinfo0_.email <span class="keyword">as</span> email4_4_0_, userinfo0_.name <span class="keyword">as</span> name5_4_0_, userinfo0_.sex <span class="keyword">as</span> sex6_4_0_ <span class="keyword">from</span> tb_user userinfo0_ <span class="keyword">where</span> userinfo0_.user_id=?</span><br><span class="line">Hibernate: <span class="keyword">select</span> address0_.address_id <span class="keyword">as</span> address_1_3_0_, address0_.area <span class="keyword">as</span> area2_3_0_, address0_.area_code <span class="keyword">as</span> area_cod3_3_0_, address0_.city <span class="keyword">as</span> city4_3_0_, address0_.country <span class="keyword">as</span> country5_3_0_, address0_.detail_address <span class="keyword">as</span> detail_a6_3_0_, address0_.province <span class="keyword">as</span> province7_3_0_ <span class="keyword">from</span> tb_address address0_ <span class="keyword">where</span> address0_.address_id=?</span><br><span class="line">Hibernate: <span class="keyword">select</span> userinfo0_.user_id <span class="keyword">as</span> user_id1_4_, userinfo0_.address_id <span class="keyword">as</span> address_2_4_, userinfo0_.age <span class="keyword">as</span> age3_4_, userinfo0_.email <span class="keyword">as</span> email4_4_, userinfo0_.name <span class="keyword">as</span> name5_4_, userinfo0_.sex <span class="keyword">as</span> sex6_4_ <span class="keyword">from</span> tb_user userinfo0_</span><br><span class="line">Hibernate: <span class="keyword">select</span> address0_.address_id <span class="keyword">as</span> address_1_3_, address0_.area <span class="keyword">as</span> area2_3_, address0_.area_code <span class="keyword">as</span> area_cod3_3_, address0_.city <span class="keyword">as</span> city4_3_, address0_.country <span class="keyword">as</span> country5_3_, address0_.detail_address <span class="keyword">as</span> detail_a6_3_, address0_.province <span class="keyword">as</span> province7_3_ <span class="keyword">from</span> tb_address address0_</span><br></pre></td></tr></table></figure>
+
+<p>查询结果如下：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">UserInfo [userId=1, name=ZS, age=21, sex=Male, email=123@xx.com]</span><br><span class="line">Address [addressId=1, areaCode=027, country=CN, province=HuBei, city=WuHan, area=WuChang, detailAddress=123 street]</span><br><span class="line">UserInfo [userId=2, name=Ww, age=25, sex=Male, email=234@xx.com]</span><br><span class="line">Address [addressId=2, areaCode=023, country=CN, province=ChongQing, city=ChongQing, area=YuBei, detailAddress=123 road]</span><br></pre></td></tr></table></figure>
+
+<h1 id="二、多对多映射"><a href="#二、多对多映射" class="headerlink" title="二、多对多映射"></a>二、多对多映射</h1><p>实体 Author ：作者。</p>
+<p>实体 Book ：书籍</p>
+<p>这里通过关联表的方式来实现多对多关联。</p>
+<h2 id="实体类定义"><a href="#实体类定义" class="headerlink" title="实体类定义"></a>实体类定义</h2><h2 id="实体类：Author-java"><a href="#实体类：Author-java" class="headerlink" title="实体类：Author.java"></a>实体类：Author.java</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.johnfnash.learn.domain;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.Serializable;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.persistence.Entity;</span><br><span class="line"><span class="keyword">import</span> javax.persistence.GeneratedValue;</span><br><span class="line"><span class="keyword">import</span> javax.persistence.Id;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Entity</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Author</span> <span class="keyword">implements</span> <span class="title">Serializable</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">long</span> serialVersionUID = <span class="number">1227555837798655046L</span>;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Id</span></span><br><span class="line">    <span class="meta">@GeneratedValue</span></span><br><span class="line">    <span class="keyword">private</span> Integer id;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="title">Author</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="title">Author</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>();</span><br><span class="line">    <span class="keyword">this</span>.name = name;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// getter, setter</span></span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> String.format(<span class="string">"Author [id=%s, name=%s]"</span>, id, name);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Book-java-实体类"><a href="#Book-java-实体类" class="headerlink" title="Book.java 实体类"></a>Book.java 实体类</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.johnfnash.learn.domain;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.Serializable;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.persistence.Entity;</span><br><span class="line"><span class="keyword">import</span> javax.persistence.GeneratedValue;</span><br><span class="line"><span class="keyword">import</span> javax.persistence.Id;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Entity</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Book</span> <span class="keyword">implements</span> <span class="title">Serializable</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">long</span> serialVersionUID = -<span class="number">2470510857424220408L</span>;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Id</span></span><br><span class="line">    <span class="meta">@GeneratedValue</span></span><br><span class="line">    <span class="keyword">private</span> Integer id;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Book</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Book</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>();</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">//getter, setter</span></span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> String.format(<span class="string">"Book [id=%s, name=%s]"</span>, id, name);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="实体类-BookAuthor-java"><a href="#实体类-BookAuthor-java" class="headerlink" title="实体类 BookAuthor.java"></a>实体类 BookAuthor.java</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.johnfnash.learn.domain;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.persistence.Entity;</span><br><span class="line"><span class="keyword">import</span> javax.persistence.Id;</span><br><span class="line"><span class="keyword">import</span> javax.persistence.IdClass;</span><br><span class="line"><span class="keyword">import</span> javax.persistence.Table;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Entity</span></span><br><span class="line"><span class="meta">@IdClass</span>(BookAuthorPK<span class="class">.<span class="keyword">class</span>)</span></span><br><span class="line"><span class="class">@<span class="title">Table</span>(<span class="title">name</span> </span>= <span class="string">"book_author"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BookAuthor</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Id</span></span><br><span class="line">  <span class="keyword">private</span> Integer bookId;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Id</span></span><br><span class="line">  <span class="keyword">private</span> Integer authorId;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="title">BookAuthor</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="title">BookAuthor</span><span class="params">(Integer bookId, Integer authorId)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>();</span><br><span class="line">    <span class="keyword">this</span>.bookId = bookId;</span><br><span class="line">    <span class="keyword">this</span>.authorId = authorId;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// getter, setter</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注：这里使用 @IdClass 注解指定一个联合主键类来映射实体类的多个属性。这个联合主键类的代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.johnfnash.learn.domain;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.Serializable;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BookAuthorPK</span> <span class="keyword">implements</span> <span class="title">Serializable</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">long</span> serialVersionUID = -<span class="number">1158141803682305656L</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">private</span> Integer bookId;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">private</span> Integer authorId;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> Integer <span class="title">getBookId</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> bookId;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setBookId</span><span class="params">(Integer bookId)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.bookId = bookId;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> Integer <span class="title">getAuthorId</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> authorId;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setAuthorId</span><span class="params">(Integer authorId)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.authorId = authorId;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Dao-层定义"><a href="#Dao-层定义" class="headerlink" title="Dao 层定义"></a>Dao 层定义</h2><h2 id="BookRepository-java"><a href="#BookRepository-java" class="headerlink" title="BookRepository.java"></a>BookRepository.java</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.johnfnash.learn.repository;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.springframework.data.jpa.repository.JpaRepository;</span><br><span class="line"><span class="keyword">import</span> org.springframework.data.jpa.repository.Query;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.johnfnash.learn.domain.Book;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">BookRepository</span> <span class="keyword">extends</span> <span class="title">JpaRepository</span>&lt;<span class="title">Book</span>, <span class="title">Integer</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Query</span>(nativeQuery = <span class="keyword">true</span>, value = <span class="string">"SELECT b.id, b.name, GROUP_CONCAT(a.name) as authorName from book b, author a, book_author ba"</span></span><br><span class="line">      + <span class="string">" where b.id = ba.book_id and a.id = ba.author_id and b.name like ?1 group by b.id, b.name"</span>)</span><br><span class="line">    List&lt;Object[]&gt; findByNameContaining(String name);</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注：<br>1）这里使用 nativeQuery = true 指定使用原生 SQL 进行查询（个人觉得复杂的查询使用原生 SQL 更好<br>2）这里使用了 mysql 的内置函数 GROUP_CONCAT 进行行转列, HQL 无法直接识别。可能会出现 Caused by: org.hibernate.QueryException: No data type for node: org.hibernate.hql.internal.ast.tree.MethodNode 的错误</p>
+<h2 id="JpaRepository-java"><a href="#JpaRepository-java" class="headerlink" title="JpaRepository.java"></a>JpaRepository.java</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.johnfnash.learn.repository;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.springframework.data.jpa.repository.JpaRepository;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.johnfnash.learn.domain.Author;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">AuthorRepository</span> <span class="keyword">extends</span> <span class="title">JpaRepository</span>&lt;<span class="title">Author</span>, <span class="title">Integer</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="BookAuthorRepository-java"><a href="#BookAuthorRepository-java" class="headerlink" title="BookAuthorRepository.java"></a>BookAuthorRepository.java</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.johnfnash.learn.repository;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.springframework.data.jpa.repository.JpaRepository;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.johnfnash.learn.domain.BookAuthor;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">BookAuthorRepository</span> <span class="keyword">extends</span> <span class="title">JpaRepository</span>&lt;<span class="title">BookAuthor</span>, <span class="title">Integer</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="测试代码部分"><a href="#测试代码部分" class="headerlink" title="测试代码部分"></a>测试代码部分</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.johnfnash.learn;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="keyword">static</span> org.junit.Assert.assertEquals;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.junit.After;</span><br><span class="line"><span class="keyword">import</span> org.junit.Before;</span><br><span class="line"><span class="keyword">import</span> org.junit.Test;</span><br><span class="line"><span class="keyword">import</span> org.junit.runner.RunWith;</span><br><span class="line"><span class="keyword">import</span> org.springframework.beans.factory.annotation.Autowired;</span><br><span class="line"><span class="keyword">import</span> org.springframework.boot.test.context.SpringBootTest;</span><br><span class="line"><span class="keyword">import</span> org.springframework.test.context.junit4.SpringRunner;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.johnfnash.learn.domain.Author;</span><br><span class="line"><span class="keyword">import</span> com.johnfnash.learn.domain.Book;</span><br><span class="line"><span class="keyword">import</span> com.johnfnash.learn.domain.BookAuthor;</span><br><span class="line"><span class="keyword">import</span> com.johnfnash.learn.repository.AuthorRepository;</span><br><span class="line"><span class="keyword">import</span> com.johnfnash.learn.repository.BookAuthorRepository;</span><br><span class="line"><span class="keyword">import</span> com.johnfnash.learn.repository.BookRepository;</span><br><span class="line"></span><br><span class="line"><span class="meta">@RunWith</span>(SpringRunner<span class="class">.<span class="keyword">class</span>)</span></span><br><span class="line"><span class="class">@<span class="title">SpringBootTest</span></span></span><br><span class="line"><span class="class"><span class="title">public</span> <span class="title">class</span> <span class="title">BookRepositoryTests</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Autowired</span></span><br><span class="line">  <span class="keyword">private</span> BookRepository bookRepository;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Autowired</span></span><br><span class="line">  <span class="keyword">private</span> AuthorRepository authorRepository;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Autowired</span></span><br><span class="line">  <span class="keyword">private</span> BookAuthorRepository bookAuthorRepository;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Before</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">()</span> </span>&#123;</span><br><span class="line">      Author lewis = <span class="keyword">new</span> Author(<span class="string">"Lewis"</span>);</span><br><span class="line">      Author mark = <span class="keyword">new</span> Author(<span class="string">"Mark"</span>);</span><br><span class="line">      Author peter = <span class="keyword">new</span> Author(<span class="string">"Peter"</span>);</span><br><span class="line">      authorRepository.save(lewis);</span><br><span class="line">      authorRepository.save(mark);</span><br><span class="line">      authorRepository.save(peter);</span><br><span class="line"></span><br><span class="line">      Book spring = <span class="keyword">new</span> Book(<span class="string">"Spring in Action"</span>);</span><br><span class="line">      Book springboot = <span class="keyword">new</span> Book(<span class="string">"Spring Boot in Action"</span>);</span><br><span class="line">      bookRepository.save(spring);</span><br><span class="line">      bookRepository.save(springboot);</span><br><span class="line"></span><br><span class="line">      bookAuthorRepository.save(<span class="keyword">new</span> BookAuthor(spring.getId(), lewis.getId()));</span><br><span class="line">      bookAuthorRepository.save(<span class="keyword">new</span> BookAuthor(spring.getId(), mark.getId()));</span><br><span class="line">      bookAuthorRepository.save(<span class="keyword">new</span> BookAuthor(springboot.getId(), mark.getId()));</span><br><span class="line">      bookAuthorRepository.save(<span class="keyword">new</span> BookAuthor(springboot.getId(), peter.getId()));</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@After</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">deleteAll</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    bookAuthorRepository.deleteAll();</span><br><span class="line">    bookRepository.deleteAll();</span><br><span class="line">    authorRepository.deleteAll();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Test</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">findAll</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    assertEquals(bookRepository.findAll().size(), <span class="number">2</span>);</span><br><span class="line">    assertEquals(authorRepository.findAll().size(), <span class="number">3</span>);</span><br><span class="line"></span><br><span class="line">    List&lt;Object[]&gt; books = bookRepository.findByNameContaining(<span class="string">"Spring%"</span>);</span><br><span class="line">    <span class="keyword">for</span> (Object[] book : books) &#123;</span><br><span class="line">      <span class="keyword">for</span> (Object object : book) &#123;</span><br><span class="line">        System.out.print(object + <span class="string">", "</span>);</span><br><span class="line">      &#125;</span><br><span class="line">      System.out.println();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>执行 findAll 方法后，查询的相关 SQL 如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Hibernate: SELECT b.id, b.name, GROUP_CONCAT(a.name) as authorName from book b, author a, book_author ba where b.id = ba.book_id and a.id = ba.author_id and b.name like ? group by b.id, b.name</span><br></pre></td></tr></table></figure>
+
+<p>输出的结果如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">3652</span>, Spring in Action, Lewis,Mark,</span><br><span class="line"><span class="number">3653</span>, Spring Boot in Action, Mark,Peter,</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p>(1) <a href="https://img-blog.csdn.net/2018060521004740?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3h4YzE2MDU2Mjk4OTU=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" target="_blank" rel="noopener">Spring Data JPA 实现多表关联查询</a></p>
+<p>(2) <a href="http://www.ityouknow.com/springboot/2016/08/20/springboot(%E4%BA%94)-spring-data-jpa%E7%9A%84%E4%BD%BF%E7%94%A8.html" target="_blank" rel="noopener">springboot(五): spring data jpa 的使用</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/jpa/" rel="tag"># jpa</a>
+              <a href="/tags/owl/" rel="tag"># owl</a>
+              <a href="/tags/springboot/" rel="tag"># springboot</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/12/26/SpringJPA/jpa%E9%80%89%E6%8B%A9%E9%83%A8%E5%88%86%E5%AD%97%E6%AE%B5/" rel="prev" title="jpa选择部分字段">
+      <i class="fa fa-chevron-left"></i> jpa选择部分字段
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/12/28/misc/%E4%B8%80%E4%B8%AA%E5%A5%BD%E7%94%A8%E7%9A%84%E5%8E%8B%E6%B5%8B%E5%B7%A5%E5%85%B7/" rel="next" title="一个好用的压测工具">
+      一个好用的压测工具 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、一对一映射"><span class="nav-number">1.</span> <span class="nav-text">一、一对一映射</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#实体类"><span class="nav-number">1.1.</span> <span class="nav-text">实体类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1、实体类-UserInfo-java"><span class="nav-number">1.2.</span> <span class="nav-text">1、实体类 UserInfo.java</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-实体类-Address-java"><span class="nav-number">1.3.</span> <span class="nav-text">2. 实体类 Address.java</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Dao-层"><span class="nav-number">1.4.</span> <span class="nav-text">Dao 层</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1、UserInfoRepository-java"><span class="nav-number">1.5.</span> <span class="nav-text">1、UserInfoRepository.java</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-AddressRepository-java"><span class="nav-number">1.6.</span> <span class="nav-text">2. AddressRepository.java</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#测试代码"><span class="nav-number">1.7.</span> <span class="nav-text">测试代码</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、多对多映射"><span class="nav-number">2.</span> <span class="nav-text">二、多对多映射</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#实体类定义"><span class="nav-number">2.1.</span> <span class="nav-text">实体类定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实体类：Author-java"><span class="nav-number">2.2.</span> <span class="nav-text">实体类：Author.java</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Book-java-实体类"><span class="nav-number">2.3.</span> <span class="nav-text">Book.java 实体类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实体类-BookAuthor-java"><span class="nav-number">2.4.</span> <span class="nav-text">实体类 BookAuthor.java</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Dao-层定义"><span class="nav-number">2.5.</span> <span class="nav-text">Dao 层定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BookRepository-java"><span class="nav-number">2.6.</span> <span class="nav-text">BookRepository.java</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#JpaRepository-java"><span class="nav-number">2.7.</span> <span class="nav-text">JpaRepository.java</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BookAuthorRepository-java"><span class="nav-number">2.8.</span> <span class="nav-text">BookAuthorRepository.java</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#测试代码部分"><span class="nav-number">2.9.</span> <span class="nav-text">测试代码部分</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-number">3.</span> <span class="nav-text">参考</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Andy Ge</p>
+  <div class="site-description" itemprop="description">勇于积极进取，步入人生的世外桃源</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">728</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">134</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">315</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/andyge" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;andyge" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:geshaofei@126.com" title="E-Mail → mailto:geshaofei@126.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.ruanyifeng.com/" title="http:&#x2F;&#x2F;www.ruanyifeng.com&#x2F;" rel="noopener" target="_blank">阮一峰</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://colobu.com/" title="http:&#x2F;&#x2F;colobu.com&#x2F;" rel="noopener" target="_blank">鸟窝</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.cnblogs.com/hellokuangshen/" title="https:&#x2F;&#x2F;www.cnblogs.com&#x2F;hellokuangshen&#x2F;" rel="noopener" target="_blank">狂神</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://yelog.org/" title="https:&#x2F;&#x2F;yelog.org&#x2F;" rel="noopener" target="_blank">叶落阁</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Andy Ge</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.7.1
+  </div>
+
+        
+
+
+
+
+
+
+  <script>
+  function leancloudSelector(url) {
+    url = encodeURI(url);
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.getAttribute('id'));
+      var title = visitors.getAttribute('data-flag-title');
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .then(() => {
+                leancloudSelector(url).innerText = counter.time + 1;
+              })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              })
+          } else {
+              Counter('post', '/classes/Counter', { title: title, url: url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.getAttribute('id'));
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (let item of results) {
+            let { url, time } = item;
+            leancloudSelector(url).innerText = time;
+          }
+          for (let url of entries) {
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=2TdIb5gRlAVUw24l2W0zWnCj-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method: method,
+          headers: {
+            'X-LC-Id'     : '2TdIb5gRlAVUw24l2W0zWnCj-gzGzoHsz',
+            'X-LC-Key'    : 'cJdJrMLBXsj0ttq0WsL0aA2j',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

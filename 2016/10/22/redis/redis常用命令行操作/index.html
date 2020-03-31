@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"swiftist.cn","root":"/","scheme":"Pisces","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"EVBR3H53HW","apiKey":"2abd573a01143a0cc4108fa4d21ae67c","indexName":"swiftist","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="笔记什么是 Redis Redis 是一个基于 BSD 开源的使用 ANSI C 语言编写、支持网络、可基于内存亦可持久化的日志型、Key-Value 数据库，并提供多种语言的 API.   Redis 存储的是一个个的键值对 通常用 Redis 做缓存数据库 Redis 的五种数据类型(字符串，哈希，链表，无序集合，有序集合)">
+<meta property="og:type" content="article">
+<meta property="og:title" content="redis常用命令行操作">
+<meta property="og:url" content="https://swiftist.cn/2016/10/22/redis/redis%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E8%A1%8C%E6%93%8D%E4%BD%9C/index.html">
+<meta property="og:site_name" content="飞雪轩辕">
+<meta property="og:description" content="笔记什么是 Redis Redis 是一个基于 BSD 开源的使用 ANSI C 语言编写、支持网络、可基于内存亦可持久化的日志型、Key-Value 数据库，并提供多种语言的 API.   Redis 存储的是一个个的键值对 通常用 Redis 做缓存数据库 Redis 的五种数据类型(字符串，哈希，链表，无序集合，有序集合)">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2016-10-22T08:43:08.000Z">
+<meta property="article:modified_time" content="2020-03-31T15:07:39.424Z">
+<meta property="article:author" content="Andy Ge">
+<meta property="article:tag" content="笔记">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://swiftist.cn/2016/10/22/redis/redis%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E8%A1%8C%E6%93%8D%E4%BD%9C/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>redis常用命令行操作 | 飞雪轩辕</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="飞雪轩辕" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">飞雪轩辕</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">人生的乐趣在于把梦想变成现实</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-java">
+
+    <a href="/categories/java/" rel="section"><i class="fa fa-fw fa-th-large"></i>java</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://swiftist.cn/2016/10/22/redis/redis%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E8%A1%8C%E6%93%8D%E4%BD%9C/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Andy Ge">
+      <meta itemprop="description" content="勇于积极进取，步入人生的世外桃源">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="飞雪轩辕">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          redis常用命令行操作
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2016-10-22 16:43:08" itemprop="dateCreated datePublished" datetime="2016-10-22T16:43:08+08:00">2016-10-22</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-31 23:07:39" itemprop="dateModified" datetime="2020-03-31T23:07:39+08:00">2020-03-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/redis/" itemprop="url" rel="index">
+                    <span itemprop="name">redis</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span id="/2016/10/22/redis/redis%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E8%A1%8C%E6%93%8D%E4%BD%9C/" class="post-meta-item leancloud_visitors" data-flag-title="redis常用命令行操作" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="笔记"><a href="#笔记" class="headerlink" title="笔记"></a>笔记</h1><h2 id="什么是-Redis"><a href="#什么是-Redis" class="headerlink" title="什么是 Redis"></a>什么是 Redis</h2><blockquote>
+<p>Redis 是一个基于 BSD 开源的使用 ANSI C 语言编写、支持网络、可基于内存亦可持久化的日志型、Key-Value 数据库，并提供多种语言的 API.</p>
+</blockquote>
+<ol>
+<li>Redis 存储的是一个个的键值对</li>
+<li>通常用 Redis 做缓存数据库</li>
+<li>Redis 的五种数据类型(字符串，哈希，链表，无序集合，有序集合)</li>
+</ol>
+<a id="more"></a>
+
+<h2 id="Redis-安装"><a href="#Redis-安装" class="headerlink" title="Redis 安装"></a>Redis 安装</h2><blockquote>
+<p>Redis 官方不支持 windows 安装，所以我们这里以 CentOS 7 为例.</p>
+</blockquote>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#首先安装GCC，Make等编译工具</span></span><br><span class="line">yum -y install gcc automake autoconf libtool make</span><br><span class="line"></span><br><span class="line"><span class="comment">#下载最新最稳定的Redis版本</span></span><br><span class="line">wget http://download.redis.io/redis-stable.tar.gz</span><br><span class="line"><span class="comment">#解压</span></span><br><span class="line">tar -xzvf redis-stable.tar.gz</span><br><span class="line"><span class="comment">#切换目录</span></span><br><span class="line"><span class="built_in">cd</span> redis-stable</span><br><span class="line"><span class="comment">#生成</span></span><br><span class="line">make</span><br><span class="line"><span class="comment">#安装</span></span><br><span class="line">make install</span><br><span class="line"><span class="comment">#运行查看</span></span><br><span class="line">redis-server</span><br><span class="line"><span class="comment">#结束服务</span></span><br><span class="line">crtl+c</span><br><span class="line"><span class="comment">#转换目录</span></span><br><span class="line"><span class="built_in">cd</span> utils/</span><br><span class="line"><span class="comment">#使用脚本安装服务</span></span><br><span class="line">./install_server.sh</span><br><span class="line"><span class="comment">#启动服务</span></span><br><span class="line">systemctl start redis_6379</span><br><span class="line"><span class="comment">#查看服务状态</span></span><br><span class="line">systemctl status redis_6379</span><br><span class="line"><span class="comment">#结束服务</span></span><br><span class="line">systemctl stop redis_6379</span><br></pre></td></tr></table></figure>
+
+<h2 id="Redis-运行"><a href="#Redis-运行" class="headerlink" title="Redis 运行"></a>Redis 运行</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#开启一个redis服务</span></span><br><span class="line">redis-server --port 6380</span><br><span class="line"><span class="comment">#连接到刚开启的redis服务</span></span><br><span class="line">redis-cli -h 127.0.0.1 -p 6380</span><br><span class="line"></span><br><span class="line">ping</span><br><span class="line"></span><br><span class="line">PONG</span><br></pre></td></tr></table></figure>
+
+<h2 id="Redis-的基本使用"><a href="#Redis-的基本使用" class="headerlink" title="Redis 的基本使用"></a>Redis 的基本使用</h2><h3 id="字符串"><a href="#字符串" class="headerlink" title="字符串"></a>字符串</h3><blockquote>
+<p>常用操作符 set,get,incr,keys，如：</p>
+</blockquote>
+<ul>
+<li>set key value 设置 key 的 value</li>
+<li>get key 得到 key 的 value</li>
+<li>incr key key 如果是整型自增 1</li>
+<li>keys * 得到所有 key</li>
+</ul>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">redis-cli -h 127.0.0.1 -p 6380</span><br><span class="line">127.0.0.1:6380&gt; ping</span><br><span class="line">PONG</span><br><span class="line">127.0.0.1:6380&gt; <span class="built_in">set</span> name cc</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6380&gt; get name</span><br><span class="line"><span class="string">"cc"</span></span><br><span class="line">127.0.0.1:6380&gt; incr name</span><br><span class="line">(error) ERR value is not an <span class="built_in">integer</span> or out of range</span><br><span class="line">127.0.0.1:6380&gt; get num</span><br><span class="line">(nil)</span><br><span class="line">127.0.0.1:6380&gt; incr num</span><br><span class="line">(<span class="built_in">integer</span>) 1</span><br><span class="line">127.0.0.1:6380&gt; get num</span><br><span class="line"><span class="string">"1"</span></span><br><span class="line">127.0.0.1:6380&gt; keys *</span><br><span class="line">1) <span class="string">"name"</span></span><br><span class="line">2) <span class="string">"num"</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="哈希"><a href="#哈希" class="headerlink" title="哈希"></a>哈希</h3><blockquote>
+<p>常用操作符：hset,hget,hgetall 等，如：</p>
+</blockquote>
+<ul>
+<li>hset key filed value 设置 key 对象的 field 属性的 value</li>
+<li>hget key filed 得到 key 对象的 field 属性的 value</li>
+<li>hgetall key 得到 key 对象的所有的属性和值</li>
+</ul>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6380&gt; hset car name baoshijie</span><br><span class="line">(<span class="built_in">integer</span>) 1</span><br><span class="line">127.0.0.1:6380&gt; hset car price 80w</span><br><span class="line">(<span class="built_in">integer</span>) 1</span><br><span class="line">127.0.0.1:6380&gt; hset car can 4</span><br><span class="line">(<span class="built_in">integer</span>) 1</span><br><span class="line">127.0.0.1:6380&gt; hget car name</span><br><span class="line"><span class="string">"baoshijie"</span></span><br><span class="line">127.0.0.1:6380&gt; hget car</span><br><span class="line">(error) ERR wrong number of arguments <span class="keyword">for</span> <span class="string">'hget'</span> <span class="built_in">command</span></span><br><span class="line">127.0.0.1:6380&gt; hgetall car</span><br><span class="line">1) <span class="string">"name"</span></span><br><span class="line">2) <span class="string">"baoshijie"</span></span><br><span class="line">3) <span class="string">"price"</span></span><br><span class="line">4) <span class="string">"80w"</span></span><br><span class="line">5) <span class="string">"can"</span></span><br><span class="line">6) <span class="string">"4"</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="链表"><a href="#链表" class="headerlink" title="链表"></a>链表</h3><blockquote>
+<p>适合存储社交网站的新鲜事，常用操作符：lpush,rpush,lpop,rpop,lrange 等，如：</p>
+</blockquote>
+<ul>
+<li>lpush key value [value …] 向链表 key 左边添加元素</li>
+<li>rpush key value [value…] 向链表 key 右边添加元素</li>
+<li>lpop key 移除 key 链表左边第一个元素</li>
+<li>rpop key 移除 key 链表右边第一元素</li>
+<li>lrange key start stop 获取链表中某一段，包含最大值，-1 表示最后一个元素</li>
+</ul>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6380&gt; rpush list a 1 b</span><br><span class="line">(<span class="built_in">integer</span>) 3</span><br><span class="line">127.0.0.1:6380&gt; lrange list 0 -1</span><br><span class="line">1) <span class="string">"a"</span></span><br><span class="line">2) <span class="string">"1"</span></span><br><span class="line">3) <span class="string">"b"</span></span><br><span class="line">127.0.0.1:6380&gt; lpush list 2 c 3</span><br><span class="line">(<span class="built_in">integer</span>) 6</span><br><span class="line">127.0.0.1:6380&gt; lrange list 0 -1</span><br><span class="line">1) <span class="string">"3"</span></span><br><span class="line">2) <span class="string">"c"</span></span><br><span class="line">3) <span class="string">"2"</span></span><br><span class="line">4) <span class="string">"a"</span></span><br><span class="line">5) <span class="string">"1"</span></span><br><span class="line">6) <span class="string">"b"</span></span><br><span class="line">127.0.0.1:6380&gt; rpop list</span><br><span class="line"><span class="string">"b"</span></span><br><span class="line">127.0.0.1:6380&gt; lrange list 0 -1</span><br><span class="line">1) <span class="string">"3"</span></span><br><span class="line">2) <span class="string">"c"</span></span><br><span class="line">3) <span class="string">"2"</span></span><br><span class="line">4) <span class="string">"a"</span></span><br><span class="line">5) <span class="string">"1"</span></span><br><span class="line">127.0.0.1:6380&gt; lpop</span><br><span class="line">(error) ERR wrong number of arguments <span class="keyword">for</span> <span class="string">'lpop'</span> <span class="built_in">command</span></span><br><span class="line">127.0.0.1:6380&gt; lpop list</span><br><span class="line"><span class="string">"3"</span></span><br><span class="line">127.0.0.1:6380&gt; lrange list 3 100</span><br><span class="line">1) <span class="string">"1"</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="集合类型"><a href="#集合类型" class="headerlink" title="集合类型"></a>集合类型</h3><blockquote>
+<p>适合存储文章的标签，因为是唯一的，常用操作符：sadd,srem,smembers,sinter,sdiff,sunion 等，如：</p>
+</blockquote>
+<ul>
+<li>sadd key member [member …] 向集合 key 中添加元素，如果元素已经存在则忽略</li>
+<li>srem key member [member …] 从集合 key 中删除元素</li>
+<li>smembers key 返回集合 key 中所有的元素</li>
+<li>sinter key [key …] 多个集合执行交集运算</li>
+<li>sdiff key [key …] 多个集合执行差集运算</li>
+<li>sunion key [key …] 多个集合执行并集运算</li>
+</ul>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6380&gt; sadd city shanghai beijing guangzhou</span><br><span class="line">(<span class="built_in">integer</span>) 3</span><br><span class="line">127.0.0.1:6380&gt; srem city shanghai</span><br><span class="line">(<span class="built_in">integer</span>) 1</span><br><span class="line">127.0.0.1:6380&gt; smembers city</span><br><span class="line">1) <span class="string">"beijing"</span></span><br><span class="line">2) <span class="string">"guangzhou"</span></span><br><span class="line">127.0.0.1:6380&gt; sadd a 1 2 3</span><br><span class="line">(<span class="built_in">integer</span>) 3</span><br><span class="line">127.0.0.1:6380&gt; sadd b 2 3 4</span><br><span class="line">(<span class="built_in">integer</span>) 3</span><br><span class="line">127.0.0.1:6380&gt; sinter a b</span><br><span class="line">1) <span class="string">"2"</span></span><br><span class="line">2) <span class="string">"3"</span></span><br><span class="line">127.0.0.1:6380&gt; sdiff a b</span><br><span class="line">1) <span class="string">"1"</span></span><br><span class="line">127.0.0.1:6380&gt; sunion a b</span><br><span class="line">1) <span class="string">"1"</span></span><br><span class="line">2) <span class="string">"2"</span></span><br><span class="line">3) <span class="string">"3"</span></span><br><span class="line">4) <span class="string">"4"</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="有序集合"><a href="#有序集合" class="headerlink" title="有序集合"></a>有序集合</h3><blockquote>
+<p>适用于通过文章访问量排序，常用操作符：zadd,zrem,zrange,zrevrange 等，如：</p>
+</blockquote>
+<ul>
+<li>zadd key score member [score member …] 向有序集合 key 中加入一个或多个元素和分数，如果元素已经存在，则替换分数</li>
+<li>zrem key member [member …] 删除集合中一个或多个元素</li>
+<li>zrange key start stop [withscores] 按元素分数从小到大顺序返回元素，如需获得对应元素的分数，在尾部加上 withscores</li>
+<li>zrevrange key start stop [withscores] 按元素分数从大到小顺序返回元素</li>
+</ul>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6380&gt; zadd ages 31 cc 30 bbc 28 xbc</span><br><span class="line">(<span class="built_in">integer</span>) 3</span><br><span class="line">127.0.0.1:6380&gt; zrem ages xbc</span><br><span class="line">(<span class="built_in">integer</span>) 1</span><br><span class="line">127.0.0.1:6380&gt; zrange ages 0 -1</span><br><span class="line">1) <span class="string">"bbc"</span></span><br><span class="line">2) <span class="string">"cc"</span></span><br><span class="line">127.0.0.1:6380&gt; zrevrange ages 0 -1</span><br><span class="line">1) <span class="string">"cc"</span></span><br><span class="line">2) <span class="string">"bbc"</span></span><br><span class="line">127.0.0.1:6380&gt; zrange ages 0 -1 withscores</span><br><span class="line">1) <span class="string">"bbc"</span></span><br><span class="line">2) <span class="string">"30"</span></span><br><span class="line">3) <span class="string">"cc"</span></span><br><span class="line">4) <span class="string">"31"</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="Redis-数据库其他说明"><a href="#Redis-数据库其他说明" class="headerlink" title="Redis 数据库其他说明"></a>Redis 数据库其他说明</h2><blockquote>
+<p>Redis 默认支持 16 个数据库，编号 0~15，每个数据库是独立的不能相互访问，可以通过<code>select 数据库编号</code>来更换数据库。</p>
+</blockquote>
+<ul>
+<li>Redis 不支持自定义数据库名字</li>
+<li>Redis 不支持每个数据库设置不同的密码</li>
+</ul>
+<p>我们可以通过配置参数 database 修改支持的数据库个数，当选择的数据库编号超过最大数据库编号，默认使用最大数据库编号的数据库。</p>
+<h2 id="常用数据库操作"><a href="#常用数据库操作" class="headerlink" title="常用数据库操作"></a>常用数据库操作</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 选择第二个数据库</span></span><br><span class="line">select 1</span><br><span class="line"></span><br><span class="line"><span class="comment"># 清空当前数据库的所有内容</span></span><br><span class="line">flushdb</span><br><span class="line"></span><br><span class="line"><span class="comment"># 清空所有数据库的所有内容</span></span><br><span class="line">flushall</span><br><span class="line"></span><br><span class="line"><span class="comment"># 随机返回当前数据库的一个键</span></span><br><span class="line">randomkey</span><br><span class="line"></span><br><span class="line"><span class="comment"># 删除一个或多个key</span></span><br><span class="line">del key</span><br><span class="line"></span><br><span class="line"><span class="comment"># 返回给定哈希表中所有键的值</span></span><br><span class="line">hvals key</span><br></pre></td></tr></table></figure>
+
+<h2 id="如果需要将-redis-用作缓存，可以设置生存时间，这样就不会持久化存储"><a href="#如果需要将-redis-用作缓存，可以设置生存时间，这样就不会持久化存储" class="headerlink" title="如果需要将 redis 用作缓存，可以设置生存时间，这样就不会持久化存储"></a>如果需要将 redis 用作缓存，可以设置生存时间，这样就不会持久化存储</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 设置某个键的生存时间</span></span><br><span class="line"><span class="comment"># 1.(以秒为单位)</span></span><br><span class="line">expire key time</span><br><span class="line"></span><br><span class="line"><span class="comment"># 2.(以毫秒为单位)</span></span><br><span class="line">pexpire key time</span><br><span class="line"></span><br><span class="line"><span class="comment"># 以秒为单位返回给定key的剩余生存时间，没有设置生存时间则返回-1</span></span><br><span class="line">ttl key</span><br></pre></td></tr></table></figure>
+
+<h2 id="nodejs-中使用-redis"><a href="#nodejs-中使用-redis" class="headerlink" title="nodejs 中使用 redis"></a>nodejs 中使用 redis</h2><ol>
+<li>安装 redis 模块</li>
+</ol>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">npm i redis</span><br><span class="line"></span><br><span class="line">ls node_modules/</span><br><span class="line">double-ended-queue  redis  redis-commands  redis-parser</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>bottle.js，一个包含投掷和打捞漂流瓶的模拟程序</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> redis = <span class="built_in">require</span>(<span class="string">'redis'</span>),</span><br><span class="line">    client = redis.createClient(<span class="number">6380</span>, <span class="string">'127.0.0.1'</span>, &#123;&#125;)</span><br><span class="line">exports.throw = <span class="function"><span class="keyword">function</span>(<span class="params">bottle, callback</span>) </span>&#123;</span><br><span class="line">    bottle.time = bottle.time || <span class="built_in">Date</span>.now()</span><br><span class="line">    <span class="keyword">var</span> bottleId = <span class="built_in">Math</span>.random().toString(<span class="number">16</span>)</span><br><span class="line">    <span class="keyword">var</span> type = &#123; <span class="attr">male</span>: <span class="number">0</span>, <span class="attr">female</span>: <span class="number">1</span> &#125;</span><br><span class="line">    <span class="built_in">console</span>.log(type[bottle.type])</span><br><span class="line">    <span class="comment">/*client.SELECT选择数据库编号*/</span></span><br><span class="line">    client.SELECT(type[bottle.type], <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="comment">/*client.HMSET 保存哈希键值*/</span></span><br><span class="line">        client.HMSET(bottleId, bottle, <span class="function"><span class="keyword">function</span>(<span class="params">err, result</span>) </span>&#123;</span><br><span class="line">            <span class="keyword">if</span> (err) &#123;</span><br><span class="line">                <span class="keyword">return</span> callback(&#123; <span class="attr">code</span>: <span class="number">0</span>, <span class="attr">msg</span>: <span class="string">'过会儿再来试试吧！'</span> &#125;)</span><br><span class="line">            &#125;</span><br><span class="line">            callback(&#123; <span class="attr">code</span>: <span class="number">1</span>, <span class="attr">msg</span>: result &#125;)</span><br><span class="line">            <span class="comment">/*设置过期时间为1天*/</span></span><br><span class="line">            client.EXPIRE(bottleId, <span class="number">86400</span>)</span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">exports.pick = <span class="function"><span class="keyword">function</span>(<span class="params">info, callback</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> type = &#123; <span class="attr">all</span>: <span class="built_in">Math</span>.round(<span class="built_in">Math</span>.random()), <span class="attr">male</span>: <span class="number">0</span>, <span class="attr">female</span>: <span class="number">1</span> &#125;</span><br><span class="line">    info.type = info.type || <span class="string">'all'</span></span><br><span class="line">    client.SELECT(type[info.type], <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="comment">/*随机返回当前数据库的一个键*/</span></span><br><span class="line">        client.RANDOMKEY(<span class="function"><span class="keyword">function</span>(<span class="params">err, bottleId</span>) </span>&#123;</span><br><span class="line">            <span class="keyword">if</span> (!bottleId) &#123;</span><br><span class="line">                <span class="keyword">return</span> callback(&#123; <span class="attr">code</span>: <span class="number">0</span>, <span class="attr">msg</span>: <span class="string">'大海空空如也...'</span> &#125;)</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">/*根据key返回哈希对象*/</span></span><br><span class="line">            client.HGETALL(bottleId, <span class="function"><span class="keyword">function</span>(<span class="params">err, bottle</span>) </span>&#123;</span><br><span class="line">                <span class="keyword">if</span> (err) &#123;</span><br><span class="line">                    <span class="keyword">return</span> callback(&#123; <span class="attr">code</span>: <span class="number">0</span>, <span class="attr">msg</span>: <span class="string">'漂流瓶破损了...'</span> &#125;)</span><br><span class="line">                &#125;</span><br><span class="line">                callback(&#123; <span class="attr">code</span>: <span class="number">1</span>, <span class="attr">msg</span>: bottle &#125;)</span><br><span class="line">                <span class="comment">/*根据key删除键值*/</span></span><br><span class="line">                client.DEL(bottleId)</span><br><span class="line">            &#125;)</span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="app-js"><a href="#app-js" class="headerlink" title="app.js"></a>app.js</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> bottle = <span class="built_in">require</span>(<span class="string">'./bottle.js'</span>)</span><br><span class="line"></span><br><span class="line">bottle.throw(</span><br><span class="line">    &#123; <span class="attr">title</span>: <span class="string">'today is a good day'</span>, <span class="attr">type</span>: <span class="string">'male'</span>, <span class="attr">time</span>: <span class="built_in">Date</span>.now() &#125;,</span><br><span class="line">    e =&gt; <span class="built_in">console</span>.log(e)</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">bottle.pick(&#123; <span class="attr">type</span>: <span class="string">'all'</span> &#125;, e =&gt; <span class="built_in">console</span>.log(e))</span><br></pre></td></tr></table></figure>
+
+<h3 id="运行"><a href="#运行" class="headerlink" title="运行"></a>运行</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">node app.js</span><br><span class="line">0</span><br><span class="line">&#123; code: 1, msg: <span class="string">'OK'</span> &#125;</span><br><span class="line">&#123; code: 1,</span><br><span class="line">  msg:</span><br><span class="line">   &#123; title: <span class="string">'today is a good day'</span>,</span><br><span class="line">     <span class="built_in">type</span>: <span class="string">'male'</span>,</span><br><span class="line">     time: <span class="string">'1519793024669'</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h3><table>
+<thead>
+<tr>
+<th>序号</th>
+<th>命令</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td><a href="http://www.runoob.com/redis/keys-del.html" target="_blank" rel="noopener">DEL key</a></td>
+<td>该命令用于在 key 存在时删除 key。</td>
+</tr>
+<tr>
+<td>2</td>
+<td><a href="http://www.runoob.com/redis/keys-dump.html" target="_blank" rel="noopener">DUMP key</a></td>
+<td>序列化给定 key ，并返回被序列化的值。</td>
+</tr>
+<tr>
+<td>3</td>
+<td><a href="http://www.runoob.com/redis/keys-exists.html" target="_blank" rel="noopener">EXISTS key</a></td>
+<td>检查给定 key 是否存在。</td>
+</tr>
+<tr>
+<td>4</td>
+<td><a href="http://www.runoob.com/redis/keys-expire.html" target="_blank" rel="noopener">EXPIRE key</a> seconds</td>
+<td>为给定 key 设置过期时间。</td>
+</tr>
+<tr>
+<td>5</td>
+<td><a href="http://www.runoob.com/redis/keys-expireat.html" target="_blank" rel="noopener">EXPIREAT key timestamp</a></td>
+<td>EXPIREAT 的作用和 EXPIRE 类似，都用于为 key 设置过期时间。 不同在于 EXPIREAT 命令接受的时间参数是 UNIX 时间戳(unix timestamp)。</td>
+</tr>
+<tr>
+<td>6</td>
+<td><a href="http://www.runoob.com/redis/keys-pexpire.html" target="_blank" rel="noopener">PEXPIRE key milliseconds</a></td>
+<td>设置 key 的过期时间以毫秒计。</td>
+</tr>
+<tr>
+<td>7</td>
+<td><a href="http://www.runoob.com/redis/keys-pexpireat.html" target="_blank" rel="noopener">PEXPIREAT key milliseconds-timestamp</a></td>
+<td>设置 key 过期时间的时间戳(unix timestamp) 以毫秒计</td>
+</tr>
+<tr>
+<td>8</td>
+<td><a href="http://www.runoob.com/redis/keys-keys.html" target="_blank" rel="noopener">KEYS pattern</a></td>
+<td>查找所有符合给定模式( pattern)的 key 。</td>
+</tr>
+<tr>
+<td>9</td>
+<td><a href="http://www.runoob.com/redis/keys-move.html" target="_blank" rel="noopener">MOVE key db</a></td>
+<td>将当前数据库的 key 移动到给定的数据库 db 当中。</td>
+</tr>
+<tr>
+<td>10</td>
+<td><a href="http://www.runoob.com/redis/keys-persist.html" target="_blank" rel="noopener">PERSIST key</a></td>
+<td>移除 key 的过期时间，key 将持久保持。</td>
+</tr>
+<tr>
+<td>11</td>
+<td><a href="http://www.runoob.com/redis/keys-pttl.html" target="_blank" rel="noopener">PTTL key</a></td>
+<td>以毫秒为单位返回 key 的剩余的过期时间。</td>
+</tr>
+<tr>
+<td>12</td>
+<td><a href="http://www.runoob.com/redis/keys-ttl.html" target="_blank" rel="noopener">TTL key</a></td>
+<td>以秒为单位，返回给定 key 的剩余生存时间(TTL, time to live)。</td>
+</tr>
+<tr>
+<td>13</td>
+<td><a href="http://www.runoob.com/redis/keys-randomkey.html" target="_blank" rel="noopener">RANDOMKEY</a></td>
+<td>从当前数据库中随机返回一个 key 。</td>
+</tr>
+<tr>
+<td>14</td>
+<td><a href="http://www.runoob.com/redis/keys-rename.html" target="_blank" rel="noopener">RENAME key newkey</a></td>
+<td>修改 key 的名称。</td>
+</tr>
+<tr>
+<td>15</td>
+<td><a href="http://www.runoob.com/redis/keys-renamenx.html" target="_blank" rel="noopener">RENAMENX key newkey</a></td>
+<td>仅当 newkey 不存在时，将 key 改名为 newkey 。</td>
+</tr>
+<tr>
+<td>16</td>
+<td><a href="http://www.runoob.com/redis/keys-type.html" target="_blank" rel="noopener">TYPE key</a></td>
+<td>返回 key 所储存的值的类型。</td>
+</tr>
+</tbody></table>
+<h3 id="设置密码"><a href="#设置密码" class="headerlink" title="设置密码"></a>设置密码</h3><h4 id="临时设置，重启后丢失"><a href="#临时设置，重启后丢失" class="headerlink" title="临时设置，重启后丢失"></a>临时设置，重启后丢失</h4><p>在<code>redis-cli</code>中执行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 配置密码</span></span><br><span class="line">config <span class="built_in">set</span> requirepass 123@456</span><br><span class="line"></span><br><span class="line"><span class="comment"># 关闭保护模式</span></span><br><span class="line">config <span class="built_in">set</span> protected-mode no</span><br></pre></td></tr></table></figure>
+
+<h4 id="从配置文件中修改"><a href="#从配置文件中修改" class="headerlink" title="从配置文件中修改"></a>从配置文件中修改</h4><p>打开 redis.conf 文件，反注释掉<code>#requirepass</code>，并指定新的密码，重新启动 redis。</p>
+<h3 id="远程不能连接"><a href="#远程不能连接" class="headerlink" title="远程不能连接"></a>远程不能连接</h3><h4 id="注释bind-127-0-0-1"><a href="#注释bind-127-0-0-1" class="headerlink" title="注释bind 127.0.0.1"></a>注释<code>bind 127.0.0.1</code></h4><p>同样是打开<code>redis.conf</code>文件，将<code>bind 127.0.0.1</code>注释掉。</p>
+<h4 id="关闭protected-mode"><a href="#关闭protected-mode" class="headerlink" title="关闭protected-mode"></a>关闭<code>protected-mode</code></h4><p>打开<code>redis.conf</code>，找到<code>protected-mode</code>，修改<code>no</code>，最后重新启动<code>redis</code>。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AC%94%E8%AE%B0/" rel="tag"># 笔记</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2016/09/27/mongodb/mongodb%E7%9A%84CentOS%E5%AE%89%E8%A3%85%E5%8F%8A%E9%85%8D%E7%BD%AE/" rel="prev" title="mongodb的CentOS安装及配置">
+      <i class="fa fa-chevron-left"></i> mongodb的CentOS安装及配置
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2016/11/22/mysql/Mac%E4%B8%8B%E5%AE%89%E8%A3%85%E4%B8%8E%E9%85%8D%E7%BD%AEMySQL/" rel="next" title="Mac下安装与配置MySQL">
+      Mac下安装与配置MySQL <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#笔记"><span class="nav-number">1.</span> <span class="nav-text">笔记</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是-Redis"><span class="nav-number">1.1.</span> <span class="nav-text">什么是 Redis</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Redis-安装"><span class="nav-number">1.2.</span> <span class="nav-text">Redis 安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Redis-运行"><span class="nav-number">1.3.</span> <span class="nav-text">Redis 运行</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Redis-的基本使用"><span class="nav-number">1.4.</span> <span class="nav-text">Redis 的基本使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#字符串"><span class="nav-number">1.4.1.</span> <span class="nav-text">字符串</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#哈希"><span class="nav-number">1.4.2.</span> <span class="nav-text">哈希</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#链表"><span class="nav-number">1.4.3.</span> <span class="nav-text">链表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#集合类型"><span class="nav-number">1.4.4.</span> <span class="nav-text">集合类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#有序集合"><span class="nav-number">1.4.5.</span> <span class="nav-text">有序集合</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Redis-数据库其他说明"><span class="nav-number">1.5.</span> <span class="nav-text">Redis 数据库其他说明</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常用数据库操作"><span class="nav-number">1.6.</span> <span class="nav-text">常用数据库操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#如果需要将-redis-用作缓存，可以设置生存时间，这样就不会持久化存储"><span class="nav-number">1.7.</span> <span class="nav-text">如果需要将 redis 用作缓存，可以设置生存时间，这样就不会持久化存储</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#nodejs-中使用-redis"><span class="nav-number">1.8.</span> <span class="nav-text">nodejs 中使用 redis</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#app-js"><span class="nav-number">1.8.1.</span> <span class="nav-text">app.js</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#运行"><span class="nav-number">1.8.2.</span> <span class="nav-text">运行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#常用命令"><span class="nav-number">1.8.3.</span> <span class="nav-text">常用命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设置密码"><span class="nav-number">1.8.4.</span> <span class="nav-text">设置密码</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#临时设置，重启后丢失"><span class="nav-number">1.8.4.1.</span> <span class="nav-text">临时设置，重启后丢失</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#从配置文件中修改"><span class="nav-number">1.8.4.2.</span> <span class="nav-text">从配置文件中修改</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#远程不能连接"><span class="nav-number">1.8.5.</span> <span class="nav-text">远程不能连接</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#注释bind-127-0-0-1"><span class="nav-number">1.8.5.1.</span> <span class="nav-text">注释bind 127.0.0.1</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#关闭protected-mode"><span class="nav-number">1.8.5.2.</span> <span class="nav-text">关闭protected-mode</span></a></li></ol></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Andy Ge</p>
+  <div class="site-description" itemprop="description">勇于积极进取，步入人生的世外桃源</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">728</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">134</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">315</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/andyge" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;andyge" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:geshaofei@126.com" title="E-Mail → mailto:geshaofei@126.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.ruanyifeng.com/" title="http:&#x2F;&#x2F;www.ruanyifeng.com&#x2F;" rel="noopener" target="_blank">阮一峰</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://colobu.com/" title="http:&#x2F;&#x2F;colobu.com&#x2F;" rel="noopener" target="_blank">鸟窝</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.cnblogs.com/hellokuangshen/" title="https:&#x2F;&#x2F;www.cnblogs.com&#x2F;hellokuangshen&#x2F;" rel="noopener" target="_blank">狂神</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://yelog.org/" title="https:&#x2F;&#x2F;yelog.org&#x2F;" rel="noopener" target="_blank">叶落阁</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Andy Ge</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.7.1
+  </div>
+
+        
+
+
+
+
+
+
+  <script>
+  function leancloudSelector(url) {
+    url = encodeURI(url);
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.getAttribute('id'));
+      var title = visitors.getAttribute('data-flag-title');
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .then(() => {
+                leancloudSelector(url).innerText = counter.time + 1;
+              })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              })
+          } else {
+              Counter('post', '/classes/Counter', { title: title, url: url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.getAttribute('id'));
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (let item of results) {
+            let { url, time } = item;
+            leancloudSelector(url).innerText = time;
+          }
+          for (let url of entries) {
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=2TdIb5gRlAVUw24l2W0zWnCj-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method: method,
+          headers: {
+            'X-LC-Id'     : '2TdIb5gRlAVUw24l2W0zWnCj-gzGzoHsz',
+            'X-LC-Key'    : 'cJdJrMLBXsj0ttq0WsL0aA2j',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

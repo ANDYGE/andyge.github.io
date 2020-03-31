@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"swiftist.cn","root":"/","scheme":"Pisces","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"EVBR3H53HW","apiKey":"2abd573a01143a0cc4108fa4d21ae67c","indexName":"swiftist","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="前言目前使用 UmiJS + DvaJS 来构建项目。 UmiJS 是一个可插拔的企业级 react 应用框架，具体可查看官网文档 DvaJS 是 dva 首先是一个基于 redux 和 redux-saga 的数据流方案，然后为了简化开发体验，dva 还额外内置了 react-router 和 fetch，所以也可以理解为一个轻量级的应用框架。官网地址：https:&#x2F;&#x2F;dvajs.com">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用UmiJS和DvaJS完成用户管理系统">
+<meta property="og:url" content="https://swiftist.cn/2020/01/16/umi/%E4%BD%BF%E7%94%A8UmiJS%E5%92%8CDvaJS%E5%AE%8C%E6%88%90%E7%94%A8%E6%88%B7%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/index.html">
+<meta property="og:site_name" content="飞雪轩辕">
+<meta property="og:description" content="前言目前使用 UmiJS + DvaJS 来构建项目。 UmiJS 是一个可插拔的企业级 react 应用框架，具体可查看官网文档 DvaJS 是 dva 首先是一个基于 redux 和 redux-saga 的数据流方案，然后为了简化开发体验，dva 还额外内置了 react-router 和 fetch，所以也可以理解为一个轻量级的应用框架。官网地址：https:&#x2F;&#x2F;dvajs.com">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://swiftist.cn/images/es/2019062400091691.png">
+<meta property="article:published_time" content="2020-01-16T00:04:34.000Z">
+<meta property="article:modified_time" content="2020-03-31T15:07:39.450Z">
+<meta property="article:author" content="Andy Ge">
+<meta property="article:tag" content="antd">
+<meta property="article:tag" content="react">
+<meta property="article:tag" content="dva">
+<meta property="article:tag" content="umi">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://swiftist.cn/images/es/2019062400091691.png">
+
+<link rel="canonical" href="https://swiftist.cn/2020/01/16/umi/%E4%BD%BF%E7%94%A8UmiJS%E5%92%8CDvaJS%E5%AE%8C%E6%88%90%E7%94%A8%E6%88%B7%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>使用UmiJS和DvaJS完成用户管理系统 | 飞雪轩辕</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="飞雪轩辕" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">飞雪轩辕</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">人生的乐趣在于把梦想变成现实</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-java">
+
+    <a href="/categories/java/" rel="section"><i class="fa fa-fw fa-th-large"></i>java</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://swiftist.cn/2020/01/16/umi/%E4%BD%BF%E7%94%A8UmiJS%E5%92%8CDvaJS%E5%AE%8C%E6%88%90%E7%94%A8%E6%88%B7%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Andy Ge">
+      <meta itemprop="description" content="勇于积极进取，步入人生的世外桃源">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="飞雪轩辕">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          使用UmiJS和DvaJS完成用户管理系统
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-01-16 08:04:34" itemprop="dateCreated datePublished" datetime="2020-01-16T08:04:34+08:00">2020-01-16</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-31 23:07:39" itemprop="dateModified" datetime="2020-03-31T23:07:39+08:00">2020-03-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/umi/" itemprop="url" rel="index">
+                    <span itemprop="name">umi</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/01/16/umi/%E4%BD%BF%E7%94%A8UmiJS%E5%92%8CDvaJS%E5%AE%8C%E6%88%90%E7%94%A8%E6%88%B7%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/" class="post-meta-item leancloud_visitors" data-flag-title="使用UmiJS和DvaJS完成用户管理系统" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p><img src="/images/es/2019062400091691.png" alt="umi"><br>目前使用 UmiJS + DvaJS 来构建项目。</p>
+<p>UmiJS 是一个可插拔的企业级 react 应用框架，具体可查看<a href="https://umijs.org/zh/guide/#%E7%89%B9%E6%80%A7" target="_blank" rel="noopener">官网文档</a></p>
+<p>DvaJS 是 dva 首先是一个基于 redux 和 redux-saga 的数据流方案，然后为了简化开发体验，dva 还额外内置了 react-router 和 fetch，所以也可以理解为一个轻量级的应用框架。官网地址：<a href="https://dvajs.com/" target="_blank" rel="noopener">https://dvajs.com</a></p>
+<a id="more"></a>
+
+<h3 id="创建项目"><a href="#创建项目" class="headerlink" title="创建项目"></a>创建项目</h3><p>创建 UmiJS 项目很简单，根据文档的<a href="https://umijs.org/zh/guide/create-umi-app.html#%E4%BB%8B%E7%BB%8D-create-umi" target="_blank" rel="noopener">通过脚手架创建项目</a>步骤就行了，这里不多描述。</p>
+<p>提示安装类型：<br>Select the boilerplate type 选择 <code>app</code><br>Do you want to use typescript? 选择 <code>No</code><br>What functionality do you want to enable? 空格键选择 <code>antd</code>和<code>dva</code>回车确定</p>
+<blockquote>
+<p><code>antd</code>是蚂蚁金服的 React UI 框架，它的设计非常精美，其官网地址：<a href="https://ant.design/index-cn%E3%80%82%E8%BF%99%E9%87%8C%E5%8A%A0%E4%B8%AAUI%E6%A1%86%E6%9E%B6%E5%8F%AA%E6%98%AF%E4%B8%BA%E4%BA%86%E9%A1%B9%E7%9B%AE%E6%95%B0%E6%8D%AE%E5%B1%95%E7%A4%BA%E7%BE%8E%E8%A7%82%E4%BA%9B%E3%80%82" target="_blank" rel="noopener">https://ant.design/index-cn。这里加个 UI 框架只是为了项目数据展示美观些。</a></p>
+</blockquote>
+<h3 id="配置代理"><a href="#配置代理" class="headerlink" title="配置代理"></a>配置代理</h3><p>下面插点数据，既然是用户管理系统就需要一些用户信息，利用 mock 制造一些 json 数据：<code>http://jsonplaceholder.typicode.com/users</code>，由于跨域等问题，还是将这个地址反代自己地址吧。根据<code>UmiJS</code>问题的<a href="https://umijs.org/zh/config/#proxy" target="_blank" rel="noopener">Proxy</a>配置，需要在项目目录下的<code>.umirc.js</code>或者<code>config/config.js</code>添加编辑：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">"proxy": &#123;</span><br><span class="line">  "/api": &#123;</span><br><span class="line">    "target": "http://jsonplaceholder.typicode.com/",</span><br><span class="line">    "changeOrigin": true,</span><br><span class="line">    "pathRewrite": &#123; "^/api" : "" &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后启动项目<code>yarn start</code>访问地址：<code>http://localhost:8000/api/users</code>是否成功。</p>
+<h3 id="生成路由"><a href="#生成路由" class="headerlink" title="生成路由"></a>生成路由</h3><p>编写路由前有必要先了解下<code>UmiJS</code>路由运行方式：<a href="https://umijs.org/zh/guide/router.html" target="_blank" rel="noopener">UmiJS 路由</a>，路由就是应用不同的页面组成的，如果地址栏是<code>/user/</code>则页面应该是<code>src/pages/user.js</code>。当然你可以手动新建个<code>js/css</code>文件，不过<code>UmiJS</code>提供<code>npx</code>新建路由的方式：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">yarn global add npx <span class="comment"># 安装npx模块</span></span><br><span class="line"></span><br><span class="line">npx umi g page user <span class="comment"># 新建/user路由</span></span><br></pre></td></tr></table></figure>
+
+<p>然后可以在<code>http://localhost:8000/user</code>访问了。</p>
+<h3 id="构造-model-和-services"><a href="#构造-model-和-services" class="headerlink" title="构造 model 和 services"></a>构造 model 和 services</h3><p>如果在<code>src/model</code>和<code>src/services</code>目录下新建文件名字和<code>src/pages</code>相同，Umi 会自动注入同名业务代码。</p>
+<p>可以利用<code>DvaJS</code>中的<code>fetch</code>方式访问接口获取数据，然后在<code>src/utils/request.js</code>编写一层<code>fetch</code>封装方法：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> fetch <span class="keyword">from</span> <span class="string">'dva/fetch'</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">checkStatus</span>(<span class="params">response</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (response.status &gt;= <span class="number">200</span> &amp;&amp; response.status &lt; <span class="number">300</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> response</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> error = <span class="keyword">new</span> <span class="built_in">Error</span>(response.statusText)</span><br><span class="line">    error.response = response</span><br><span class="line">    <span class="keyword">throw</span> error</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Requests a URL, returning a promise.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param  <span class="type">&#123;string&#125;</span> </span>url       The URL we want to request</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param  <span class="type">&#123;object&#125;</span> </span>[options] The options we want to pass to "fetch"</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return <span class="type">&#123;object&#125;</span>           </span>An object containing either "data" or "err"</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">request</span>(<span class="params">url, options</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> response = <span class="keyword">await</span> fetch(url, options)</span><br><span class="line"></span><br><span class="line">    checkStatus(response)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> data = <span class="keyword">await</span> response.json()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> ret = &#123;</span><br><span class="line">        data,</span><br><span class="line">        headers: &#123;&#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (response.headers.get(<span class="string">'x-total-count'</span>)) &#123;</span><br><span class="line">        ret.headers[<span class="string">'x-total-count'</span>] = response.headers.get(<span class="string">'x-total-count'</span>)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> ret</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>关于具体的<code>Fetch</code>资料可以到网上查阅。</p>
+<p>然后建立请求接口的文件，在新建<code>src/services/user.js</code>：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; PAGE_SIZE &#125; <span class="keyword">from</span> <span class="string">'../constants'</span></span><br><span class="line"><span class="keyword">import</span> request <span class="keyword">from</span> <span class="string">'@/utils/request'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">queryUserList</span>(<span class="params">&#123; page = <span class="number">1</span> &#125;</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> request(<span class="string">`/api/users?_page=<span class="subst">$&#123;page&#125;</span>&amp;_limit=<span class="subst">$&#123;PAGE_SIZE&#125;</span>`</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里的请求是<code>_page</code>是当前页码，<code>_limit</code>是当前页码数据数量。</p>
+<p>在<code>src/constants.js</code>编写：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> PAGE_SIZE = <span class="number">5</span></span><br></pre></td></tr></table></figure>
+
+<p>当然可以在请求参数里写死。</p>
+<p>请求服务业务写完了，下面写<code>models</code>层业务，该业务主要是处理数据和逻辑，<code>DvaJS</code>通过<code>model</code>的概念把一个领域的模型管理起来，包含同步更新<code>state</code>的<code>reducers</code>，处理异步逻辑的<code>effects</code>，订阅数据源的 <code>subscriptions</code>：</p>
+<p>新建<code>src/models/users.js</code></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; queryUserList &#125; <span class="keyword">from</span> <span class="string">'@/services/users'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">    namespace: <span class="string">'users'</span>,</span><br><span class="line">    state: &#123;</span><br><span class="line">        list: [],</span><br><span class="line">        total: <span class="literal">null</span>,</span><br><span class="line">        page: <span class="literal">null</span></span><br><span class="line">    &#125;,</span><br><span class="line">    reducers: &#123;</span><br><span class="line">        <span class="comment">// 保存数据</span></span><br><span class="line">        save(state, &#123; <span class="attr">payload</span>: &#123; <span class="attr">data</span>: list, total, page &#125; &#125;) &#123;</span><br><span class="line">            <span class="comment">// 复制数组，将list, total, page内容复制到state</span></span><br><span class="line">            <span class="keyword">return</span> &#123; ...state, list, total, page &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    effects: &#123;</span><br><span class="line">        <span class="comment">// 访问接口获取数据 并且保存数据</span></span><br><span class="line">        *fetchUserList(&#123; <span class="attr">payload</span>: &#123; page = <span class="number">1</span> &#125; &#125;, &#123; call, put &#125;) &#123;</span><br><span class="line">            <span class="keyword">const</span> &#123; data, headers &#125; = <span class="keyword">yield</span> call(queryUserList, &#123; page &#125;)</span><br><span class="line">            <span class="keyword">yield</span> put(&#123;</span><br><span class="line">                type: <span class="string">'save'</span>,</span><br><span class="line">                payload: &#123;</span><br><span class="line">                    data,</span><br><span class="line">                    total: <span class="built_in">parseInt</span>(headers[<span class="string">'x-total-count'</span>], <span class="number">10</span>),</span><br><span class="line">                    page: <span class="built_in">parseInt</span>(page, <span class="number">10</span>)</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    subscriptions: &#123;</span><br><span class="line">        <span class="comment">// https://github.com/dvajs/dva/issues/174</span></span><br><span class="line">        setup(&#123; dispatch, history &#125;) &#123;</span><br><span class="line">            <span class="keyword">return</span> history.listen(<span class="function">(<span class="params">&#123; pathname, query &#125;</span>) =&gt;</span> &#123;</span><br><span class="line">                <span class="comment">// 进入'/users'地址触发fetchUserList</span></span><br><span class="line">                <span class="keyword">if</span> (pathname === <span class="string">'/users'</span>) &#123;</span><br><span class="line">                    dispatch(&#123; <span class="attr">type</span>: <span class="string">'fetchUserList'</span>, <span class="attr">payload</span>: query &#125;)</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>看着有点多，但里面内容基本都是固定规范，详细的说明可以去<code>DvaJS</code><a href="https://dvajs.com/api/#model" target="_blank" rel="noopener">官网文档 Model</a>查阅：</p>
+<ul>
+<li><code>namespace</code>：表示在全局<code>state</code>上的唯一名称</li>
+<li><code>state</code>：表示初始值</li>
+<li><code>reducers</code>：用于处理同步操作，唯一可以修改<code>state</code>的地方</li>
+<li><code>effects</code>：以<code>key/value</code>格式定义<code>effect</code>。用于处理异步操作和业务逻辑，不直接修改<code>state</code></li>
+<li><code>subscriptions</code>：用于订阅一个数据源，然后根据需要 dispatch 相应的 action</li>
+</ul>
+<h3 id="构建-UI"><a href="#构建-UI" class="headerlink" title="构建 UI"></a>构建 UI</h3><p>修改<code>src/pages/users.js</code>：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; connect &#125; <span class="keyword">from</span> <span class="string">'dva'</span></span><br><span class="line"><span class="keyword">import</span> &#123; Table, Pagination, Popconfirm &#125; <span class="keyword">from</span> <span class="string">'antd'</span></span><br><span class="line"><span class="keyword">import</span> styles <span class="keyword">from</span> <span class="string">'./users.css'</span></span><br><span class="line"><span class="keyword">import</span> &#123; PAGE_SIZE &#125; <span class="keyword">from</span> <span class="string">'../constants'</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 用户列表管理</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param </span>dispatch DvaJS dispatch函数 用于触发action 的函数 详解：https://dvajs.com/guide/concepts.html#dispatch-%E5%87%BD%E6%95%B0</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param </span>dataSource 用户列表信息</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param </span>total 总数据数量</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param </span>loading 加载状态</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param </span>current 当前页码</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@returns <span class="type">&#123;*&#125;</span></span></span></span><br><span class="line"><span class="comment"> * <span class="doctag">@constructor</span></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Users</span>(<span class="params">&#123; dispatch, list: dataSource, loading, total, page: current &#125;</span>) </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">deleteHandler</span>(<span class="params">id</span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.warn(<span class="string">`TODO: <span class="subst">$&#123;id&#125;</span>`</span>)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 页码改变的回调</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param </span>page 改变后的页码</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param </span>pageSize 每页条数</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">onChangeUserPagination</span>(<span class="params">page, pageSize</span>) </span>&#123;</span><br><span class="line">        dispatch(&#123;</span><br><span class="line">            type: <span class="string">'users/fetchUserList'</span>,</span><br><span class="line">            payload: &#123;</span><br><span class="line">                page: page</span><br><span class="line">            &#125; <span class="comment">// 需要传递的信息</span></span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">const</span> columns = [</span><br><span class="line">        &#123;</span><br><span class="line">            title: <span class="string">'用户名'</span>,</span><br><span class="line">            dataIndex: <span class="string">'name'</span>,</span><br><span class="line">            key: <span class="string">'name'</span></span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            title: <span class="string">'电子邮件'</span>,</span><br><span class="line">            dataIndex: <span class="string">'email'</span>,</span><br><span class="line">            key: <span class="string">'email'</span></span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            title: <span class="string">'个人网站'</span>,</span><br><span class="line">            dataIndex: <span class="string">'website'</span>,</span><br><span class="line">            key: <span class="string">'website'</span></span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            title: <span class="string">'操作'</span>,</span><br><span class="line">            key: <span class="string">'operation'</span>,</span><br><span class="line">            render: <span class="function">(<span class="params">text, &#123; id &#125;</span>) =&gt;</span> (</span><br><span class="line">                &lt;span className=&#123;styles.operation&#125;&gt;</span><br><span class="line">                    &lt;Button&gt;编辑&lt;<span class="regexp">/Button&gt;</span></span><br><span class="line"><span class="regexp">                    &lt;Popconfirm</span></span><br><span class="line"><span class="regexp">                        title="Confirm to delete?"</span></span><br><span class="line"><span class="regexp">                        onConfirm=&#123;deleteHandler.bind(null, id)&#125;</span></span><br><span class="line"><span class="regexp">                    &gt;</span></span><br><span class="line"><span class="regexp">                        &lt;Button&gt;删除&lt;/</span>Button&gt;</span><br><span class="line">                    &lt;<span class="regexp">/Popconfirm&gt;</span></span><br><span class="line"><span class="regexp">                &lt;/</span>span&gt;</span><br><span class="line">            )</span><br><span class="line">        &#125;</span><br><span class="line">    ]</span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">        &lt;div className=&#123;styles.normal&#125;&gt;</span><br><span class="line">            &lt;div&gt;</span><br><span class="line">                &lt;Table</span><br><span class="line">                    loading=&#123;loading&#125;</span><br><span class="line">                    columns=&#123;columns&#125;</span><br><span class="line">                    dataSource=&#123;dataSource&#125;</span><br><span class="line">                    rowKey=&#123;record =&gt; record.id&#125;</span><br><span class="line">                    pagination=&#123;<span class="literal">false</span>&#125;</span><br><span class="line">                /&gt;</span><br><span class="line">                &lt;Pagination</span><br><span class="line">                    className=<span class="string">"ant-table-pagination"</span></span><br><span class="line">                    total=&#123;total&#125; <span class="comment">// 数据总数</span></span><br><span class="line">                    current=&#123;current&#125; <span class="comment">// 当前页数</span></span><br><span class="line">                    pageSize=&#123;PAGE_SIZE&#125; <span class="comment">// 每页条数</span></span><br><span class="line">                    onChange=&#123;onChangeUserPagination&#125;</span><br><span class="line">                /&gt;</span><br><span class="line">            &lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">        &lt;/</span>div&gt;</span><br><span class="line">    )</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">mapStateToProps</span>(<span class="params">state</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> &#123; list, total, page &#125; = state.users</span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">        list,</span><br><span class="line">        total,</span><br><span class="line">        page,</span><br><span class="line">        loading: state.loading.models.users</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> connect(mapStateToProps)(Users)</span><br></pre></td></tr></table></figure>
+
+<p>这个页面用到了<code>antd</code>的表格和分页俩个组件，渲染组件是标准的<code>React</code>函数组件，接受带数据的<code>props</code>对象。</p>
+<p>上面是进入页面获取数据，如果是主动性获取数据也很简单：先注释<code>src/moudel/users.js</code>中的<code>subscriptions</code>订阅模式模块，然后在<code>src/pages/users.js</code>添加按钮：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getUserListData</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    dispatch(&#123;</span><br><span class="line">        type: <span class="string">'users/fetchUserList'</span>,</span><br><span class="line">        payload: &#123;&#125; <span class="comment">// 需要传递的信息</span></span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//...</span></span><br><span class="line"><span class="keyword">return</span> (</span><br><span class="line">    &lt;div className=&#123;styles.normal&#125;&gt;</span><br><span class="line">        &lt;div&gt;</span><br><span class="line">            &lt;Button type=<span class="string">"primary"</span> onClick=&#123;getUserListData&#125;&gt;</span><br><span class="line">                获取用户数据</span><br><span class="line">            &lt;<span class="regexp">/Button&gt;</span></span><br><span class="line"><span class="regexp">            &lt;Table</span></span><br><span class="line"><span class="regexp">                loading=&#123;loading&#125;</span></span><br><span class="line"><span class="regexp">                columns=&#123;columns&#125;</span></span><br><span class="line"><span class="regexp">                dataSource=&#123;dataSource&#125;</span></span><br><span class="line"><span class="regexp">                rowKey=&#123;record =&gt; record.id&#125;</span></span><br><span class="line"><span class="regexp">                pagination=&#123;false&#125;</span></span><br><span class="line"><span class="regexp">            /</span>&gt;</span><br><span class="line">        &lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">    &lt;/</span>div&gt;</span><br><span class="line">)</span><br><span class="line"><span class="comment">//...</span></span><br></pre></td></tr></table></figure>
+
+<p>就这样一个简单的页面构建完成。所以完整的功能页面就不在这篇文章详细的编写了，整个业务逻辑和上述过程差不多。</p>
+<p>虽然之前做过不少<code>Vue.js</code>单应用页面开发，对比<code>React</code>应用开发，虽然是吃力了些，也麻烦了些，但很对地方写法比<code>Vue.js</code>开发优雅了许多。</p>
+<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><p><a href="https://github.com/dvajs/dva-knowledgemap" target="_blank" rel="noopener">dva.js 知识导图</a><br><a href="https://www.yuque.com/umijs/umi" target="_blank" rel="noopener">Umi 入门</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/antd/" rel="tag"># antd</a>
+              <a href="/tags/react/" rel="tag"># react</a>
+              <a href="/tags/dva/" rel="tag"># dva</a>
+              <a href="/tags/umi/" rel="tag"># umi</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/01/15/react/React-Hook%EF%BC%9A%E4%BD%BF%E7%94%A8-useEffect/" rel="prev" title="React Hook：使用 useEffect">
+      <i class="fa fa-chevron-left"></i> React Hook：使用 useEffect
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/01/16/umi/dva%E5%92%8CUmiJs%E7%9A%84%E5%85%B3%E7%B3%BB/" rel="next" title="dva和UmiJs的关系">
+      dva和UmiJs的关系 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建项目"><span class="nav-number">2.</span> <span class="nav-text">创建项目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置代理"><span class="nav-number">3.</span> <span class="nav-text">配置代理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#生成路由"><span class="nav-number">4.</span> <span class="nav-text">生成路由</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#构造-model-和-services"><span class="nav-number">5.</span> <span class="nav-text">构造 model 和 services</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#构建-UI"><span class="nav-number">6.</span> <span class="nav-text">构建 UI</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考资料"><span class="nav-number">7.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Andy Ge</p>
+  <div class="site-description" itemprop="description">勇于积极进取，步入人生的世外桃源</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">728</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">134</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">315</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/andyge" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;andyge" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:geshaofei@126.com" title="E-Mail → mailto:geshaofei@126.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.ruanyifeng.com/" title="http:&#x2F;&#x2F;www.ruanyifeng.com&#x2F;" rel="noopener" target="_blank">阮一峰</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://colobu.com/" title="http:&#x2F;&#x2F;colobu.com&#x2F;" rel="noopener" target="_blank">鸟窝</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.cnblogs.com/hellokuangshen/" title="https:&#x2F;&#x2F;www.cnblogs.com&#x2F;hellokuangshen&#x2F;" rel="noopener" target="_blank">狂神</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://yelog.org/" title="https:&#x2F;&#x2F;yelog.org&#x2F;" rel="noopener" target="_blank">叶落阁</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Andy Ge</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.7.1
+  </div>
+
+        
+
+
+
+
+
+
+  <script>
+  function leancloudSelector(url) {
+    url = encodeURI(url);
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.getAttribute('id'));
+      var title = visitors.getAttribute('data-flag-title');
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .then(() => {
+                leancloudSelector(url).innerText = counter.time + 1;
+              })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              })
+          } else {
+              Counter('post', '/classes/Counter', { title: title, url: url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.getAttribute('id'));
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (let item of results) {
+            let { url, time } = item;
+            leancloudSelector(url).innerText = time;
+          }
+          for (let url of entries) {
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=2TdIb5gRlAVUw24l2W0zWnCj-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method: method,
+          headers: {
+            'X-LC-Id'     : '2TdIb5gRlAVUw24l2W0zWnCj-gzGzoHsz',
+            'X-LC-Key'    : 'cJdJrMLBXsj0ttq0WsL0aA2j',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

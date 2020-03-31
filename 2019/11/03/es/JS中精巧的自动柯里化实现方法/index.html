@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"swiftist.cn","root":"/","scheme":"Pisces","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"EVBR3H53HW","apiKey":"2abd573a01143a0cc4108fa4d21ae67c","indexName":"swiftist","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="1. JS 柯里化实现1.1. 什么是柯里化在计算机科学中，柯里化（Currying）是把接受多个参数的函数变换成接受一个单一参数（最初函数的第一个参数）的函数，并且返回接受余下的参数且返回结果的新函数的技术。这个技术由 Christopher Strachey 以逻辑学家 Haskell Curry 命名的，尽管它是 Moses Schnfinkel 和 Gottlob Frege 发明的。 理">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JS中精巧的自动柯里化实现方法">
+<meta property="og:url" content="https://swiftist.cn/2019/11/03/es/JS%E4%B8%AD%E7%B2%BE%E5%B7%A7%E7%9A%84%E8%87%AA%E5%8A%A8%E6%9F%AF%E9%87%8C%E5%8C%96%E5%AE%9E%E7%8E%B0%E6%96%B9%E6%B3%95/index.html">
+<meta property="og:site_name" content="飞雪轩辕">
+<meta property="og:description" content="1. JS 柯里化实现1.1. 什么是柯里化在计算机科学中，柯里化（Currying）是把接受多个参数的函数变换成接受一个单一参数（最初函数的第一个参数）的函数，并且返回接受余下的参数且返回结果的新函数的技术。这个技术由 Christopher Strachey 以逻辑学家 Haskell Curry 命名的，尽管它是 Moses Schnfinkel 和 Gottlob Frege 发明的。 理">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-11-03T10:13:47.000Z">
+<meta property="article:modified_time" content="2020-03-31T15:07:39.340Z">
+<meta property="article:author" content="Andy Ge">
+<meta property="article:tag" content="es">
+<meta property="article:tag" content="函数式编程">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://swiftist.cn/2019/11/03/es/JS%E4%B8%AD%E7%B2%BE%E5%B7%A7%E7%9A%84%E8%87%AA%E5%8A%A8%E6%9F%AF%E9%87%8C%E5%8C%96%E5%AE%9E%E7%8E%B0%E6%96%B9%E6%B3%95/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>JS中精巧的自动柯里化实现方法 | 飞雪轩辕</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="飞雪轩辕" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">飞雪轩辕</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">人生的乐趣在于把梦想变成现实</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-java">
+
+    <a href="/categories/java/" rel="section"><i class="fa fa-fw fa-th-large"></i>java</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://swiftist.cn/2019/11/03/es/JS%E4%B8%AD%E7%B2%BE%E5%B7%A7%E7%9A%84%E8%87%AA%E5%8A%A8%E6%9F%AF%E9%87%8C%E5%8C%96%E5%AE%9E%E7%8E%B0%E6%96%B9%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Andy Ge">
+      <meta itemprop="description" content="勇于积极进取，步入人生的世外桃源">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="飞雪轩辕">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          JS中精巧的自动柯里化实现方法
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-11-03 18:13:47" itemprop="dateCreated datePublished" datetime="2019-11-03T18:13:47+08:00">2019-11-03</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-31 23:07:39" itemprop="dateModified" datetime="2020-03-31T23:07:39+08:00">2020-03-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/es/" itemprop="url" rel="index">
+                    <span itemprop="name">es</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span id="/2019/11/03/es/JS%E4%B8%AD%E7%B2%BE%E5%B7%A7%E7%9A%84%E8%87%AA%E5%8A%A8%E6%9F%AF%E9%87%8C%E5%8C%96%E5%AE%9E%E7%8E%B0%E6%96%B9%E6%B3%95/" class="post-meta-item leancloud_visitors" data-flag-title="JS中精巧的自动柯里化实现方法" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="1-JS-柯里化实现"><a href="#1-JS-柯里化实现" class="headerlink" title="1. JS 柯里化实现"></a>1. JS 柯里化实现</h1><h2 id="1-1-什么是柯里化"><a href="#1-1-什么是柯里化" class="headerlink" title="1.1. 什么是柯里化"></a>1.1. 什么是柯里化</h2><p>在计算机科学中，柯里化（Currying）是把接受多个参数的函数变换成接受一个单一参数（最初函数的第一个参数）的函数，并且返回接受余下的参数且返回结果的新函数的技术。这个技术由 Christopher Strachey 以逻辑学家 Haskell Curry 命名的，尽管它是 Moses Schnfinkel 和 Gottlob Frege 发明的。</p>
+<p>理论看着头大？没关系，先看看代码：</p>
+<h2 id="1-2-柯里化应用"><a href="#1-2-柯里化应用" class="headerlink" title="1.2. 柯里化应用"></a>1.2. 柯里化应用</h2><p>假设我们需要实现一个对列表元素进行某种处理的功能，比如说让列表内每一个元素加一，那么很容易想到：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> list = [<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]</span><br><span class="line">list.map(<span class="function"><span class="params">elem</span> =&gt;</span> elem + <span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+
+<p>很简单是吧？如果又要加 2 呢？</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> list = [<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]</span><br><span class="line">list.map(<span class="function"><span class="params">elem</span> =&gt;</span> elem + <span class="number">1</span>)</span><br><span class="line">list.map(<span class="function"><span class="params">elem</span> =&gt;</span> elem + <span class="number">2</span>)</span><br></pre></td></tr></table></figure>
+
+<p>看上去效率有点低，处理函数封装下？</p>
+<p>可是 map 的回调函数只接受当前元素 elem 这一个参数，看上去好像没有办法封装…</p>
+<p>你也许会想：如果能拿到一个部分配置好的函数就好了，比如说：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// plus返回部分配置好的函数</span></span><br><span class="line"><span class="keyword">const</span> plus1 = plus(<span class="number">1</span>)</span><br><span class="line"><span class="keyword">const</span> plus2 = plus(<span class="number">2</span>)</span><br><span class="line">plus1(<span class="number">5</span>) <span class="comment">// =&gt; 6</span></span><br><span class="line">plus2(<span class="number">7</span>) <span class="comment">// =&gt; 9</span></span><br></pre></td></tr></table></figure>
+
+<p>把这样的函数传进 map：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> list = [<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]</span><br><span class="line">list.map(plus1) <span class="comment">// =&gt; [1, 2, 3, 4]</span></span><br><span class="line">list.map(plus2) <span class="comment">// =&gt; [2, 3, 4, 5]</span></span><br></pre></td></tr></table></figure>
+
+<a id="more"></a>
+
+<p>是不是很棒棒？这样一来不管是加多少，只需要 list.map(plus(x))就好了，完美实现了封装，可读性大大提高！</p>
+<p>不过问题来了：这样的 plus 函数要怎么实现呢？</p>
+<p>这时候柯里化就能派上用场了：</p>
+<h2 id="1-3-柯里化函数"><a href="#1-3-柯里化函数" class="headerlink" title="1.3. 柯里化函数"></a>1.3. 柯里化函数</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 原始的加法函数</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">origPlus</span>(<span class="params">a, b</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> a + b</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 柯里化后的plus函数</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">plus</span>(<span class="params">a</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params">b</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> a + b</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// ES6写法</span></span><br><span class="line"><span class="keyword">const</span> plus = <span class="function"><span class="params">a</span> =&gt;</span> <span class="function"><span class="params">b</span> =&gt;</span> a + b</span><br></pre></td></tr></table></figure>
+
+<p>可以看到，柯里化的 plus 函数首先接受一个参数 a，然后返回一个接受一个参数 b 的函数，由于闭包的原因，返回的函数可以访问到父函数的参数 a，所以举个例子：const plus2 = plus(2)就可等效视为 function plus2(b) { return 2 + b; }，这样就实现了部分配置。</p>
+<p>通俗地讲，柯里化就是一个部分配置多参数函数的过程，每一步都返回一个接受单个参数的部分配置好的函数。一些极端的情况可能需要分很多次来部分配置一个函数，比如说多次相加:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">multiPlus(<span class="number">1</span>)(<span class="number">2</span>)(<span class="number">3</span>) <span class="comment">// =&gt; 6</span></span><br></pre></td></tr></table></figure>
+
+<p>这种写法看着很奇怪吧？不过如果入了 JS 的函数式编程这个大坑的话，这会是常态。</p>
+<h2 id="1-4-JS-中自动柯里化的精巧实现"><a href="#1-4-JS-中自动柯里化的精巧实现" class="headerlink" title="1.4. JS 中自动柯里化的精巧实现"></a>1.4. JS 中自动柯里化的精巧实现</h2><p>柯里化（Currying）是函数式编程中很重要的一环，很多函数式语言（eg. Haskell）都会默认将函数自动柯里化。然而 JS 并不会这样，因此我们需要自己来实现自动柯里化的函数。</p>
+<p>先上代码：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ES5</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">curry</span>(<span class="params">fn</span>) </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">_c</span>(<span class="params">restNum, argsList</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> restNum === <span class="number">0</span></span><br><span class="line">            ? fn.apply(<span class="literal">null</span>, argsList)</span><br><span class="line">            : <span class="function"><span class="keyword">function</span>(<span class="params">x</span>) </span>&#123;</span><br><span class="line">                  <span class="keyword">return</span> _c(restNum - <span class="number">1</span>, argsList.concat(x))</span><br><span class="line">              &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> _c(fn.length, [])</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// ES6</span></span><br><span class="line"><span class="keyword">const</span> curry = <span class="function"><span class="params">fn</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> _c = <span class="function">(<span class="params">restNum, argsList</span>) =&gt;</span></span><br><span class="line">        restNum === <span class="number">0</span> ? fn(...argsList) : <span class="function"><span class="params">x</span> =&gt;</span> _c(restNum - <span class="number">1</span>, [...argsList, x])</span><br><span class="line">    <span class="keyword">return</span> _c(fn.length, [])</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 使用</span></span><br><span class="line"><span class="keyword">var</span> plus = curry(<span class="function"><span class="keyword">function</span>(<span class="params">a, b</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> a + b</span><br><span class="line">&#125;)</span><br><span class="line"><span class="comment">// ES6</span></span><br><span class="line"><span class="keyword">const</span> plus = curry(<span class="function">(<span class="params">a, b</span>) =&gt;</span> a + b)</span><br><span class="line">plus(<span class="number">2</span>)(<span class="number">4</span>) <span class="comment">// =&gt; 6</span></span><br></pre></td></tr></table></figure>
+
+<p>这样就实现了自动的柯里化！</p>
+<p>如果你看得懂发生了什么的话，那么恭喜你！大家口中的大佬就是你！，快留下赞然后去开始你的函数式生涯吧。</p>
+<p>如果你没看懂发生了什么，别担心，我现在开始帮你理一下思路。</p>
+<h2 id="1-5-需求分析"><a href="#1-5-需求分析" class="headerlink" title="1.5. 需求分析"></a>1.5. 需求分析</h2><p>我们需要一个 curry 函数，它接受一个待柯里化的函数为参数，返回一个用于接收一个参数的函数，接收到的参数放到一个列表中，当参数数量足够时，执行原函数并返回结果。</p>
+<h2 id="1-6-实现方式"><a href="#1-6-实现方式" class="headerlink" title="1.6. 实现方式"></a>1.6. 实现方式</h2><p>简单思考可以知道，柯里化部分配置函数的步骤数等于 fn 的参数个数，也就是说有两个参数的 plus 函数需要分两步来部分配置。函数的参数个数可以通过 fn.length 获取。</p>
+<p>总的想法就是每传一次参，就把该参数放入一个参数列表 argsList 中，如果已经没有要传的参数了，那么就调用 fn.apply(null, argsList)将原函数执行。要实现这点，我们就需要一个内部的判断函数 _c(restNum, argsList)，函数接受两个参数，一个是剩余参数个数 restNum，另一个是已获取的参数的列表 argsList；_c 的功能就是判断是否还有未传入的参数，当 restNum 为零时，就是时候通过 fn.apply(null, argsList)执行原函数并返回结果了。如果还有参数需要传递的话，也就是说 restNum 不为零时，就需要返回一个单参数函数</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span>(<span class="params">x</span>) </span>&#123;</span><br><span class="line"> <span class="keyword">return</span> _c(restNum - <span class="number">1</span>, argsList.concat(x));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>来继续接收参数。这里形成了一个尾递归，函数接受了一个参数后，剩余需要参数数量 restNum 减一，并将新参数 x 加入 argsList 后传入 _c 进行递归调用。结果就是，当参数数量不足时，返回负责接收新参数的单参数函数，当参数够了时，就调用原函数并返回。</p>
+<p>现在再来看：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">curry</span>(<span class="params">fn</span>) </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">_c</span>(<span class="params">restNum, argsList</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> restNum === <span class="number">0</span></span><br><span class="line">            ? fn.apply(<span class="literal">null</span>, argsList)</span><br><span class="line">            : <span class="function"><span class="keyword">function</span>(<span class="params">x</span>) </span>&#123;</span><br><span class="line">                  <span class="keyword">return</span> _c(restNum - <span class="number">1</span>, argsList.concat(x))</span><br><span class="line">              &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> _c(fn.length, []) <span class="comment">// 递归开始</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>是不是开始清晰起来了？</p>
+<p>ES6 写法的由于使用了 数组解构 及 箭头函数 等语法糖，看上去精简很多，不过思想都是一样的啦～</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ES6</span></span><br><span class="line"><span class="keyword">const</span> curry = <span class="function"><span class="params">fn</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> _c = <span class="function">(<span class="params">restNum, argsList</span>) =&gt;</span></span><br><span class="line">        restNum === <span class="number">0</span> ? fn(...argsList) : <span class="function"><span class="params">x</span> =&gt;</span> _c(restNum - <span class="number">1</span>, [...argsList, x])</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> _c(fn.length, [])</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>与其他方法的对比</p>
+<p>还有一种大家常用的方法：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">curry</span>(<span class="params">fn</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> len = fn.length</span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> <span class="title">judge</span>(<span class="params">...args1</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> args1.length &gt;= len</span><br><span class="line">            ? fn(...args1)</span><br><span class="line">            : <span class="function"><span class="keyword">function</span>(<span class="params">...args2</span>) </span>&#123;</span><br><span class="line">                  <span class="keyword">return</span> judge(...[...args1, ...args2])</span><br><span class="line">              &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 使用箭头函数</span></span><br><span class="line"><span class="keyword">const</span> curry = <span class="function"><span class="params">fn</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> len = fn.length</span><br><span class="line">    <span class="keyword">const</span> judge = <span class="function">(<span class="params">...args1</span>) =&gt;</span></span><br><span class="line">        args1.length &gt;= len</span><br><span class="line">            ? fn(...args1)</span><br><span class="line">            : <span class="function">(<span class="params">...args2</span>) =&gt;</span> judge(...[...args1, ...args2])</span><br><span class="line">    <span class="keyword">return</span> judge</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>与本篇文章先前提到的方法对比的话，发现这种方法有两个问题：</p>
+<p>依赖 ES6 的解构（函数参数中的 …args1 与 …args2）；</p>
+<p>性能稍差一点。</p>
+<p>性能问题</p>
+<p>做个测试：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.time(<span class="string">'curry'</span>)</span><br><span class="line"><span class="keyword">const</span> plus = curry(<span class="function">(<span class="params">a, b, c, d, e</span>) =&gt;</span> a + b + c + d + e)</span><br><span class="line">plus(<span class="number">1</span>)(<span class="number">2</span>)(<span class="number">3</span>)(<span class="number">4</span>)(<span class="number">5</span>)</span><br><span class="line"><span class="built_in">console</span>.timeEnd(<span class="string">'curry'</span>)</span><br></pre></td></tr></table></figure>
+
+<p>在我的电脑（Manjaro Linux，Intel Xeon E5 2665，32GB DDR3 四通道 1333Mhz，Node.js 9.2.0）上：</p>
+<p>本篇提到的方法耗时约 0.325ms</p>
+<p>其他方法的耗时约 0.345ms</p>
+<p>差的这一点猜测是闭包的原因。由于闭包的访问比较耗性能，而这种方式形成了两个闭包：fn 和 len，前面提到的方法只形成了 fn 一个闭包，所以造成了这一微小的差距。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/es/" rel="tag"># es</a>
+              <a href="/tags/%E5%87%BD%E6%95%B0%E5%BC%8F%E7%BC%96%E7%A8%8B/" rel="tag"># 函数式编程</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/11/02/markdown/%E5%88%A9%E7%94%A8vscode%E7%BC%96%E8%BE%91markdown%E6%8E%A8%E8%8D%90%E9%85%8D%E7%BD%AE/" rel="prev" title="利用vscode编辑markdown推荐配置">
+      <i class="fa fa-chevron-left"></i> 利用vscode编辑markdown推荐配置
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/11/04/es/Javascript%E5%87%BD%E6%95%B0%E5%BC%8F%E7%BC%96%E7%A8%8B%E4%B9%8B%E5%81%8F%E5%87%BD%E6%95%B0/" rel="next" title="Javascript函数式编程之偏函数">
+      Javascript函数式编程之偏函数 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-JS-柯里化实现"><span class="nav-number">1.</span> <span class="nav-text">1. JS 柯里化实现</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-什么是柯里化"><span class="nav-number">1.1.</span> <span class="nav-text">1.1. 什么是柯里化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-柯里化应用"><span class="nav-number">1.2.</span> <span class="nav-text">1.2. 柯里化应用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-3-柯里化函数"><span class="nav-number">1.3.</span> <span class="nav-text">1.3. 柯里化函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-4-JS-中自动柯里化的精巧实现"><span class="nav-number">1.4.</span> <span class="nav-text">1.4. JS 中自动柯里化的精巧实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-5-需求分析"><span class="nav-number">1.5.</span> <span class="nav-text">1.5. 需求分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-6-实现方式"><span class="nav-number">1.6.</span> <span class="nav-text">1.6. 实现方式</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Andy Ge</p>
+  <div class="site-description" itemprop="description">勇于积极进取，步入人生的世外桃源</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">728</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">134</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">315</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/andyge" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;andyge" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:geshaofei@126.com" title="E-Mail → mailto:geshaofei@126.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.ruanyifeng.com/" title="http:&#x2F;&#x2F;www.ruanyifeng.com&#x2F;" rel="noopener" target="_blank">阮一峰</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://colobu.com/" title="http:&#x2F;&#x2F;colobu.com&#x2F;" rel="noopener" target="_blank">鸟窝</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.cnblogs.com/hellokuangshen/" title="https:&#x2F;&#x2F;www.cnblogs.com&#x2F;hellokuangshen&#x2F;" rel="noopener" target="_blank">狂神</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://yelog.org/" title="https:&#x2F;&#x2F;yelog.org&#x2F;" rel="noopener" target="_blank">叶落阁</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Andy Ge</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.7.1
+  </div>
+
+        
+
+
+
+
+
+
+  <script>
+  function leancloudSelector(url) {
+    url = encodeURI(url);
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.getAttribute('id'));
+      var title = visitors.getAttribute('data-flag-title');
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .then(() => {
+                leancloudSelector(url).innerText = counter.time + 1;
+              })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              })
+          } else {
+              Counter('post', '/classes/Counter', { title: title, url: url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.getAttribute('id'));
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (let item of results) {
+            let { url, time } = item;
+            leancloudSelector(url).innerText = time;
+          }
+          for (let url of entries) {
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=2TdIb5gRlAVUw24l2W0zWnCj-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method: method,
+          headers: {
+            'X-LC-Id'     : '2TdIb5gRlAVUw24l2W0zWnCj-gzGzoHsz',
+            'X-LC-Key'    : 'cJdJrMLBXsj0ttq0WsL0aA2j',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

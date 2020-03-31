@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"swiftist.cn","root":"/","scheme":"Pisces","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"EVBR3H53HW","apiKey":"2abd573a01143a0cc4108fa4d21ae67c","indexName":"swiftist","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="1. 规格表格实现宽度可按百分比指定，通过 flex 实现，要注意的是 align-items 属性定义项目在交叉轴上如何对齐，stretch 是其默认值，如果项目未设置高度或设为 auto，将占满整个容器的高度，所以右边边框能够完全绘制，代码如下： 1.1. table.less12345678910111213141516171819202122232425262728293031323334">
+<meta property="og:type" content="article">
+<meta property="og:title" content="微信小程序表格实现">
+<meta property="og:url" content="https://swiftist.cn/2019/02/28/wx/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E8%A1%A8%E6%A0%BC%E5%AE%9E%E7%8E%B0/index.html">
+<meta property="og:site_name" content="飞雪轩辕">
+<meta property="og:description" content="1. 规格表格实现宽度可按百分比指定，通过 flex 实现，要注意的是 align-items 属性定义项目在交叉轴上如何对齐，stretch 是其默认值，如果项目未设置高度或设为 auto，将占满整个容器的高度，所以右边边框能够完全绘制，代码如下： 1.1. table.less12345678910111213141516171819202122232425262728293031323334">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://swiftist.cn/images/owl/WX20190228-180703@2x.png">
+<meta property="og:image" content="https://swiftist.cn/2019/02/28/images/owl/WX20190228-180550@2x.png">
+<meta property="article:published_time" content="2019-02-28T01:01:04.000Z">
+<meta property="article:modified_time" content="2020-03-31T15:07:39.466Z">
+<meta property="article:author" content="Andy Ge">
+<meta property="article:tag" content="owl">
+<meta property="article:tag" content="wxapp">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://swiftist.cn/images/owl/WX20190228-180703@2x.png">
+
+<link rel="canonical" href="https://swiftist.cn/2019/02/28/wx/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E8%A1%A8%E6%A0%BC%E5%AE%9E%E7%8E%B0/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>微信小程序表格实现 | 飞雪轩辕</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="飞雪轩辕" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">飞雪轩辕</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">人生的乐趣在于把梦想变成现实</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-java">
+
+    <a href="/categories/java/" rel="section"><i class="fa fa-fw fa-th-large"></i>java</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://swiftist.cn/2019/02/28/wx/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E8%A1%A8%E6%A0%BC%E5%AE%9E%E7%8E%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Andy Ge">
+      <meta itemprop="description" content="勇于积极进取，步入人生的世外桃源">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="飞雪轩辕">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          微信小程序表格实现
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-02-28 09:01:04" itemprop="dateCreated datePublished" datetime="2019-02-28T09:01:04+08:00">2019-02-28</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-31 23:07:39" itemprop="dateModified" datetime="2020-03-31T23:07:39+08:00">2020-03-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/wxapp/" itemprop="url" rel="index">
+                    <span itemprop="name">wxapp</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span id="/2019/02/28/wx/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E8%A1%A8%E6%A0%BC%E5%AE%9E%E7%8E%B0/" class="post-meta-item leancloud_visitors" data-flag-title="微信小程序表格实现" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="1-规格表格实现"><a href="#1-规格表格实现" class="headerlink" title="1. 规格表格实现"></a>1. 规格表格实现</h1><p>宽度可按百分比指定，通过 flex 实现，要注意的是 align-items 属性定义项目在交叉轴上如何对齐，stretch 是其默认值，如果项目未设置高度或设为 auto，将占满整个容器的高度，所以右边边框能够完全绘制，代码如下：</p>
+<h2 id="1-1-table-less"><a href="#1-1-table-less" class="headerlink" title="1.1. table.less"></a>1.1. table.less</h2><figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.table</span> &#123;</span><br><span class="line">    <span class="variable">@border:</span> <span class="number">1</span>rpx solid <span class="number">#ccc</span>;</span><br><span class="line">    <span class="attribute">border</span>: <span class="variable">@border</span>;</span><br><span class="line">    <span class="attribute">color</span>: <span class="number">#666</span>;</span><br><span class="line">    <span class="attribute">font-size</span>: <span class="number">26</span>rpx;</span><br><span class="line">    <span class="attribute">line-height</span>: <span class="number">36</span>rpx;</span><br><span class="line">    <span class="attribute">border-radius</span>: <span class="number">6</span>rpx;</span><br><span class="line">    <span class="attribute">width</span>: <span class="number">90%</span>;</span><br><span class="line">    <span class="attribute">display</span>: flex;</span><br><span class="line">    <span class="attribute">flex-direction</span>: column;</span><br><span class="line">    <span class="selector-class">.tr</span> &#123;</span><br><span class="line">        <span class="attribute">display</span>: flex;</span><br><span class="line">        <span class="attribute">flex-direction</span>: row;</span><br><span class="line">        <span class="attribute">width</span>: <span class="number">100%</span>;</span><br><span class="line">        <span class="selector-tag">&amp;</span><span class="selector-pseudo">:last-child</span> &#123;</span><br><span class="line">            <span class="selector-class">.td</span> &#123;</span><br><span class="line">                <span class="attribute">border-bottom-width</span>: <span class="number">0</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="selector-class">.td</span>,</span><br><span class="line">        <span class="selector-class">.th</span> &#123;</span><br><span class="line">            <span class="attribute">flex</span>: <span class="number">1</span>;</span><br><span class="line">            <span class="attribute">border-right</span>: <span class="variable">@border</span>;</span><br><span class="line">            <span class="attribute">border-bottom</span>: <span class="variable">@border</span>;</span><br><span class="line">            <span class="attribute">padding</span>: <span class="number">10</span>rpx;</span><br><span class="line">            <span class="selector-tag">&amp;</span><span class="selector-pseudo">:last-child</span> &#123;</span><br><span class="line">                <span class="attribute">border-right-width</span>: <span class="number">0</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="selector-class">.th</span> &#123;</span><br><span class="line">            <span class="attribute">font-weight</span>: bold;</span><br><span class="line">            <span class="attribute">background-color</span>: <span class="number">#eee</span>;</span><br><span class="line">            <span class="attribute">line-height</span>: <span class="number">50</span>rpx;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="1-2-页面"><a href="#1-2-页面" class="headerlink" title="1.2. 页面"></a>1.2. 页面</h2><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">style</span> <span class="attr">lang</span>=<span class="string">"less"</span> <span class="attr">scoped</span>&gt;</span></span><br><span class="line"><span class="css">    <span class="keyword">@import</span> <span class="string">'../weui/page.wxss'</span>;</span></span><br><span class="line"><span class="css">    <span class="keyword">@import</span> <span class="string">'../styles/table'</span>;</span></span><br><span class="line"></span><br><span class="line"><span class="css">    <span class="selector-class">.table</span> &#123;</span></span><br><span class="line"><span class="css">        <span class="selector-class">.tr</span> &#123;</span></span><br><span class="line"><span class="css">            <span class="selector-class">.td</span>,</span></span><br><span class="line"><span class="css">            <span class="selector-class">.th</span> &#123;</span></span><br><span class="line"><span class="css">                &amp;<span class="selector-pseudo">:first-child</span> &#123;</span></span><br><span class="line"><span class="css">                    <span class="selector-tag">flex</span>: 0<span class="selector-class">.5</span>;</span></span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">template</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"container"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"page__hd"</span> <span class="attr">style</span>=<span class="string">"width:90%;"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"page__title"</span> <span class="attr">style</span>=<span class="string">"font-size:34rpx;"</span>&gt;</span>问诊问卷<span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"page__desc"</span>&gt;</span>数据由调查问卷获得<span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"table"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"tr"</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"th"</span>&gt;</span>问题<span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"th"</span>&gt;</span>答案<span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"tr"</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"td"</span>&gt;</span>疾病史<span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"td"</span>&gt;</span>&#123;&#123;ill&#125;&#125;<span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"tr"</span> <span class="attr">wx:if</span>=<span class="string">"&#123;&#123;isAdult&#125;&#125;"</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"td"</span>&gt;</span>工作环境<span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"td"</span>&gt;</span>&#123;&#123;env&#125;&#125;<span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"tr"</span> <span class="attr">wx:else</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"td"</span>&gt;</span>座位位置<span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"td"</span>&gt;</span>&#123;&#123;seat&#125;&#125;<span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"tr"</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"td"</span>&gt;</span>玩电子游戏频率<span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"td"</span>&gt;</span>&#123;&#123;game&#125;&#125;<span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"tr"</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"td"</span>&gt;</span>运动习惯<span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"td"</span>&gt;</span>&#123;&#123;sport&#125;&#125;<span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"tr"</span> <span class="attr">wx:if</span>=<span class="string">"&#123;&#123;isAdult&#125;&#125;"</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"td"</span>&gt;</span>开车频率<span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"td"</span>&gt;</span>&#123;&#123;drive&#125;&#125;<span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"tr"</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"td"</span>&gt;</span>此次配镜用途<span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"td"</span>&gt;</span>&#123;&#123;reason&#125;&#125;<span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">button</span> @<span class="attr">tap</span>=<span class="string">"back"</span> <span class="attr">style</span>=<span class="string">"width:90%;margin-top:60rpx;"</span>&gt;</span>返回<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="javascript">    <span class="keyword">import</span> wepy <span class="keyword">from</span> <span class="string">'wepy'</span></span></span><br><span class="line"></span><br><span class="line"><span class="javascript">    <span class="keyword">import</span> &#123; ills, seats, envs, games, sports, drives, reasons &#125; <span class="keyword">from</span> <span class="string">'../utils'</span></span></span><br><span class="line"></span><br><span class="line"><span class="javascript">    <span class="keyword">export</span> <span class="keyword">default</span> <span class="class"><span class="keyword">class</span> <span class="keyword">extends</span> <span class="title">wepy</span>.<span class="title">page</span> </span>&#123;</span></span><br><span class="line">        data = &#123;</span><br><span class="line"><span class="actionscript">            ill: <span class="string">''</span>,</span></span><br><span class="line"><span class="actionscript">            seat: <span class="string">''</span>,</span></span><br><span class="line"><span class="actionscript">            env: <span class="string">''</span>,</span></span><br><span class="line"><span class="actionscript">            game: <span class="string">''</span>,</span></span><br><span class="line"><span class="actionscript">            sport: <span class="string">''</span>,</span></span><br><span class="line"><span class="actionscript">            drive: <span class="string">''</span>,</span></span><br><span class="line"><span class="actionscript">            reason: <span class="string">''</span></span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        methods = &#123;</span><br><span class="line">            back() &#123;</span><br><span class="line">                wx.navigateBack(&#123; delta: 1 &#125;)</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line"><span class="actionscript">        onLoad(&#123; data = <span class="string">'&#123;&#125;'</span>, isAdult = <span class="literal">false</span> &#125;) &#123;</span></span><br><span class="line"><span class="javascript">            <span class="keyword">const</span> &#123; ill, seat, env, game, sport, drive, reason &#125; = <span class="built_in">JSON</span>.parse(</span></span><br><span class="line"><span class="javascript">                <span class="built_in">decodeURIComponent</span>(data)</span></span><br><span class="line">            )</span><br><span class="line">            if (ill &amp; 1) &#123;</span><br><span class="line"><span class="actionscript">                <span class="keyword">this</span>.ill = <span class="string">'无'</span></span></span><br><span class="line"><span class="actionscript">            &#125; <span class="keyword">else</span> &#123;</span></span><br><span class="line"><span class="actionscript">                <span class="keyword">this</span>.ill = ills</span></span><br><span class="line"><span class="javascript">                    .filter(<span class="function"><span class="params">i</span> =&gt;</span> i.value &amp; ill)</span></span><br><span class="line"><span class="javascript">                    .map(<span class="function"><span class="params">i</span> =&gt;</span> i.label)</span></span><br><span class="line"><span class="actionscript">                    .join(<span class="string">'，'</span>)</span></span><br><span class="line">            &#125;</span><br><span class="line"><span class="actionscript">            <span class="keyword">this</span>.seat = seats[seat]</span></span><br><span class="line"><span class="actionscript">            <span class="keyword">this</span>.env = envs[env]</span></span><br><span class="line"><span class="actionscript">            <span class="keyword">this</span>.game = games[game]</span></span><br><span class="line"><span class="actionscript">            <span class="keyword">this</span>.sport = sports[sport]</span></span><br><span class="line"><span class="actionscript">            <span class="keyword">this</span>.drive = drives[drive]</span></span><br><span class="line"><span class="actionscript">            <span class="keyword">this</span>.reason = reasons</span></span><br><span class="line"><span class="javascript">                .filter(<span class="function"><span class="params">r</span> =&gt;</span> r.value &amp; reason)</span></span><br><span class="line"><span class="javascript">                .map(<span class="function"><span class="params">r</span> =&gt;</span> r.label)</span></span><br><span class="line"><span class="actionscript">                .join(<span class="string">'，'</span>)</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="1-3-效果图"><a href="#1-3-效果图" class="headerlink" title="1.3. 效果图"></a>1.3. 效果图</h2><p><img src="/images/owl/WX20190228-180703@2x.png" alt="截图"></p>
+<h1 id="2-合并表头实现"><a href="#2-合并表头实现" class="headerlink" title="2. 合并表头实现"></a>2. 合并表头实现</h1><p>指定宽度，单位采用 px，box-sizing 采用 border-box，指定表格像素实现，代码如下：</p>
+<h2 id="2-1-实现代码"><a href="#2-1-实现代码" class="headerlink" title="2.1. 实现代码"></a>2.1. 实现代码</h2><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">style</span> <span class="attr">lang</span>=<span class="string">"less"</span>&gt;</span></span><br><span class="line"><span class="css">    <span class="keyword">@import</span> <span class="string">'../weui/page.wxss'</span>;</span></span><br><span class="line"></span><br><span class="line"><span class="css">    <span class="selector-class">.table</span> &#123;</span></span><br><span class="line">        // 所有元素均采用view实现，为了能够准确对齐，</span><br><span class="line">        // 所以宽度是包括边框的宽度，故box-sizing采用border-box</span><br><span class="line">        &amp;,</span><br><span class="line">        view &#123;</span><br><span class="line">            box-sizing: border-box;</span><br><span class="line">        &#125;</span><br><span class="line">        @border: 1px solid #ccc;</span><br><span class="line">        // 这个宽度是表格除去边框的内容宽度</span><br><span class="line">        @width: 360px;</span><br><span class="line">        // 每个单元格的宽度，每行总共是5个单元格</span><br><span class="line">        @cellWidth: @width / 5;</span><br><span class="line">        // 表格的宽度要包括它的左右边框宽度</span><br><span class="line"><span class="css">        <span class="selector-tag">width</span>: <span class="keyword">@width</span>+2;</span></span><br><span class="line">        // 表格提供边框，这样圆角才会自然</span><br><span class="line"><span class="css">        <span class="selector-tag">border</span>: <span class="keyword">@border</span>;</span></span><br><span class="line">        border-radius: 3px;</span><br><span class="line">        font-size: 12px;</span><br><span class="line">        text-align: center;</span><br><span class="line"><span class="css">        <span class="selector-class">.tr</span> &#123;</span></span><br><span class="line">            display: flex;</span><br><span class="line"><span class="css">            <span class="selector-class">.twoCell</span> &#123;</span></span><br><span class="line"><span class="css">                <span class="selector-tag">width</span>: <span class="keyword">@cellWidth</span>*2 !important;</span></span><br><span class="line">            &#125;</span><br><span class="line"><span class="css">            <span class="selector-class">.fourCell</span> &#123;</span></span><br><span class="line"><span class="css">                <span class="selector-tag">width</span>: <span class="keyword">@cellWidth</span>*4 !important;</span></span><br><span class="line">            &#125;</span><br><span class="line"><span class="css">            <span class="selector-class">.td</span>,</span></span><br><span class="line"><span class="css">            <span class="selector-class">.th</span> &#123;</span></span><br><span class="line">                padding: 5px;</span><br><span class="line"><span class="css">                <span class="selector-tag">width</span>: <span class="keyword">@cellWidth</span>;</span></span><br><span class="line"><span class="css">                <span class="selector-tag">border-right</span>: <span class="keyword">@border</span>;</span></span><br><span class="line"><span class="css">                <span class="selector-tag">border-bottom</span>: <span class="keyword">@border</span>;</span></span><br><span class="line">                // 每行的最后一个单元格不需要右边框</span><br><span class="line"><span class="css">                &amp;<span class="selector-pseudo">:last-child</span> &#123;</span></span><br><span class="line">                    border-right-width: 0;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line"><span class="css">            <span class="selector-class">.th</span> &#123;</span></span><br><span class="line"><span class="css">                <span class="selector-tag">background-color</span>: <span class="selector-id">#eee</span>;</span></span><br><span class="line">            &#125;</span><br><span class="line">            // 表格最后一行及表头第二行的单元格不需要下边框</span><br><span class="line"><span class="css">            &amp;<span class="selector-pseudo">:last-child</span>,</span></span><br><span class="line"><span class="css">            <span class="selector-class">.noBottom</span> &#123;</span></span><br><span class="line"><span class="css">                <span class="selector-class">.td</span>,</span></span><br><span class="line"><span class="css">                <span class="selector-class">.th</span> &#123;</span></span><br><span class="line">                    border-bottom-width: 0;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">template</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"container"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"page__hd"</span> <span class="attr">style</span>=<span class="string">"width:360px;padding:10px 0;"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"page__title"</span> <span class="attr">style</span>=<span class="string">"font-size:34rpx;"</span>&gt;</span>验光数据<span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"page__desc"</span>&gt;</span>请完成验光数据录入<span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"table"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"tr"</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"th"</span> <span class="attr">style</span>=<span class="string">"line-height:30px;"</span>&gt;</span>验光数据<span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"th fourCell"</span> <span class="attr">style</span>=<span class="string">"padding:0;"</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"tr"</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"th twoCell"</span>&gt;</span>足矫光度<span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"th twoCell"</span>&gt;</span>配镜光度<span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"tr noBottom"</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"th"</span>&gt;</span>右<span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"th"</span>&gt;</span>左<span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"th"</span>&gt;</span>右<span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"th"</span>&gt;</span>左<span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"tr"</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"td"</span>&gt;</span>球光<span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"td"</span>&gt;</span><span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"td"</span>&gt;</span><span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"td"</span>&gt;</span><span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"td"</span>&gt;</span><span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"tr"</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"td"</span>&gt;</span>散光<span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"td"</span>&gt;</span><span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"td"</span>&gt;</span><span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"td"</span>&gt;</span><span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"td"</span>&gt;</span><span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"tr"</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"td"</span>&gt;</span>轴位<span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"td"</span>&gt;</span><span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"td"</span>&gt;</span><span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"td"</span>&gt;</span><span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"td"</span>&gt;</span><span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"tr"</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"td"</span>&gt;</span>棱镜度<span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"td"</span>&gt;</span><span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"td"</span>&gt;</span><span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"td"</span>&gt;</span><span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"td"</span>&gt;</span><span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"tr"</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"td"</span>&gt;</span>矫正视力<span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"td"</span>&gt;</span><span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"td"</span>&gt;</span><span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"td"</span>&gt;</span><span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"td"</span>&gt;</span><span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"tr"</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"td"</span>&gt;</span>瞳距<span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"td"</span>&gt;</span><span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"td"</span>&gt;</span><span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"td"</span>&gt;</span><span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"td"</span>&gt;</span><span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"tr"</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"td"</span>&gt;</span>下加光<span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"td"</span>&gt;</span><span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"td"</span>&gt;</span><span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"td"</span>&gt;</span><span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"td"</span>&gt;</span><span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="javascript">    <span class="keyword">import</span> wepy <span class="keyword">from</span> <span class="string">'wepy'</span></span></span><br><span class="line"></span><br><span class="line"><span class="javascript">    <span class="keyword">export</span> <span class="keyword">default</span> <span class="class"><span class="keyword">class</span> <span class="keyword">extends</span> <span class="title">wepy</span>.<span class="title">page</span> </span>&#123;</span></span><br><span class="line">        data = &#123;&#125;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="2-2-合并表头效果图"><a href="#2-2-合并表头效果图" class="headerlink" title="2.2. 合并表头效果图"></a>2.2. 合并表头效果图</h2><p><img src="../../images/owl/WX20190228-180550@2x.png" alt="截图"></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/owl/" rel="tag"># owl</a>
+              <a href="/tags/wxapp/" rel="tag"># wxapp</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/02/26/misc/%E5%BE%AE%E4%BF%A1%E5%8F%91%E9%80%81emoji%E6%96%B9%E6%B3%95/" rel="prev" title="微信发送emoji方法">
+      <i class="fa fa-chevron-left"></i> 微信发送emoji方法
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/03/01/myBatis/MyBatis%E6%9F%A5%E8%AF%A2%E8%BF%94%E5%9B%9E%E5%80%BCMap%E6%88%96List-Map/" rel="next" title="MyBatis查询，返回值Map或List<Map>">
+      MyBatis查询，返回值Map或List<Map> <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-规格表格实现"><span class="nav-number">1.</span> <span class="nav-text">1. 规格表格实现</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-table-less"><span class="nav-number">1.1.</span> <span class="nav-text">1.1. table.less</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-页面"><span class="nav-number">1.2.</span> <span class="nav-text">1.2. 页面</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-3-效果图"><span class="nav-number">1.3.</span> <span class="nav-text">1.3. 效果图</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-合并表头实现"><span class="nav-number">2.</span> <span class="nav-text">2. 合并表头实现</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-实现代码"><span class="nav-number">2.1.</span> <span class="nav-text">2.1. 实现代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-合并表头效果图"><span class="nav-number">2.2.</span> <span class="nav-text">2.2. 合并表头效果图</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Andy Ge</p>
+  <div class="site-description" itemprop="description">勇于积极进取，步入人生的世外桃源</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">728</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">134</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">315</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/andyge" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;andyge" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:geshaofei@126.com" title="E-Mail → mailto:geshaofei@126.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.ruanyifeng.com/" title="http:&#x2F;&#x2F;www.ruanyifeng.com&#x2F;" rel="noopener" target="_blank">阮一峰</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://colobu.com/" title="http:&#x2F;&#x2F;colobu.com&#x2F;" rel="noopener" target="_blank">鸟窝</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.cnblogs.com/hellokuangshen/" title="https:&#x2F;&#x2F;www.cnblogs.com&#x2F;hellokuangshen&#x2F;" rel="noopener" target="_blank">狂神</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://yelog.org/" title="https:&#x2F;&#x2F;yelog.org&#x2F;" rel="noopener" target="_blank">叶落阁</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Andy Ge</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.7.1
+  </div>
+
+        
+
+
+
+
+
+
+  <script>
+  function leancloudSelector(url) {
+    url = encodeURI(url);
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.getAttribute('id'));
+      var title = visitors.getAttribute('data-flag-title');
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .then(() => {
+                leancloudSelector(url).innerText = counter.time + 1;
+              })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              })
+          } else {
+              Counter('post', '/classes/Counter', { title: title, url: url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.getAttribute('id'));
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (let item of results) {
+            let { url, time } = item;
+            leancloudSelector(url).innerText = time;
+          }
+          for (let url of entries) {
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=2TdIb5gRlAVUw24l2W0zWnCj-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method: method,
+          headers: {
+            'X-LC-Id'     : '2TdIb5gRlAVUw24l2W0zWnCj-gzGzoHsz',
+            'X-LC-Key'    : 'cJdJrMLBXsj0ttq0WsL0aA2j',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

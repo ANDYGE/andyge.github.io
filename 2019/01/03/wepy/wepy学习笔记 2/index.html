@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"swiftist.cn","root":"/","scheme":"Pisces","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"EVBR3H53HW","apiKey":"2abd573a01143a0cc4108fa4d21ae67c","indexName":"swiftist","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="事件广播事件通过在父组件中调用$broadcast来向所有的子组件发送事件广播，子组件在events中指定对应事件处理程序。 父组件： 1this.$broadcast(&#39;index-broadcast&#39;, 1, 3, 4);  子组件： 12345678events &#x3D; &amp;#123;  &#39;index-broadcast&#39;: (...args) &#x3D;&gt; &amp;#123;    let $event">
+<meta property="og:type" content="article">
+<meta property="og:title" content="wepy学习笔记">
+<meta property="og:url" content="https://swiftist.cn/2019/01/03/wepy/wepy%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%202/index.html">
+<meta property="og:site_name" content="飞雪轩辕">
+<meta property="og:description" content="事件广播事件通过在父组件中调用$broadcast来向所有的子组件发送事件广播，子组件在events中指定对应事件处理程序。 父组件： 1this.$broadcast(&#39;index-broadcast&#39;, 1, 3, 4);  子组件： 12345678events &#x3D; &amp;#123;  &#39;index-broadcast&#39;: (...args) &#x3D;&gt; &amp;#123;    let $event">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://swiftist.cn/images/owl/38451045-0dcaa6de-3a5b-11e8-84b6-51d003b18ac4.png">
+<meta property="article:published_time" content="2019-01-03T04:24:55.000Z">
+<meta property="article:modified_time" content="2020-03-31T15:07:39.462Z">
+<meta property="article:author" content="Andy Ge">
+<meta property="article:tag" content="owl">
+<meta property="article:tag" content="NOTE">
+<meta property="article:tag" content="vue">
+<meta property="article:tag" content="wepy">
+<meta property="article:tag" content="wechat">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://swiftist.cn/images/owl/38451045-0dcaa6de-3a5b-11e8-84b6-51d003b18ac4.png">
+
+<link rel="canonical" href="https://swiftist.cn/2019/01/03/wepy/wepy%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%202/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>wepy学习笔记 | 飞雪轩辕</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="飞雪轩辕" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">飞雪轩辕</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">人生的乐趣在于把梦想变成现实</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-java">
+
+    <a href="/categories/java/" rel="section"><i class="fa fa-fw fa-th-large"></i>java</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://swiftist.cn/2019/01/03/wepy/wepy%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%202/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Andy Ge">
+      <meta itemprop="description" content="勇于积极进取，步入人生的世外桃源">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="飞雪轩辕">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          wepy学习笔记
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-01-03 12:24:55" itemprop="dateCreated datePublished" datetime="2019-01-03T12:24:55+08:00">2019-01-03</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-31 23:07:39" itemprop="dateModified" datetime="2020-03-31T23:07:39+08:00">2020-03-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/wepy/" itemprop="url" rel="index">
+                    <span itemprop="name">wepy</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span id="/2019/01/03/wepy/wepy%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%202/" class="post-meta-item leancloud_visitors" data-flag-title="wepy学习笔记" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="事件"><a href="#事件" class="headerlink" title="事件"></a>事件</h1><h2 id="广播事件"><a href="#广播事件" class="headerlink" title="广播事件"></a>广播事件</h2><p>通过在父组件中调用$broadcast来向所有的子组件发送事件广播，子组件在events中指定对应事件处理程序。</p>
+<p>父组件：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">this</span>.$broadcast(<span class="string">'index-broadcast'</span>, <span class="number">1</span>, <span class="number">3</span>, <span class="number">4</span>);</span><br></pre></td></tr></table></figure>
+
+<p>子组件：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">events = &#123;</span><br><span class="line">  <span class="string">'index-broadcast'</span>: <span class="function">(<span class="params">...args</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> $event = args[args.length - <span class="number">1</span>]</span><br><span class="line">    <span class="built_in">console</span>.log(</span><br><span class="line">      <span class="string">`<span class="subst">$&#123;<span class="keyword">this</span>.$name&#125;</span> received <span class="subst">$&#123;$event.name&#125;</span> from <span class="subst">$&#123;$event.source.$name&#125;</span>`</span></span><br><span class="line">    )</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="冒泡事件"><a href="#冒泡事件" class="headerlink" title="冒泡事件"></a>冒泡事件</h2><p>在子组件中通过$emit发射事件，在父组件的events中指定对应的事件处理程序。</p>
+<p>子组件：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">this</span>.$emit(<span class="string">'index-emit'</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>)</span><br></pre></td></tr></table></figure>
+
+<p>父组件：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">events = &#123;</span><br><span class="line">  <span class="string">'index-emit'</span>: <span class="function">(<span class="params">...args</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> $event = args[args.length - <span class="number">1</span>]</span><br><span class="line">    <span class="built_in">console</span>.log(</span><br><span class="line">      <span class="string">`<span class="subst">$&#123;<span class="keyword">this</span>.$name&#125;</span> receive <span class="subst">$&#123;$event.name&#125;</span> from <span class="subst">$&#123;$event.source.$name&#125;</span>`</span></span><br><span class="line">    )</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="移除关于-user事件绑定的提示"><a href="#移除关于-user事件绑定的提示" class="headerlink" title="移除关于.user事件绑定的提示"></a>移除关于.user事件绑定的提示</h1><p>在<code>vscode</code>中，@index-emit.user=’counterEmit’会被标注红线，提示<code>&#39;v-on&#39; directives don&#39;t support the modifier &#39;user&#39;.</code>，<br>如果<code>vue</code>高亮插件用的是<code>vetur</code>的话，在对应项目的<code>Workspace Settings</code>中把 <code>vetur.validation.template</code>设置为 <code>false</code> 就好了:</p>
+<p><img src="/images/owl/38451045-0dcaa6de-3a5b-11e8-84b6-51d003b18ac4.png" alt="设置截图"></p>
+<h1 id="属性绑定"><a href="#属性绑定" class="headerlink" title="属性绑定"></a>属性绑定</h1><h2 id="静态传值"><a href="#静态传值" class="headerlink" title="静态传值"></a>静态传值</h2><p><code>prop=&quot;propValue&quot;</code>为静态属性，<code>propValue</code>为静态字符串<code>propValue</code>。</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;child title=<span class="string">"mytitle"</span>&gt;&lt;<span class="regexp">/child&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">/</span><span class="regexp">/ child.wpy</span></span><br><span class="line"><span class="regexp">props = &#123;</span></span><br><span class="line"><span class="regexp">    title: String</span></span><br><span class="line"><span class="regexp">&#125;;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">onLoad () &#123;</span></span><br><span class="line"><span class="regexp">    console.log(this.title); /</span><span class="regexp">/ mytitle</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="动态传值"><a href="#动态传值" class="headerlink" title="动态传值"></a>动态传值</h2><ol>
+<li>:prop=”propValue”，当父组件的<code>propValue</code>变化时，子组件<code>prop</code>不会同步更新。</li>
+<li>:prop.sync=”propValue”，当父组件的<code>propValue</code>变化时，子组件<code>prop.sync</code>同步更新。</li>
+<li>:twoWayProp=”propValue”，子组件的属性值<code>twoWayProp</code>变化时，父组件<code>propValue</code>同步更新。</li>
+</ol>
+<p><code>propValue</code>为父组件<code>data</code>属性。</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// parent.wpy</span></span><br><span class="line"></span><br><span class="line">&lt;child :title=<span class="string">"parentTitle"</span> :syncTitle.sync=<span class="string">"parentTitle"</span> :twoWayTitle=<span class="string">"parentTitle"</span>&gt;&lt;<span class="regexp">/child&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">data = &#123;</span></span><br><span class="line"><span class="regexp">    parentTitle: 'p-title'</span></span><br><span class="line"><span class="regexp">&#125;;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">/</span><span class="regexp">/ child.wpy</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">props = &#123;</span></span><br><span class="line"><span class="regexp">    /</span><span class="regexp">/ 静态传值</span></span><br><span class="line"><span class="regexp">    title: String,</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">    /</span><span class="regexp">/ 父向子单向动态传值</span></span><br><span class="line"><span class="regexp">    syncTitle: &#123;</span></span><br><span class="line"><span class="regexp">        type: String,</span></span><br><span class="line"><span class="regexp">        default: 'null'</span></span><br><span class="line"><span class="regexp">    &#125;,</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">    twoWayTitle: &#123;</span></span><br><span class="line"><span class="regexp">        type: String,</span></span><br><span class="line"><span class="regexp">        default: 'nothing',</span></span><br><span class="line"><span class="regexp">        twoWay: true</span></span><br><span class="line"><span class="regexp">    &#125;</span></span><br><span class="line"><span class="regexp">&#125;;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">onLoad () &#123;</span></span><br><span class="line"><span class="regexp">    console.log(this.title); /</span><span class="regexp">/ p-title</span></span><br><span class="line"><span class="regexp">    console.log(this.syncTitle); /</span><span class="regexp">/ p-title</span></span><br><span class="line"><span class="regexp">    console.log(this.twoWayTitle); /</span><span class="regexp">/ p-title</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">    this.title = 'c-title';</span></span><br><span class="line"><span class="regexp">    console.log(this.$parent.parentTitle); /</span><span class="regexp">/ p-title.</span></span><br><span class="line"><span class="regexp">    this.twoWayTitle = 'two-way-title';</span></span><br><span class="line"><span class="regexp">    this.$apply();</span></span><br><span class="line"><span class="regexp">    console.log(this.$parent.parentTitle); /</span><span class="regexp">/ two-way-title.  --- twoWay为true时，子组件props中的属性值改变时，会同时改变父组件对应的值</span></span><br><span class="line"><span class="regexp">    this.$parent.parentTitle = 'p-title-changed';</span></span><br><span class="line"><span class="regexp">    this.$parent.$apply();</span></span><br><span class="line"><span class="regexp">    console.log(this.title); /</span><span class="regexp">/ 'c-title';</span></span><br><span class="line"><span class="regexp">    console.log(this.syncTitle); /</span><span class="regexp">/ 'p-title-changed' --- 有.sync修饰符的props属性值，当在父组件中改变时，会同时改变子组件对应的值。</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="用户自定义事件"><a href="#用户自定义事件" class="headerlink" title="用户自定义事件"></a>用户自定义事件</h1><p><code>@customEvent.user=&quot;myFn&quot;</code>，绑定用户自定义事件，通过<code>$emit</code>触发。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">// index.wpy</span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">template</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">child</span> @<span class="attr">childFn.user</span>=<span class="string">"parentFn"</span>&gt;</span><span class="tag">&lt;/<span class="name">child</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="javascript">    <span class="keyword">import</span> wepy <span class="keyword">from</span> <span class="string">'wepy'</span></span></span><br><span class="line"><span class="javascript">    <span class="keyword">import</span> Child <span class="keyword">from</span> <span class="string">'../components/child'</span></span></span><br><span class="line"></span><br><span class="line"><span class="javascript">    <span class="keyword">export</span> <span class="keyword">default</span> <span class="class"><span class="keyword">class</span> <span class="title">Index</span> <span class="keyword">extends</span> <span class="title">wepy</span>.<span class="title">page</span> </span>&#123;</span></span><br><span class="line">        components = &#123;</span><br><span class="line">            child: Child</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        methods = &#123;</span><br><span class="line">            parentFn (num, evt) &#123;</span><br><span class="line"><span class="javascript">                <span class="built_in">console</span>.log(<span class="string">'parent received emit event, number is: '</span> + num)</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">// child.wpy</span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">template</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">view</span> @<span class="attr">tap</span>=<span class="string">"tap"</span>&gt;</span>Click me<span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="javascript">    <span class="keyword">import</span> wepy <span class="keyword">from</span> <span class="string">'wepy'</span></span></span><br><span class="line"></span><br><span class="line"><span class="javascript">    <span class="keyword">export</span> <span class="keyword">default</span> <span class="class"><span class="keyword">class</span> <span class="title">Child</span> <span class="keyword">extends</span> <span class="title">wepy</span>.<span class="title">component</span> </span>&#123;</span></span><br><span class="line">        methods = &#123;</span><br><span class="line">            tap () &#123;</span><br><span class="line"><span class="javascript">                <span class="built_in">console</span>.log(<span class="string">'child is clicked'</span>)</span></span><br><span class="line"><span class="actionscript">                <span class="keyword">this</span>.$emit(<span class="string">'childFn'</span>, <span class="number">100</span>)</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="slot-插槽"><a href="#slot-插槽" class="headerlink" title="slot 插槽"></a>slot 插槽</h1><p>在Panel组件中有以下模板：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"panel"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">slot</span> <span class="attr">name</span>=<span class="string">"title"</span>&gt;</span>默认标题<span class="tag">&lt;/<span class="name">slot</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">slot</span> <span class="attr">name</span>=<span class="string">"content"</span>&gt;</span>默认内容<span class="tag">&lt;/<span class="name">slot</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>在父组件中使用Panel子组件时，可以这样使用：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">panel</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">view</span> <span class="attr">slot</span>=<span class="string">"title"</span>&gt;</span>新的标题<span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">view</span> <span class="attr">slot</span>=<span class="string">"content"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">text</span>&gt;</span>新的内容<span class="tag">&lt;/<span class="name">text</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">panel</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="Mixin-混合"><a href="#Mixin-混合" class="headerlink" title="Mixin 混合"></a>Mixin 混合</h1><p>混合可以将组件之间的可复用部分抽离，从而在组件中使用混合时，可以将混合的数据，事件以及方法注入到组件之中。混合分为两种：</p>
+<ul>
+<li>默认式混合</li>
+<li>兼容式混合</li>
+</ul>
+<h2 id="默认式混合"><a href="#默认式混合" class="headerlink" title="默认式混合"></a><a href="https://tencent.github.io/wepy/document.html#/?id=%e9%bb%98%e8%ae%a4%e5%bc%8f%e6%b7%b7%e5%90%88" target="_blank" rel="noopener">默认式混合</a></h2><p>对于组件<code>data</code>数据，<code>components</code>组件，<code>events</code>事件以及其它自定义方法采用<strong>默认式混合</strong>，即如果组件未声明该数据，组件，事件，自定义方法等，那么将混合对象中的选项将注入组件之中。对于组件已声明的选项将不受影响。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// mixins/test.js</span></span><br><span class="line"><span class="keyword">import</span> wepy <span class="keyword">from</span> <span class="string">'wepy'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="class"><span class="keyword">class</span> <span class="title">TestMixin</span> <span class="keyword">extends</span> <span class="title">wepy</span>.<span class="title">mixin</span> </span>&#123;</span><br><span class="line">    data = &#123;</span><br><span class="line">        foo: <span class="string">'foo defined by page'</span>,</span><br><span class="line">        bar: <span class="string">'bar defined by testMix'</span></span><br><span class="line">    &#125;;</span><br><span class="line">    methods = &#123;</span><br><span class="line">    tap () &#123;</span><br><span class="line">      <span class="built_in">console</span>.log(<span class="string">'mix tap'</span>);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// pages/index.wpy</span></span><br><span class="line"><span class="keyword">import</span> wepy <span class="keyword">from</span> <span class="string">'wepy'</span>;</span><br><span class="line"><span class="keyword">import</span> TestMixin <span class="keyword">from</span> <span class="string">'./mixins/test'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="class"><span class="keyword">class</span> <span class="title">Index</span> <span class="keyword">extends</span> <span class="title">wepy</span>.<span class="title">page</span> </span>&#123;</span><br><span class="line">    data = &#123;</span><br><span class="line">        foo: <span class="string">'foo defined by index'</span></span><br><span class="line">    &#125;;</span><br><span class="line">    mixins = [TestMixin ];</span><br><span class="line">    onShow() &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="keyword">this</span>.foo); <span class="comment">// foo defined by index</span></span><br><span class="line">        <span class="built_in">console</span>.log(<span class="keyword">this</span>.bar); <span class="comment">// bar defined by testMix</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="兼容式混合"><a href="#兼容式混合" class="headerlink" title="兼容式混合"></a><a href="https://tencent.github.io/wepy/document.html#/?id=%e5%85%bc%e5%ae%b9%e5%bc%8f%e6%b7%b7%e5%90%88" target="_blank" rel="noopener">兼容式混合</a></h2><p>对于组件<code>methods</code>响应事件，以及小程序页面事件将采用<strong>兼容式混合</strong>，即先响应组件本身响应事件，然后再响应混合对象中响应事件。<strong>注意，这里事件的执行顺序跟Vue中相反，<a href="https://vuejs.org/v2/guide/mixins.html#Option-Merging" target="_blank" rel="noopener">Vue中是先执行mixin中的函数， 再执行组件本身的函数</a>。</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// mixins/test.js</span></span><br><span class="line"><span class="keyword">import</span> wepy <span class="keyword">from</span> <span class="string">'wepy'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="class"><span class="keyword">class</span> <span class="title">TestMixin</span> <span class="keyword">extends</span> <span class="title">wepy</span>.<span class="title">mixin</span> </span>&#123;</span><br><span class="line">    methods = &#123;</span><br><span class="line">        tap () &#123;</span><br><span class="line">            <span class="built_in">console</span>.log(<span class="string">'mixin tap'</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">    onShow() &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">'mixin onshow'</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// pages/index.wpy</span></span><br><span class="line"><span class="keyword">import</span> wepy <span class="keyword">from</span> <span class="string">'wepy'</span>;</span><br><span class="line"><span class="keyword">import</span> TestMixin <span class="keyword">from</span> <span class="string">'./mixins/test'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="class"><span class="keyword">class</span> <span class="title">Index</span> <span class="keyword">extends</span> <span class="title">wepy</span>.<span class="title">page</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    mixins = [TestMixin];</span><br><span class="line">    methods = &#123;</span><br><span class="line">        tap () &#123;</span><br><span class="line">            <span class="built_in">console</span>.log(<span class="string">'index tap'</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">    onShow() &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">'index onshow'</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// index onshow</span></span><br><span class="line"><span class="comment">// mixin onshow</span></span><br><span class="line"><span class="comment">// ----- when tap</span></span><br><span class="line"><span class="comment">// index tap</span></span><br><span class="line"><span class="comment">// mixin tap</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="interceptor-拦截器"><a href="#interceptor-拦截器" class="headerlink" title="interceptor 拦截器"></a><a href="https://tencent.github.io/wepy/document.html#/?id=interceptor-%e6%8b%a6%e6%88%aa%e5%99%a8" target="_blank" rel="noopener">interceptor 拦截器</a></h1><p>可以使用WePY提供的全局拦截器对原生API的请求进行拦截。</p>
+<p>具体方法是配置API的config、fail、success、complete回调函数。参考示例：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> wepy <span class="keyword">from</span> <span class="string">'wepy'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="class"><span class="keyword">class</span> <span class="keyword">extends</span> <span class="title">wepy</span>.<span class="title">app</span> </span>&#123;</span><br><span class="line">    <span class="keyword">constructor</span> () &#123;</span><br><span class="line">        <span class="comment">// this is not allowed before super()</span></span><br><span class="line">        <span class="keyword">super</span>();</span><br><span class="line">        <span class="comment">// 拦截request请求</span></span><br><span class="line">        <span class="keyword">this</span>.intercept(<span class="string">'request'</span>, &#123;</span><br><span class="line">            <span class="comment">// 发出请求时的回调函数</span></span><br><span class="line">            config (p) &#123;</span><br><span class="line">                <span class="comment">// 对所有request请求中的OBJECT参数对象统一附加时间戳属性</span></span><br><span class="line">                p.timestamp = +<span class="keyword">new</span> <span class="built_in">Date</span>();</span><br><span class="line">                <span class="built_in">console</span>.log(<span class="string">'config request: '</span>, p);</span><br><span class="line">                <span class="comment">// 必须返回OBJECT参数对象，否则无法发送请求到服务端</span></span><br><span class="line">                <span class="keyword">return</span> p;</span><br><span class="line">            &#125;,</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 请求成功后的回调函数</span></span><br><span class="line">            success (p) &#123;</span><br><span class="line">                <span class="comment">// 可以在这里对收到的响应数据对象进行加工处理</span></span><br><span class="line">                <span class="built_in">console</span>.log(<span class="string">'request success: '</span>, p);</span><br><span class="line">                <span class="comment">// 必须返回响应数据对象，否则后续无法对响应数据进行处理</span></span><br><span class="line">                <span class="keyword">return</span> p;</span><br><span class="line">            &#125;,</span><br><span class="line"></span><br><span class="line">            <span class="comment">//请求失败后的回调函数</span></span><br><span class="line">            fail (p) &#123;</span><br><span class="line">                <span class="built_in">console</span>.log(<span class="string">'request fail: '</span>, p);</span><br><span class="line">                <span class="comment">// 必须返回响应数据对象，否则后续无法对响应数据进行处理</span></span><br><span class="line">                <span class="keyword">return</span> p;</span><br><span class="line">            &#125;,</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 请求完成时的回调函数(请求成功或失败都会被执行)</span></span><br><span class="line">            complete (p) &#123;</span><br><span class="line">                <span class="built_in">console</span>.log(<span class="string">'request complete: '</span>, p);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/owl/" rel="tag"># owl</a>
+              <a href="/tags/NOTE/" rel="tag"># NOTE</a>
+              <a href="/tags/vue/" rel="tag"># vue</a>
+              <a href="/tags/wepy/" rel="tag"># wepy</a>
+              <a href="/tags/wechat/" rel="tag"># wechat</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/01/02/spring/%E8%A7%A3%E5%86%B3spring-security%E8%87%AA%E5%AE%9A%E4%B9%89filter%E9%87%8D%E5%A4%8D%E6%89%A7%E8%A1%8C%E9%97%AE%E9%A2%98/" rel="prev" title="解决spring security自定义filter重复执行问题">
+      <i class="fa fa-chevron-left"></i> 解决spring security自定义filter重复执行问题
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/01/04/vue/ESLint%E5%9C%A8Vue%E4%B8%AD%E7%9A%84%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3/" rel="next" title="ESLint在Vue中的使用详解">
+      ESLint在Vue中的使用详解 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#事件"><span class="nav-number">1.</span> <span class="nav-text">事件</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#广播事件"><span class="nav-number">1.1.</span> <span class="nav-text">广播事件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#冒泡事件"><span class="nav-number">1.2.</span> <span class="nav-text">冒泡事件</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#移除关于-user事件绑定的提示"><span class="nav-number">2.</span> <span class="nav-text">移除关于.user事件绑定的提示</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#属性绑定"><span class="nav-number">3.</span> <span class="nav-text">属性绑定</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#静态传值"><span class="nav-number">3.1.</span> <span class="nav-text">静态传值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#动态传值"><span class="nav-number">3.2.</span> <span class="nav-text">动态传值</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#用户自定义事件"><span class="nav-number">4.</span> <span class="nav-text">用户自定义事件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#slot-插槽"><span class="nav-number">5.</span> <span class="nav-text">slot 插槽</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Mixin-混合"><span class="nav-number">6.</span> <span class="nav-text">Mixin 混合</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#默认式混合"><span class="nav-number">6.1.</span> <span class="nav-text">默认式混合</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#兼容式混合"><span class="nav-number">6.2.</span> <span class="nav-text">兼容式混合</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#interceptor-拦截器"><span class="nav-number">7.</span> <span class="nav-text">interceptor 拦截器</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Andy Ge</p>
+  <div class="site-description" itemprop="description">勇于积极进取，步入人生的世外桃源</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">728</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">134</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">315</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/andyge" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;andyge" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:geshaofei@126.com" title="E-Mail → mailto:geshaofei@126.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.ruanyifeng.com/" title="http:&#x2F;&#x2F;www.ruanyifeng.com&#x2F;" rel="noopener" target="_blank">阮一峰</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://colobu.com/" title="http:&#x2F;&#x2F;colobu.com&#x2F;" rel="noopener" target="_blank">鸟窝</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.cnblogs.com/hellokuangshen/" title="https:&#x2F;&#x2F;www.cnblogs.com&#x2F;hellokuangshen&#x2F;" rel="noopener" target="_blank">狂神</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://yelog.org/" title="https:&#x2F;&#x2F;yelog.org&#x2F;" rel="noopener" target="_blank">叶落阁</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Andy Ge</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.7.1
+  </div>
+
+        
+
+
+
+
+
+
+  <script>
+  function leancloudSelector(url) {
+    url = encodeURI(url);
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.getAttribute('id'));
+      var title = visitors.getAttribute('data-flag-title');
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .then(() => {
+                leancloudSelector(url).innerText = counter.time + 1;
+              })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              })
+          } else {
+              Counter('post', '/classes/Counter', { title: title, url: url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.getAttribute('id'));
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (let item of results) {
+            let { url, time } = item;
+            leancloudSelector(url).innerText = time;
+          }
+          for (let url of entries) {
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=2TdIb5gRlAVUw24l2W0zWnCj-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method: method,
+          headers: {
+            'X-LC-Id'     : '2TdIb5gRlAVUw24l2W0zWnCj-gzGzoHsz',
+            'X-LC-Key'    : 'cJdJrMLBXsj0ttq0WsL0aA2j',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

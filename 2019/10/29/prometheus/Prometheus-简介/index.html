@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"swiftist.cn","root":"/","scheme":"Pisces","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"EVBR3H53HW","apiKey":"2abd573a01143a0cc4108fa4d21ae67c","indexName":"swiftist","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="要点组成架构Prometheus 是一个开源的监控框架，它通过不同的组件完成数据的采集，数据的存储，告警，其中 Prometheus server 只提供了数据存储（time series data），数据的处理（提供了丰富的查询语法[查询，统计，聚合等等]），数据则通过众多的插件（prometheus 称之为 exporters）来暴露一个 http 服务的接口给 Prometheus 定时抓取">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Prometheus 简介">
+<meta property="og:url" content="https://swiftist.cn/2019/10/29/prometheus/Prometheus-%E7%AE%80%E4%BB%8B/index.html">
+<meta property="og:site_name" content="飞雪轩辕">
+<meta property="og:description" content="要点组成架构Prometheus 是一个开源的监控框架，它通过不同的组件完成数据的采集，数据的存储，告警，其中 Prometheus server 只提供了数据存储（time series data），数据的处理（提供了丰富的查询语法[查询，统计，聚合等等]），数据则通过众多的插件（prometheus 称之为 exporters）来暴露一个 http 服务的接口给 Prometheus 定时抓取">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://swiftist.cn/images/misc/5903030-bf9be67ebb978444.webp">
+<meta property="article:published_time" content="2019-10-29T00:25:48.000Z">
+<meta property="article:modified_time" content="2020-03-31T15:07:39.418Z">
+<meta property="article:author" content="Andy Ge">
+<meta property="article:tag" content="prometheus">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://swiftist.cn/images/misc/5903030-bf9be67ebb978444.webp">
+
+<link rel="canonical" href="https://swiftist.cn/2019/10/29/prometheus/Prometheus-%E7%AE%80%E4%BB%8B/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>Prometheus 简介 | 飞雪轩辕</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="飞雪轩辕" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">飞雪轩辕</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">人生的乐趣在于把梦想变成现实</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-java">
+
+    <a href="/categories/java/" rel="section"><i class="fa fa-fw fa-th-large"></i>java</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://swiftist.cn/2019/10/29/prometheus/Prometheus-%E7%AE%80%E4%BB%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Andy Ge">
+      <meta itemprop="description" content="勇于积极进取，步入人生的世外桃源">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="飞雪轩辕">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Prometheus 简介
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-10-29 08:25:48" itemprop="dateCreated datePublished" datetime="2019-10-29T08:25:48+08:00">2019-10-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-31 23:07:39" itemprop="dateModified" datetime="2020-03-31T23:07:39+08:00">2020-03-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/prometheus/" itemprop="url" rel="index">
+                    <span itemprop="name">prometheus</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span id="/2019/10/29/prometheus/Prometheus-%E7%AE%80%E4%BB%8B/" class="post-meta-item leancloud_visitors" data-flag-title="Prometheus 简介" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="要点"><a href="#要点" class="headerlink" title="要点"></a>要点</h1><h2 id="组成"><a href="#组成" class="headerlink" title="组成"></a>组成</h2><h3 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h3><p><a href="https://links.jianshu.com/go?to=https%3A%2F%2Fprometheus.io%2F" target="_blank" rel="noopener">Prometheus</a> 是一个开源的监控框架，它通过不同的组件完成数据的采集，数据的存储，告警，其中 Prometheus server 只提供了数据存储（time series data），数据的处理（提供了丰富的查询语法[查询，统计，聚合等等]），数据则通过众多的插件（prometheus 称之为 exporters）来暴露一个 http 服务的接口给 Prometheus 定时抓取， 告警则通过 Altermanger。</p>
+<p><img src="/images/misc/5903030-bf9be67ebb978444.webp" alt=""></p>
+<p>image</p>
+<p>组件介绍：</p>
+<ul>
+<li><strong>Prometheus server</strong> 包含数据采集 scrapes job, stores time series data；</li>
+<li><strong>push gateway</strong> : Prometheus server 的一个代理节点, 当一些节点没有提供 HTTP endpoint 时，可将数据 push 到代理节点，Prometheus 会去代理节点获取数据;</li>
+<li><strong><a href="https://links.jianshu.com/go?to=https%3A%2F%2Fprometheus.io%2Fdocs%2Finstrumenting%2Fexporters%2F" target="_blank" rel="noopener">exporters</a></strong>: 数据采集插件, 暴露一个 http 服务的接口给 Prometheus server 定时抓取;</li>
+<li><strong>alertmanager</strong>: 报警插件；</li>
+</ul>
+<h3 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h3><blockquote>
+<p>Note that Prometheus by default uses around 3GB in memory. If you have a smaller machine, you can tune Prometheus to use less memory. For details, see the memory usage documentation.</p>
+</blockquote>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">docker run -p 9090:9090 -d -v ~/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml -v ~/prometheus/data:/prometheus prom/prometheus</span><br><span class="line"></span><br><span class="line"><span class="comment"># 容器中默认的启动命令</span></span><br><span class="line">CMD        [ <span class="string">"--config.file=/etc/prometheus/prometheus.yml"</span>, \</span><br><span class="line">             <span class="string">"--storage.tsdb.path=/prometheus"</span>, \</span><br><span class="line">             <span class="string">"--web.console.libraries=/usr/share/prometheus/console_libraries"</span>, \</span><br><span class="line">             <span class="string">"--web.console.templates=/usr/share/prometheus/consoles"</span> ]</span><br></pre></td></tr></table></figure>
+
+<a id="more"></a>
+
+<h3 id="Prometheus-数据模型"><a href="#Prometheus-数据模型" class="headerlink" title="Prometheus 数据模型"></a>Prometheus 数据模型</h3><p>Prometheus 所有的存储都是按时间序列去实现的，相同的<code>metrics</code>和<code>label</code>组成一条时间序列，不同的<code>label</code>表示不同的时间序列。为了支持一些查询，有时还会临时产生一些时间序列存储。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;metric name&gt;&#123;&lt;label name&gt;=&lt;label value&gt;, ...&#125; float64</span><br><span class="line"></span><br><span class="line">example:</span><br><span class="line">api_http_requests_total&#123;method=<span class="string">"POST"</span>, handler=<span class="string">"/messages"</span>&#125; 10</span><br></pre></td></tr></table></figure>
+
+<p>metrics 和 labels <a href="https://links.jianshu.com/go?to=https%3A%2F%2Fprometheus.io%2Fdocs%2Fpractices%2Fnaming%2F" target="_blank" rel="noopener">命名最佳实践</a></p>
+<h3 id="jobs-and-instances"><a href="#jobs-and-instances" class="headerlink" title="jobs and instances"></a>jobs and instances</h3><p>在 Prometheus 的术语中，一个可以 scrape 的节点成为一个 instance, 一个 job 中有多个 instance，例如:</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">job: api-server</span><br><span class="line">  instance1: 1.2.3.4:5670</span><br><span class="line">  instance2: 1.2.3.4:5671</span><br></pre></td></tr></table></figure>
+
+<p>job, instance 会自动地以 label 的形式添加到时间序列的数据中:</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">up&#123;job=<span class="string">"&lt;job-name&gt;"</span>, instance=<span class="string">"&lt;instance-id&gt;"</span>&#125;: 1</span><br></pre></td></tr></table></figure>
+
+<p>同时 prometheus 的 target 实例都会包含一些默认的标签:</p>
+<blockquote>
+<p>一般来说，Target 以 <code>__</code> 作为前置的标签是在系统内部使用的，因此这些标签不会被写入到样本数据中</p>
+</blockquote>
+<ul>
+<li><code>__address__</code>: prometheus scrape target 的地址 <code>&lt;host&gt;:&lt;port&gt;</code></li>
+<li><code>__scheme__</code>: scrape 的协议</li>
+<li><code>__metrics_path__</code>: scrape 的路径</li>
+<li><code>__param_&lt;name&gt;</code>：scrape 的请求参数</li>
+</ul>
+<h3 id="Prometheus-Metrics-的类型"><a href="#Prometheus-Metrics-的类型" class="headerlink" title="Prometheus Metrics 的类型"></a>Prometheus Metrics 的类型</h3><p><strong>counter</strong></p>
+<ul>
+<li>用于累计，如：请求次数，任务完成数，错误发生次数；</li>
+<li>只增加，不减少</li>
+<li>重启进程后，会被重置</li>
+</ul>
+<p><strong>Gauge</strong></p>
+<ul>
+<li>常规数值，例如：温度变化，内存使用变化；</li>
+<li>可增加，可减少</li>
+<li>重启进程后，会被重置</li>
+</ul>
+<p><strong>Histogram</strong></p>
+<p>柱状图，常用于跟踪事件发生的规模，例如：请求耗时，相应大小。它会对记录的内容进行分组, 提供 count 和 sum 全部值的功能。如果定于一个 metrics 类型为 Histogram, 则 Prometheus 系统会自动生成三个对应的指标：</p>
+<ul>
+<li>[metric_name]_bucket{le=”上边界”}，这个值为小于等于上边界的所有采样点数量。</li>
+<li>[metric_name]_sum</li>
+<li>[metric_name]_count</li>
+</ul>
+<p>下面来看一个 prometheus metrics 中的一个 histogram 类型的数据：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># HELP prometheus_tsdb_compaction_chunk_range Final time range of chunks on their first compaction</span></span><br><span class="line"><span class="comment"># TYPE prometheus_tsdb_compaction_chunk_range histogram</span></span><br><span class="line">prometheus_tsdb_compaction_chunk_range_bucket&#123;le=<span class="string">"100"</span>&#125; 0  <span class="comment"># prometheus_tsdb_compaction_chunk_range 小于或等于100的次数</span></span><br><span class="line">prometheus_tsdb_compaction_chunk_range_bucket&#123;le=<span class="string">"400"</span>&#125; 0</span><br><span class="line">prometheus_tsdb_compaction_chunk_range_bucket&#123;le=<span class="string">"1600"</span>&#125; 0</span><br><span class="line">prometheus_tsdb_compaction_chunk_range_bucket&#123;le=<span class="string">"6400"</span>&#125; 0</span><br><span class="line">prometheus_tsdb_compaction_chunk_range_bucket&#123;le=<span class="string">"25600"</span>&#125; 80</span><br><span class="line">prometheus_tsdb_compaction_chunk_range_bucket&#123;le=<span class="string">"102400"</span>&#125; 974</span><br><span class="line">prometheus_tsdb_compaction_chunk_range_bucket&#123;le=<span class="string">"409600"</span>&#125; 1386</span><br><span class="line">prometheus_tsdb_compaction_chunk_range_bucket&#123;le=<span class="string">"1.6384e+06"</span>&#125; 112157</span><br><span class="line">prometheus_tsdb_compaction_chunk_range_bucket&#123;le=<span class="string">"6.5536e+06"</span>&#125; 821535</span><br><span class="line">prometheus_tsdb_compaction_chunk_range_bucket&#123;le=<span class="string">"2.62144e+07"</span>&#125; 821545</span><br><span class="line">prometheus_tsdb_compaction_chunk_range_bucket&#123;le=<span class="string">"+Inf"</span>&#125; 821545</span><br><span class="line">prometheus_tsdb_compaction_chunk_range_sum 1.334532601458e+12</span><br><span class="line">prometheus_tsdb_compaction_chunk_range_count 821545</span><br></pre></td></tr></table></figure>
+
+<p>这个直方图的 X 轴为 le 的值，Y 轴为次数；如果需要得到百分位数，可以使用 <a href="https://links.jianshu.com/go?to=https%3A%2F%2Fprometheus.io%2Fdocs%2Fquerying%2Ffunctions%2F%23histogram_quantile" target="_blank" rel="noopener">histogram_quantile()</a> 函数：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查询 prometheus_tsdb_compaction_chunk_range 95 百分位</span></span><br><span class="line"></span><br><span class="line">histogram_quantile(0.95, prometheus_tsdb_compaction_chunk_range_bucket)</span><br></pre></td></tr></table></figure>
+
+<p><strong>Summary</strong></p>
+<ul>
+<li>跟 Histogram 类似，常用于跟踪事件发生的规模；</li>
+<li>它提供一个 quantiles 的功能，可以按%比划分跟踪的结果。例如：quantile 取值 0.95，表示取采样值里面的 95%数据。</li>
+</ul>
+<p>还是来看一个 prometheus metrics 中的一个 Summary 类型的数据, 它与 histogram 的不同点是直接返回了 百分位的值：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># HELP prometheus_tsdb_head_gc_duration_seconds Runtime of garbage collection in the head block.</span></span><br><span class="line"><span class="comment"># TYPE prometheus_tsdb_head_gc_duration_seconds summary</span></span><br><span class="line">prometheus_tsdb_head_gc_duration_seconds&#123;quantile=<span class="string">"0.5"</span>&#125; 0.03043428</span><br><span class="line">prometheus_tsdb_head_gc_duration_seconds&#123;quantile=<span class="string">"0.9"</span>&#125; 0.03043428</span><br><span class="line">prometheus_tsdb_head_gc_duration_seconds&#123;quantile=<span class="string">"0.99"</span>&#125; 0.03043428</span><br><span class="line">prometheus_tsdb_head_gc_duration_seconds_sum 0.70902013</span><br><span class="line">prometheus_tsdb_head_gc_duration_seconds_count 11</span><br></pre></td></tr></table></figure>
+
+<h3 id="Prometheus-Recoding-rules"><a href="#Prometheus-Recoding-rules" class="headerlink" title="Prometheus Recoding rules"></a>Prometheus Recoding rules</h3><blockquote>
+<p>Prometheus 支持两种不同类型的 rule, 一种是 Recoding rules， 另一种是 Alert rules</p>
+</blockquote>
+<p>Recoding rules 用来优化性能，通常在使用联邦集群时，中心的 Prometheus 接收各个 Prometheus 聚合后的数据，详情见：<a href="https://links.jianshu.com/go?to=https%3A%2F%2Fwww.robustperception.io%2Ffederation-what-is-it-good-for" target="_blank" rel="noopener">https://www.robustperception.io/federation-what-is-it-good-for</a></p>
+<p>但某些 PromQL 比较复杂且计算量较大时，直接使用 PromQL 可能会导致 Prometheus 响应超时的情况，这是就使用 Recoding rules 在后台将计算聚合过的数据存入数据库中，查询时直接使用这些聚合后的数据。</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">groups:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">example</span></span><br><span class="line">      <span class="attr">rules:</span></span><br><span class="line">          <span class="bullet">-</span> <span class="attr">record:</span> <span class="string">job:http_inprogress_requests:sum</span></span><br><span class="line">            <span class="attr">expr:</span> <span class="string">sum(http_inprogess_requests)</span> <span class="string">by</span> <span class="string">(job)</span></span><br></pre></td></tr></table></figure>
+
+<p>计算的频率在 <code>global.evaluation_interval</code> 中定义：</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">global:</span> <span class="string">[evaluation_interval:</span> <span class="string">&lt;duration&gt;</span> <span class="string">|</span> <span class="string">default</span> <span class="string">=</span> <span class="string">1m]</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="Prometheus-alert-rules"><a href="#Prometheus-alert-rules" class="headerlink" title="Prometheus alert rules"></a>Prometheus alert rules</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">ALERT &lt;alert name&gt;</span><br><span class="line">  IF &lt;expression&gt;                <span class="comment"># PromQL 查询的值</span></span><br><span class="line">  [ FOR &lt;duration&gt; ]             <span class="comment"># 触发告警的持续时间</span></span><br><span class="line">  [ LABELS &lt;label <span class="built_in">set</span>&gt; ]</span><br><span class="line">  [ ANNOTATIONS &lt;label <span class="built_in">set</span>&gt; ]</span><br><span class="line"></span><br><span class="line">example:</span><br><span class="line"><span class="comment"># Alert for any instance that is unreachable for &gt;5 minutes.</span></span><br><span class="line">ALERT InstanceDown</span><br><span class="line">  IF up == 0</span><br><span class="line">  FOR 5m</span><br><span class="line">  LABELS &#123; severity = <span class="string">"page"</span> &#125;</span><br><span class="line">  ANNOTATIONS &#123;</span><br><span class="line">    summary = <span class="string">"Instance &#123;&#123; <span class="variable">$labels</span>.instance &#125;&#125; down"</span>,</span><br><span class="line">    description = <span class="string">"&#123;&#123; <span class="variable">$labels</span>.instance &#125;&#125; of job &#123;&#123; <span class="variable">$labels</span>.job &#125;&#125; has been down for more than 5 minutes."</span>,</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># Alert for any instance that have a median request latency &gt;1s.</span></span><br><span class="line">ALERT APIHighRequestLatency</span><br><span class="line">  IF api_http_request_latencies_second&#123;quantile=<span class="string">"0.5"</span>&#125; &gt; 1</span><br><span class="line">  FOR 1m</span><br><span class="line">  ANNOTATIONS &#123;</span><br><span class="line">    summary = <span class="string">"High request latency on &#123;&#123; <span class="variable">$labels</span>.instance &#125;&#125;"</span>,</span><br><span class="line">    description = <span class="string">"&#123;&#123; <span class="variable">$labels</span>.instance &#125;&#125; has a median request latency above 1s (current value: &#123;&#123; <span class="variable">$value</span> &#125;&#125;s)"</span>,</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="reload"><a href="#reload" class="headerlink" title="reload"></a>reload</h3><p>允许通过 Web 的方式：<code>--web.enable-lifecycle</code></p>
+<p>POST <code>/-/reload</code></p>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
+<li><a href="https://links.jianshu.com/go?to=http%3A%2F%2Fdockone.io%2Farticle%2F3298" target="_blank" rel="noopener">自定义 Metrics：让 Prometheus 监控你的应用程序</a></li>
+<li><a href="https://links.jianshu.com/go?to=https%3A%2F%2Fgithub.com%2F1046102779%2Fprometheus" target="_blank" rel="noopener">Prometheus 的非官方中文文档</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/prometheus/" rel="tag"># prometheus</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/10/23/frontend/Mobx-%E5%8D%81%E5%88%86%E9%92%9F%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/" rel="prev" title="Mobx 十分钟快速入门">
+      <i class="fa fa-chevron-left"></i> Mobx 十分钟快速入门
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/10/31/linux/%E8%A7%A3%E5%86%B3SSH%E4%B8%80%E6%AE%B5%E6%97%B6%E9%97%B4%E4%B8%8D%E6%93%8D%E4%BD%9C%E5%B0%B1%E9%80%80%E5%87%BA%E7%9A%84%E9%97%AE%E9%A2%98/" rel="next" title="解决SSH一段时间不操作就退出的问题">
+      解决SSH一段时间不操作就退出的问题 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#要点"><span class="nav-number">1.</span> <span class="nav-text">要点</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#组成"><span class="nav-number">1.1.</span> <span class="nav-text">组成</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#架构"><span class="nav-number">1.1.1.</span> <span class="nav-text">架构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#部署"><span class="nav-number">1.1.2.</span> <span class="nav-text">部署</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Prometheus-数据模型"><span class="nav-number">1.1.3.</span> <span class="nav-text">Prometheus 数据模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#jobs-and-instances"><span class="nav-number">1.1.4.</span> <span class="nav-text">jobs and instances</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Prometheus-Metrics-的类型"><span class="nav-number">1.1.5.</span> <span class="nav-text">Prometheus Metrics 的类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Prometheus-Recoding-rules"><span class="nav-number">1.1.6.</span> <span class="nav-text">Prometheus Recoding rules</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Prometheus-alert-rules"><span class="nav-number">1.1.7.</span> <span class="nav-text">Prometheus alert rules</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#reload"><span class="nav-number">1.1.8.</span> <span class="nav-text">reload</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-number">1.1.9.</span> <span class="nav-text">参考</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Andy Ge</p>
+  <div class="site-description" itemprop="description">勇于积极进取，步入人生的世外桃源</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">728</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">134</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">315</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/andyge" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;andyge" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:geshaofei@126.com" title="E-Mail → mailto:geshaofei@126.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.ruanyifeng.com/" title="http:&#x2F;&#x2F;www.ruanyifeng.com&#x2F;" rel="noopener" target="_blank">阮一峰</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://colobu.com/" title="http:&#x2F;&#x2F;colobu.com&#x2F;" rel="noopener" target="_blank">鸟窝</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.cnblogs.com/hellokuangshen/" title="https:&#x2F;&#x2F;www.cnblogs.com&#x2F;hellokuangshen&#x2F;" rel="noopener" target="_blank">狂神</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://yelog.org/" title="https:&#x2F;&#x2F;yelog.org&#x2F;" rel="noopener" target="_blank">叶落阁</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Andy Ge</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.7.1
+  </div>
+
+        
+
+
+
+
+
+
+  <script>
+  function leancloudSelector(url) {
+    url = encodeURI(url);
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.getAttribute('id'));
+      var title = visitors.getAttribute('data-flag-title');
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .then(() => {
+                leancloudSelector(url).innerText = counter.time + 1;
+              })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              })
+          } else {
+              Counter('post', '/classes/Counter', { title: title, url: url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.getAttribute('id'));
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (let item of results) {
+            let { url, time } = item;
+            leancloudSelector(url).innerText = time;
+          }
+          for (let url of entries) {
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=2TdIb5gRlAVUw24l2W0zWnCj-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method: method,
+          headers: {
+            'X-LC-Id'     : '2TdIb5gRlAVUw24l2W0zWnCj-gzGzoHsz',
+            'X-LC-Key'    : 'cJdJrMLBXsj0ttq0WsL0aA2j',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

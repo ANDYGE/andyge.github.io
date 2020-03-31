@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"swiftist.cn","root":"/","scheme":"Pisces","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"EVBR3H53HW","apiKey":"2abd573a01143a0cc4108fa4d21ae67c","indexName":"swiftist","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="https:&#x2F;&#x2F;github.com&#x2F;iconfont-cli&#x2F;taro-iconfont-cli taro-iconfont-cli在 Taro 框架中使用 iconfont 图标，不依赖字体，支持多色彩。 支持平台 React-Native 微信小程序 支付宝小程序 百度小程序 头条小程序 QQ 小程序 H5  特性1、一键生成标准组件，多端支持 2、使用方便，import 即可 3、支持多色">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Taro Iconfont使用">
+<meta property="og:url" content="https://swiftist.cn/2019/12/01/taro/Taro-Iconfont%E4%BD%BF%E7%94%A8/index.html">
+<meta property="og:site_name" content="飞雪轩辕">
+<meta property="og:description" content="https:&#x2F;&#x2F;github.com&#x2F;iconfont-cli&#x2F;taro-iconfont-cli taro-iconfont-cli在 Taro 框架中使用 iconfont 图标，不依赖字体，支持多色彩。 支持平台 React-Native 微信小程序 支付宝小程序 百度小程序 头条小程序 QQ 小程序 H5  特性1、一键生成标准组件，多端支持 2、使用方便，import 即可 3、支持多色">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://github.com/fwh1990/mini-program-iconfont-cli/blob/master/images/symbol-url.png?raw=true">
+<meta property="article:published_time" content="2019-12-01T03:00:10.000Z">
+<meta property="article:modified_time" content="2020-03-31T15:07:39.441Z">
+<meta property="article:author" content="Andy Ge">
+<meta property="article:tag" content="iconfont">
+<meta property="article:tag" content="taro">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://github.com/fwh1990/mini-program-iconfont-cli/blob/master/images/symbol-url.png?raw=true">
+
+<link rel="canonical" href="https://swiftist.cn/2019/12/01/taro/Taro-Iconfont%E4%BD%BF%E7%94%A8/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>Taro Iconfont使用 | 飞雪轩辕</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="飞雪轩辕" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">飞雪轩辕</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">人生的乐趣在于把梦想变成现实</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-java">
+
+    <a href="/categories/java/" rel="section"><i class="fa fa-fw fa-th-large"></i>java</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://swiftist.cn/2019/12/01/taro/Taro-Iconfont%E4%BD%BF%E7%94%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Andy Ge">
+      <meta itemprop="description" content="勇于积极进取，步入人生的世外桃源">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="飞雪轩辕">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Taro Iconfont使用
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-12-01 11:00:10" itemprop="dateCreated datePublished" datetime="2019-12-01T11:00:10+08:00">2019-12-01</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-31 23:07:39" itemprop="dateModified" datetime="2020-03-31T23:07:39+08:00">2020-03-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/taro/" itemprop="url" rel="index">
+                    <span itemprop="name">taro</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span id="/2019/12/01/taro/Taro-Iconfont%E4%BD%BF%E7%94%A8/" class="post-meta-item leancloud_visitors" data-flag-title="Taro Iconfont使用" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><a href="https://github.com/iconfont-cli/taro-iconfont-cli" target="_blank" rel="noopener">https://github.com/iconfont-cli/taro-iconfont-cli</a></p>
+<h1 id="taro-iconfont-cli"><a href="#taro-iconfont-cli" class="headerlink" title="taro-iconfont-cli"></a>taro-iconfont-cli</h1><p>在 Taro 框架中使用 iconfont 图标，不依赖字体，支持多色彩。</p>
+<h1 id="支持平台"><a href="#支持平台" class="headerlink" title="支持平台"></a>支持平台</h1><ul>
+<li>React-Native</li>
+<li>微信小程序</li>
+<li>支付宝小程序</li>
+<li>百度小程序</li>
+<li>头条小程序</li>
+<li>QQ 小程序</li>
+<li>H5</li>
+</ul>
+<h1 id="特性"><a href="#特性" class="headerlink" title="特性"></a>特性</h1><p>1、一键生成标准组件，多端支持</p>
+<p>2、使用方便，import 即可</p>
+<p>3、支持多色彩</p>
+<p>4、支持自定义颜色</p>
+<p>5、支持 es6 和 typescript 两种模式</p>
+<h1 id="Step-1"><a href="#Step-1" class="headerlink" title="Step 1"></a>Step 1</h1><p>安装插件</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Yarn</span></span><br><span class="line">yarn add taro-iconfont-cli --dev</span><br><span class="line"></span><br><span class="line"><span class="comment"># Npm</span></span><br><span class="line">npm install taro-iconfont-cli --save-dev</span><br></pre></td></tr></table></figure>
+
+<h1 id="Step-2"><a href="#Step-2" class="headerlink" title="Step 2"></a>Step 2</h1><p>生成配置文件</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npx iconfont-init</span><br></pre></td></tr></table></figure>
+
+<p>此时项目根目录会生成一个<code>iconfont.json</code>的文件，内容如下：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"symbol_url"</span>: <span class="string">"请参考README.md，复制 http://iconfont.cn 官网提供的JS链接"</span>,</span><br><span class="line">    <span class="attr">"save_dir"</span>: <span class="string">"./iconfont"</span>,</span><br><span class="line">    <span class="attr">"use_typescript"</span>: <span class="literal">false</span>,</span><br><span class="line">    <span class="attr">"platforms"</span>: <span class="string">"*"</span>,</span><br><span class="line">    <span class="attr">"use_rpx"</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">"trim_icon_prefix"</span>: <span class="string">"icon"</span>,</span><br><span class="line">    <span class="attr">"default_icon_size"</span>: <span class="number">18</span>,</span><br><span class="line">    <span class="attr">"componnent_name"</span>: <span class="string">"IconFont"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="配置参数说明"><a href="#配置参数说明" class="headerlink" title="配置参数说明"></a>配置参数说明</h2><h3 id="symbol-url"><a href="#symbol-url" class="headerlink" title="symbol_url"></a>symbol_url</h3><p>请直接复制<a href="http://iconfont.cn" target="_blank" rel="noopener">iconfont</a>官网提供的项目链接。请务必看清是<code>.js</code>后缀而不是.css 后缀。如果你现在还没有创建 iconfont 的仓库，那么可以填入这个链接去测试：<code>http://at.alicdn.com/t/font_1373348_kk9y3jk2omq.js</code></p>
+<br />
+
+<p><img src="https://github.com/fwh1990/mini-program-iconfont-cli/blob/master/images/symbol-url.png?raw=true" alt=""></p>
+<h3 id="save-dir"><a href="#save-dir" class="headerlink" title="save_dir"></a>save_dir</h3><p>根据 iconfont 图标生成的组件存放的位置。每次生成组件之前，该文件夹都会被清空。</p>
+<h3 id="use-typescript"><a href="#use-typescript" class="headerlink" title="use_typescript"></a>use_typescript</h3><p>如果您的项目使用 Typescript 编写，请设置为 true。这个选项将决定生成的图标组件是<code>.tsx</code>还是<code>.js</code>后缀。</p>
+<p>当该值为 false 时，我们会为您的图标生成<code>.js</code>和<code>.d.ts</code>两个文件，以便您能享受到最好的开发体验。</p>
+<h3 id="platforms"><a href="#platforms" class="headerlink" title="platforms"></a>platforms</h3><p>选择需要支持的平台，默认是<code>*</code>，意味着所有平台都需要支持（如果有）。如果你只想支持部分平台，也可以设置成数组：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &#x2F;&#x2F; 选择你需要的平台</span><br><span class="line">    &#x2F;&#x2F; 说明 &#x3D;&gt;  weapp: 微信  |  swan: 百度  |  alipay: 支付宝  |  tt: 字节跳动</span><br><span class="line">    platforms: [&#39;weapp&#39;, &#39;swan&#39;, &#39;alipay&#39;, &#39;rn&#39;, &#39;h5&#39;, &#39;tt&#39;, &#39;qq&#39;]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="use-rpx"><a href="#use-rpx" class="headerlink" title="use_rpx"></a>use_rpx</h3><p>是否使用<a href="https://developers.weixin.qq.com/miniprogram/dev/framework/view/wxss.html#%E5%B0%BA%E5%AF%B8%E5%8D%95%E4%BD%8D" target="_blank" rel="noopener">尺寸单位 rpx</a>还是普通的像素单位<code>px</code>。默认值为 true，与 Taro 保持一致的缩放。您也可以设置为 false，强制使用<code>px</code></p>
+<h3 id="trim-icon-prefix"><a href="#trim-icon-prefix" class="headerlink" title="trim_icon_prefix"></a>trim_icon_prefix</h3><p>如果你的图标有通用的前缀，而你在使用的时候又不想重复去写，那么可以通过这种配置这个选项把前缀统一去掉。</p>
+<h3 id="default-icon-size"><a href="#default-icon-size" class="headerlink" title="default_icon_size"></a>default_icon_size</h3><p>我们将为每个生成的图标组件加入默认的字体大小，当然，你也可以通过传入 props 的方式改变这个 size 值。</p>
+<h3 id="component-name"><a href="#component-name" class="headerlink" title="component_name"></a>component_name</h3><p>就是组件的名称，默认名称为<code>IconFont</code>，您也可以改成<code>Icons</code>或者您喜欢的名字。记住，它是一个变量名，您必须遵守 Javascript 中关于变量的语法规则。以及作为组件名，请尽量以大写字母开头。</p>
+<h1 id="Step-3"><a href="#Step-3" class="headerlink" title="Step 3"></a>Step 3</h1><p>开始生成 Taro 标准组件</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npx iconfont-taro</span><br></pre></td></tr></table></figure>
+
+<p>生成后查看您设置的保存目录中是否含有所有的图标</p>
+<hr>
+<p>在生成代码之前，你可以顺便参考<a href="https://github.com/fwh1990/taro-iconfont-cli/tree/master/snapshots" target="_blank" rel="noopener">snapshots 目录</a>自动生成的快照文件。</p>
+<h1 id="Step-4"><a href="#Step-4" class="headerlink" title="Step 4"></a>Step 4</h1><p>如果您需要将 Taro 编译成<code>React-Native</code>的项目，那么请看完这一步，否则您可以直接忽略这一步</p>
+<hr>
+<p>在 React-Native 中，图标需要依赖<code>react-native-svg</code>，所以您需要在<code>taro</code>项目中安装这个插件</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Npm</span></span><br><span class="line">npm install react-native-svg</span><br><span class="line"></span><br><span class="line"><span class="comment"># Yarn</span></span><br><span class="line">yarn add react-native-svg</span><br></pre></td></tr></table></figure>
+
+<p>接着，您需要在壳子中也安装这个插件，并做静态链接。</p>
+<p>官方推荐的壳子是：<a href="https://github.com/NervJS/taro-native-shell" target="_blank" rel="noopener">NervJS/taro-native-shell</a>，您可以查看仓库的 README.md 或者查看<a href="https://taro-docs.jd.com/taro/docs/react-native.html" target="_blank" rel="noopener">官方文档</a>了解更多壳子信息</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 在壳子`taro-native-shell`中或是你自定义的壳子</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Npm or Yarn</span></span><br><span class="line">yarn add react-native-svg</span><br><span class="line"></span><br><span class="line"><span class="comment"># Link android</span></span><br><span class="line">react-native link react-native-svg</span><br><span class="line"></span><br><span class="line"><span class="comment"># Link ios</span></span><br><span class="line"><span class="built_in">cd</span> ios &amp;&amp; pod install &amp;&amp; <span class="built_in">cd</span> -</span><br></pre></td></tr></table></figure>
+
+<p>处理完后您就可以顺利地启动项目了。。。可能也不会太顺利，因为壳子<code>taro-native-shell</code>的版本比 RN 官方低很多，所以启动过程中碰到的问题也很多。</p>
+<h1 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h1><p>在 Page 中使用图标</p>
+<figure class="highlight jsx"><figcaption><span>harmony</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> Taro, &#123; Component &#125; <span class="keyword">from</span> <span class="string">'@tarojs/taro'</span></span><br><span class="line"><span class="keyword">import</span> IconFont <span class="keyword">from</span> <span class="string">'../iconfont'</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">App</span> <span class="keyword">extends</span> <span class="title">Component</span> </span>&#123;</span><br><span class="line">    render() &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="xml"><span class="tag">&lt;<span class="name">IconFont</span> <span class="attr">name</span>=<span class="string">"alipay"</span> /&gt;</span></span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> App</span><br></pre></td></tr></table></figure>
+
+<p>更多用法：</p>
+<figure class="highlight jsx"><figcaption><span>harmony</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 原色彩</span></span><br><span class="line">&lt;IconFont name=<span class="string">"alipay"</span> /&gt;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 单色：红色</span></span><br><span class="line">&lt;IconFont name=<span class="string">"alipay"</span> color=<span class="string">"red"</span> /&gt;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 多色：红色+橘色</span></span><br><span class="line">&lt;IconFont name=<span class="string">"alipay"</span> color=&#123;[<span class="string">'red'</span>, <span class="string">'orange'</span>]&#125; size=&#123;<span class="number">300</span>&#125; /&gt;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 不同格式的颜色写法</span></span><br><span class="line">&lt;IconFont name=<span class="string">"alipay"</span> color=&#123;[<span class="string">'#333'</span>, <span class="string">'rgb(50, 124, 39)'</span>]&#125; /&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// 与文字对齐</span></span><br><span class="line">&lt;View style=&#123;&#123; <span class="attr">display</span>: <span class="string">'flex'</span>, <span class="attr">alignItems</span>: <span class="string">'center'</span> &#125;&#125;&gt;</span><br><span class="line">  &lt;Text&gt;Hello&lt;<span class="regexp">/text&gt;</span></span><br><span class="line"><span class="regexp">  &lt;IconFont name="alipay" /</span>&gt;</span><br><span class="line">&lt;<span class="regexp">/View&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="更新图标"><a href="#更新图标" class="headerlink" title="更新图标"></a>更新图标</h1><p>当您在 iconfont.cn 中的图标有变更时，只需更改配置<code>symbol_url</code>，然后再次执行<code>Step 3</code>即可生成最新的图标组件</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 修改 symbol_url 配置后执行：</span></span><br><span class="line">npx iconfont-taro</span><br></pre></td></tr></table></figure>
+
+<h1 id="扩展"><a href="#扩展" class="headerlink" title="扩展"></a>扩展</h1><table>
+<thead>
+<tr>
+<th>平台</th>
+<th>库</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>小程序</td>
+<td><a href="https://github.com/fwh1990/mini-program-iconfont-cli" target="_blank" rel="noopener">mini-program-iconfont-cli</a></td>
+</tr>
+<tr>
+<td>React Native</td>
+<td><a href="https://github.com/fwh1990/react-native-iconfont-cli" target="_blank" rel="noopener">react-native-iconfont-cli</a></td>
+</tr>
+<tr>
+<td>React H5</td>
+<td><a href="https://github.com/fwh1990/react-iconfont-cli" target="_blank" rel="noopener">react-iconfont-cli</a></td>
+</tr>
+<tr>
+<td>Flutter</td>
+<td><a href="https://github.com/fwh1990/flutter-iconfont-cli" target="_blank" rel="noopener">flutter-iconfont-cli</a></td>
+</tr>
+</tbody></table>
+<hr>
+<p>欢迎使用，并给我一些反馈和建议，让这个库做的更好</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/iconfont/" rel="tag"># iconfont</a>
+              <a href="/tags/taro/" rel="tag"># taro</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/11/29/rn/unsupported-BodyInit-type-%E9%94%99%E8%AF%AF%E7%9A%84%E8%A7%A3%E5%86%B3/" rel="prev" title="unsupported BodyInit type 错误的解决">
+      <i class="fa fa-chevron-left"></i> unsupported BodyInit type 错误的解决
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/12/02/react/React-state-%E5%92%8C-props%E6%80%BB%E7%BB%93/" rel="next" title="React state 和 props总结">
+      React state 和 props总结 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#taro-iconfont-cli"><span class="nav-number">1.</span> <span class="nav-text">taro-iconfont-cli</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#支持平台"><span class="nav-number">2.</span> <span class="nav-text">支持平台</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#特性"><span class="nav-number">3.</span> <span class="nav-text">特性</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Step-1"><span class="nav-number">4.</span> <span class="nav-text">Step 1</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Step-2"><span class="nav-number">5.</span> <span class="nav-text">Step 2</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#配置参数说明"><span class="nav-number">5.1.</span> <span class="nav-text">配置参数说明</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#symbol-url"><span class="nav-number">5.1.1.</span> <span class="nav-text">symbol_url</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#save-dir"><span class="nav-number">5.1.2.</span> <span class="nav-text">save_dir</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#use-typescript"><span class="nav-number">5.1.3.</span> <span class="nav-text">use_typescript</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#platforms"><span class="nav-number">5.1.4.</span> <span class="nav-text">platforms</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#use-rpx"><span class="nav-number">5.1.5.</span> <span class="nav-text">use_rpx</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#trim-icon-prefix"><span class="nav-number">5.1.6.</span> <span class="nav-text">trim_icon_prefix</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#default-icon-size"><span class="nav-number">5.1.7.</span> <span class="nav-text">default_icon_size</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#component-name"><span class="nav-number">5.1.8.</span> <span class="nav-text">component_name</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Step-3"><span class="nav-number">6.</span> <span class="nav-text">Step 3</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Step-4"><span class="nav-number">7.</span> <span class="nav-text">Step 4</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#使用"><span class="nav-number">8.</span> <span class="nav-text">使用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#更新图标"><span class="nav-number">9.</span> <span class="nav-text">更新图标</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#扩展"><span class="nav-number">10.</span> <span class="nav-text">扩展</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Andy Ge</p>
+  <div class="site-description" itemprop="description">勇于积极进取，步入人生的世外桃源</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">728</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">134</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">315</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/andyge" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;andyge" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:geshaofei@126.com" title="E-Mail → mailto:geshaofei@126.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.ruanyifeng.com/" title="http:&#x2F;&#x2F;www.ruanyifeng.com&#x2F;" rel="noopener" target="_blank">阮一峰</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://colobu.com/" title="http:&#x2F;&#x2F;colobu.com&#x2F;" rel="noopener" target="_blank">鸟窝</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.cnblogs.com/hellokuangshen/" title="https:&#x2F;&#x2F;www.cnblogs.com&#x2F;hellokuangshen&#x2F;" rel="noopener" target="_blank">狂神</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://yelog.org/" title="https:&#x2F;&#x2F;yelog.org&#x2F;" rel="noopener" target="_blank">叶落阁</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Andy Ge</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.7.1
+  </div>
+
+        
+
+
+
+
+
+
+  <script>
+  function leancloudSelector(url) {
+    url = encodeURI(url);
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.getAttribute('id'));
+      var title = visitors.getAttribute('data-flag-title');
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .then(() => {
+                leancloudSelector(url).innerText = counter.time + 1;
+              })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              })
+          } else {
+              Counter('post', '/classes/Counter', { title: title, url: url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.getAttribute('id'));
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (let item of results) {
+            let { url, time } = item;
+            leancloudSelector(url).innerText = time;
+          }
+          for (let url of entries) {
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=2TdIb5gRlAVUw24l2W0zWnCj-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method: method,
+          headers: {
+            'X-LC-Id'     : '2TdIb5gRlAVUw24l2W0zWnCj-gzGzoHsz',
+            'X-LC-Key'    : 'cJdJrMLBXsj0ttq0WsL0aA2j',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

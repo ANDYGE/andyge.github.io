@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"swiftist.cn","root":"/","scheme":"Pisces","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"EVBR3H53HW","apiKey":"2abd573a01143a0cc4108fa4d21ae67c","indexName":"swiftist","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="1. 偏函数1.1. bindbind 完整的语法为： 1let bound &#x3D; func.bind(context, arg1, arg2, ...);  可以绑定上下文 this 和函数的初始参数。举例，我们有个乘法函数mul(a,b): 123function mul(a, b) &amp;#123;    return a * b&amp;#125;  我们可以在该函数的基础上使用绑定创建一个double">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Javascript偏函数与柯里化">
+<meta property="og:url" content="https://swiftist.cn/2019/11/04/es/Javascript%E5%81%8F%E5%87%BD%E6%95%B0%E4%B8%8E%E6%9F%AF%E9%87%8C%E5%8C%96/index.html">
+<meta property="og:site_name" content="飞雪轩辕">
+<meta property="og:description" content="1. 偏函数1.1. bindbind 完整的语法为： 1let bound &#x3D; func.bind(context, arg1, arg2, ...);  可以绑定上下文 this 和函数的初始参数。举例，我们有个乘法函数mul(a,b): 123function mul(a, b) &amp;#123;    return a * b&amp;#125;  我们可以在该函数的基础上使用绑定创建一个double">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-11-04T09:32:44.000Z">
+<meta property="article:modified_time" content="2020-03-31T15:07:39.340Z">
+<meta property="article:author" content="Andy Ge">
+<meta property="article:tag" content="es">
+<meta property="article:tag" content="函数式编程">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://swiftist.cn/2019/11/04/es/Javascript%E5%81%8F%E5%87%BD%E6%95%B0%E4%B8%8E%E6%9F%AF%E9%87%8C%E5%8C%96/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>Javascript偏函数与柯里化 | 飞雪轩辕</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="飞雪轩辕" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">飞雪轩辕</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">人生的乐趣在于把梦想变成现实</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-java">
+
+    <a href="/categories/java/" rel="section"><i class="fa fa-fw fa-th-large"></i>java</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://swiftist.cn/2019/11/04/es/Javascript%E5%81%8F%E5%87%BD%E6%95%B0%E4%B8%8E%E6%9F%AF%E9%87%8C%E5%8C%96/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Andy Ge">
+      <meta itemprop="description" content="勇于积极进取，步入人生的世外桃源">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="飞雪轩辕">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Javascript偏函数与柯里化
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-11-04 17:32:44" itemprop="dateCreated datePublished" datetime="2019-11-04T17:32:44+08:00">2019-11-04</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-31 23:07:39" itemprop="dateModified" datetime="2020-03-31T23:07:39+08:00">2020-03-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/es/" itemprop="url" rel="index">
+                    <span itemprop="name">es</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span id="/2019/11/04/es/Javascript%E5%81%8F%E5%87%BD%E6%95%B0%E4%B8%8E%E6%9F%AF%E9%87%8C%E5%8C%96/" class="post-meta-item leancloud_visitors" data-flag-title="Javascript偏函数与柯里化" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="1-偏函数"><a href="#1-偏函数" class="headerlink" title="1. 偏函数"></a>1. 偏函数</h1><h2 id="1-1-bind"><a href="#1-1-bind" class="headerlink" title="1.1. bind"></a>1.1. bind</h2><p>bind 完整的语法为：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> bound = func.bind(context, arg1, arg2, ...);</span><br></pre></td></tr></table></figure>
+
+<p>可以绑定上下文 this 和函数的初始参数。举例，我们有个乘法函数<code>mul(a,b)</code>:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">mul</span>(<span class="params">a, b</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> a * b</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们可以在该函数的基础上使用绑定创建一个<code>double</code>函数：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> double = mul.bind(<span class="literal">null</span>, <span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">alert(double(<span class="number">3</span>)) <span class="comment">// = mul(2, 3) = 6</span></span><br><span class="line">alert(double(<span class="number">4</span>)) <span class="comment">// = mul(2, 4) = 8</span></span><br><span class="line">alert(double(<span class="number">5</span>)) <span class="comment">// = mul(2, 5) = 10</span></span><br></pre></td></tr></table></figure>
+
+<p>调用<code>mul.bind(null, 2)</code>创建新函数<code>double</code>，传递调用<code>mul</code>函数，固定第一个参数上下文为 null，第二个参数为 2，多个参数传递也是如此。</p>
+<a id="more"></a>
+
+<p>这称为偏函数应用——我们创造一个新函数，让现有的一些参数值固定。</p>
+<p>注意，这里确实不用 this，但 bind 需要，所以必须使用 null。</p>
+<p>在下面代码中函数<code>triple</code>实现乘以 3 的功能：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> triple = mul.bind(<span class="literal">null</span>, <span class="number">3</span>)</span><br><span class="line"></span><br><span class="line">alert(triple(<span class="number">3</span>)) <span class="comment">// = mul(3, 3) = 9</span></span><br><span class="line">alert(triple(<span class="number">4</span>)) <span class="comment">// = mul(3, 4) = 12</span></span><br><span class="line">alert(triple(<span class="number">5</span>)) <span class="comment">// = mul(3, 5) = 15</span></span><br></pre></td></tr></table></figure>
+
+<p>为什么我们通常使用偏函数？</p>
+<p>这里我们偏函数的好处是：通过创建一个名称易懂的独立函数（double，triple），调用是无需每次传入第一个参数，因为第一个参数通过 bind 提供了固定值。</p>
+<p>另一种使用偏函数情况是，当我们有一个很通用的函数，为了方便提供一个较常用的变体。</p>
+<p>举例，我们有一个函数<code>send(from, to, text)</code>，那么使用偏函数可以创建一个从当前用户发送的变体：<code>sendTo(to, text)</code></p>
+<h2 id="1-2-使用没有上下文的偏函数"><a href="#1-2-使用没有上下文的偏函数" class="headerlink" title="1.2. 使用没有上下文的偏函数"></a>1.2. 使用没有上下文的偏函数</h2><p>如果想固定一些参数，但不绑定 this 呢？</p>
+<p>内置的<code>bind</code>不允许这样，我们不能忽略上下文并跳转到参数。幸运的是，可以仅绑定参数<code>partial</code>函数容易实现。</p>
+<p>如下：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">partial</span>(<span class="params">func, ...argsBound</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params">...args</span>) </span>&#123;</span><br><span class="line">        <span class="comment">// (*)</span></span><br><span class="line">        <span class="keyword">return</span> func.call(<span class="keyword">this</span>, ...argsBound, ...args)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Usage:</span></span><br><span class="line"><span class="keyword">let</span> user = &#123;</span><br><span class="line">    firstName: <span class="string">'John'</span>,</span><br><span class="line">    say(time, phrase) &#123;</span><br><span class="line">        alert(<span class="string">`[<span class="subst">$&#123;time&#125;</span>] <span class="subst">$&#123;<span class="keyword">this</span>.firstName&#125;</span>: <span class="subst">$&#123;phrase&#125;</span>!`</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// add a partial method that says something now by fixing the first argument</span></span><br><span class="line">user.sayNow = partial(</span><br><span class="line">    user.say,</span><br><span class="line">    <span class="keyword">new</span> <span class="built_in">Date</span>().getHours() + <span class="string">':'</span> + <span class="keyword">new</span> <span class="built_in">Date</span>().getMinutes()</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">user.sayNow(<span class="string">'Hello'</span>)</span><br><span class="line"><span class="comment">// Something like:</span></span><br><span class="line"><span class="comment">// [10:00] Hello, John!</span></span><br></pre></td></tr></table></figure>
+
+<p>调用<code>partial(func[, arg1, arg2...])</code>函数的结果为调用<code>func</code>的包装器（*号行）：</p>
+<ul>
+<li>this 一致（因为<code>user.sayNow</code>是通过<code>user</code>调用的）</li>
+<li>然后给其<code>...garsBound</code>—— <code>partial</code>使用该参数(<code>&quot;10:00&quot;</code>)进行调用。</li>
+<li>然后提供参数<code>...gars</code>——提供给包装器的参数(“<code>Hello</code>“)</li>
+</ul>
+<p>所以使用 spread 运算符很容易实现，是吗？<br>loadash 库也提供了<code>—.partial</code>实现。</p>
+<h2 id="1-3-柯里化"><a href="#1-3-柯里化" class="headerlink" title="1.3. 柯里化"></a>1.3. 柯里化</h2><p>有时人们混淆上面提及的偏函数和另一个名称为“柯里化”函数功能，柯里化是另一个有趣的处理函数技术，这里我们必须要涉及。</p>
+<p>柯里化（Currying）：转换一个调用函数<code>f(a,b,c)</code>为<code>f(a)(b)(c)</code>方式调用。</p>
+<p>让我们实现柯里化函数，执行一个两元参数函数，即转换<code>f(a,b)</code>至<code>f(a)(b)</code>:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">curry</span>(<span class="params">func</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params">a</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params">b</span>) </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> func(a, b)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// usage</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">sum</span>(<span class="params">a, b</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> a + b</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> carriedSum = curry(sum)</span><br><span class="line"></span><br><span class="line">alert(carriedSum(<span class="number">1</span>)(<span class="number">2</span>)) <span class="comment">// 3</span></span><br></pre></td></tr></table></figure>
+
+<p>上面是通过一系列包装器实现的。</p>
+<ul>
+<li><code>curry(func)</code>的结果是<code>function(a)</code>的一个包装器。</li>
+<li>当调用<code>sum(1)</code>是，参数被保存在词法环境中，然后返回新的包装器<code>function(b)</code></li>
+<li>然后<code>sum(1)(2)</code>提供 2 并最终调用<code>function(b)</code>，然后传递调用给原始多参数函数<code>sum</code>。</li>
+</ul>
+<p>有一些柯里化的高级实现，如 lodash 库中<code>_.curry</code>可以实现更复杂功能。其返回一个包装器,它允许函数提供全部参数被正常调用或返回偏函数。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">curry</span>(<span class="params">f</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params">..args</span>) </span>&#123;</span><br><span class="line">    <span class="comment">// if args.length == f.length (as many arguments as f has),</span></span><br><span class="line">    <span class="comment">//   then pass the call to f</span></span><br><span class="line">    <span class="comment">// otherwise return a partial function that fixes args as first arguments</span></span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="1-4-柯里化？应用场景"><a href="#1-4-柯里化？应用场景" class="headerlink" title="1.4. 柯里化？应用场景"></a>1.4. 柯里化？应用场景</h2><p>高级柯里化允许函数正常调用，也可以容易以偏函数方式调用。为了理解其优势，我们需要一个实际的示例说明。</p>
+<p>举例，我们有日志函数<code>log(date,importance,message)</code>,格式化输出信息。实际项目中这些函数也有许多其他有用的特性，如：通过网络发送或过滤：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">log</span>(<span class="params">date, importance, message</span>) </span>&#123;</span><br><span class="line">    alert(</span><br><span class="line">        <span class="string">`[<span class="subst">$&#123;date.getHours()&#125;</span>:<span class="subst">$&#123;date.getMinutes()&#125;</span>] [<span class="subst">$&#123;importance&#125;</span>] <span class="subst">$&#123;message&#125;</span>`</span></span><br><span class="line">    )</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>让我们使用柯里化！</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">log = _.curry(log)</span><br></pre></td></tr></table></figure>
+
+<p>柯里化后仍然可以正常调用：<code>log(new Date(), &quot;DEBUG&quot;, &quot;some debug&quot;);</code></p>
+<p>我们也可以使用柯里化方式调用：<code>log(new Date())(&quot;DEBUG&quot;)(&quot;some debug&quot;); // log(a)(b)(c)</code></p>
+<p>这里定义一个便捷函数，记录当天日志：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// todayLog will be the partial of log with fixed first argument</span></span><br><span class="line"><span class="keyword">let</span> todayLog = log(<span class="keyword">new</span> <span class="built_in">Date</span>())</span><br><span class="line"></span><br><span class="line"><span class="comment">// use it</span></span><br><span class="line">todayLog(<span class="string">'INFO'</span>, <span class="string">'message'</span>) <span class="comment">// [HH:mm] INFO message</span></span><br></pre></td></tr></table></figure>
+
+<p>现在再定义一个便捷函数：记录当天 debug 信息：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> todayDebug = todayLog(<span class="string">'DEBUG'</span>)</span><br><span class="line"></span><br><span class="line">todayDebug(<span class="string">'message'</span>) <span class="comment">// [HH:mm] DEBUG message</span></span><br></pre></td></tr></table></figure>
+
+<p>所以：</p>
+<ol>
+<li>柯里化后没有失去任何东西，log 仍然可以正常调用。</li>
+<li>我们能生成在多个场景使用的便捷偏函数。</li>
+</ol>
+<h2 id="1-5-高级柯里化实现"><a href="#1-5-高级柯里化实现" class="headerlink" title="1.5. 高级柯里化实现"></a>1.5. 高级柯里化实现</h2><p>如果你感兴趣，这里提供了上面提到的高级柯里化实现：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">curry</span>(<span class="params">func</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> <span class="title">curried</span>(<span class="params">...args</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (args.length &gt;= func.length) &#123;</span><br><span class="line">            <span class="keyword">return</span> func.apply(<span class="keyword">this</span>, args)</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params">...args2</span>) </span>&#123;</span><br><span class="line">                <span class="keyword">return</span> curried.apply(<span class="keyword">this</span>, args.concat(args2))</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">sum</span>(<span class="params">a, b, c</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> a + b + c</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> curriedSum = curry(sum)</span><br><span class="line"></span><br><span class="line"><span class="comment">// still callable normally</span></span><br><span class="line">alert(curriedSum(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>)) <span class="comment">// 6</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// get the partial with curried(1) and call it with 2 other arguments</span></span><br><span class="line">alert(curriedSum(<span class="number">1</span>)(<span class="number">2</span>, <span class="number">3</span>)) <span class="comment">// 6</span></span><br></pre></td></tr></table></figure>
+
+<p>这里实现看上去有点复杂，但确实很容易理解。<code>curry(func)</code>的结果是包装器<code>curried</code>，如下所示：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// func is the function to transform</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">curried</span>(<span class="params">...args</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (args.length &gt;= func.length) &#123;</span><br><span class="line">        <span class="comment">// (1)</span></span><br><span class="line">        <span class="keyword">return</span> func.apply(<span class="keyword">this</span>, args)</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> <span class="title">pass</span>(<span class="params">...args2</span>) </span>&#123;</span><br><span class="line">            <span class="comment">// (2)</span></span><br><span class="line">            <span class="keyword">return</span> curried.apply(<span class="keyword">this</span>, args.concat(args2))</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>当我们运行时，有两个分支：</p>
+<ol>
+<li>如果传递<code>args</code>数与原函数已经定义的参数个数一样或更长，那么直接调用。</li>
+<li>获得偏函数：否则，不调用<code>func</code>函数，返回另一个包装器<code>pass</code>，提供连接之前的参数一起做为新参数重新应用<code>curried</code>。然后再次执行一个新调用，返回一个新偏函数（如果参数不够）或最终结果。</li>
+</ol>
+<p>举例，让我们看<code>sum(a, b, c)</code>会怎样，三个参数，所以<code>sum.length=3</code>.</p>
+<p>如果调用<code>curried(1)(2)(3)</code>:</p>
+<ol>
+<li>第一次调用<code>curried(1)</code>，在词法环境中记住 1，返回包装器<code>pass</code>。</li>
+<li>使用<code>(2)</code>调用包装器<code>pass</code>：其带着前面的参数<code>(1)</code>，连接他们然后调用<code>curried(1,2)</code>,因为参数数量仍然小于 3，返回<code>pass</code>。</li>
+<li>再次使用<code>(3)</code>被调用包装器<code>pass</code>,带着之前的参数<code>(1,2)</code>,然后增加<code>3</code>，并调用<code>curried(1,2,3)</code>——最终有三个参数，传递给原始函数。</li>
+</ol>
+<p>如果仍然不清除，可以按顺序在脑子里或纸上跟踪调用过程。</p>
+<p><strong>仅针对函数参数长度固定</strong><br>柯里化需要函数有已知的参数数量固定。</p>
+<p><strong>比柯里化多一点</strong></p>
+<p>根据柯里化定义，转换<code>sum(a,b,c)</code>至<code>sum(a)(b)(c)</code>.</p>
+<p>但在 Javascript 中大多数实现是超越定义，也可以让函数使用多个参数变量执行。</p>
+<h2 id="1-6-总结"><a href="#1-6-总结" class="headerlink" title="1.6. 总结"></a>1.6. 总结</h2><ul>
+<li><p>当把已知函数的一些参数固定，结果函数被称为偏函数，通过使用<code>bind</code>获得偏函数，也有其他方式实现。</p>
+<p>当我们不想一次一次重复相同的参数时，偏函数是很便捷的。如我们有<code>send(from,to)</code>函数，如果<code>from</code>总是相同的，可以使用偏函数简化调用。</p>
+</li>
+<li><p>柯里化是转换函数调用从<code>f(a,b,c)</code>至<code>f(a)(b)(c)</code>.Javascript 通常既实现正常调用，也实现参数数量不足时的偏函数方式调用。</p>
+<p>当我们想容易的偏函数时，柯里化非常好。如我们已经看到的日志示例：通用的函数是<code>log(date,importance,message)</code>,柯里化之后获得偏函数为，一个参数如<code>log(date)</code>,或两个参数<code>log(date,importance)</code>.</p>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/es/" rel="tag"># es</a>
+              <a href="/tags/%E5%87%BD%E6%95%B0%E5%BC%8F%E7%BC%96%E7%A8%8B/" rel="tag"># 函数式编程</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/11/04/es/Javascript%E5%87%BD%E6%95%B0%E5%BC%8F%E7%BC%96%E7%A8%8B%E4%B9%8B%E5%81%8F%E5%87%BD%E6%95%B0/" rel="prev" title="Javascript函数式编程之偏函数">
+      <i class="fa fa-chevron-left"></i> Javascript函数式编程之偏函数
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/11/05/es/javascript%E5%87%BD%E6%95%B0%E5%BC%8F%E7%BC%96%E7%A8%8B/" rel="next" title="javascript函数式编程">
+      javascript函数式编程 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-偏函数"><span class="nav-number">1.</span> <span class="nav-text">1. 偏函数</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-bind"><span class="nav-number">1.1.</span> <span class="nav-text">1.1. bind</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-使用没有上下文的偏函数"><span class="nav-number">1.2.</span> <span class="nav-text">1.2. 使用没有上下文的偏函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-3-柯里化"><span class="nav-number">1.3.</span> <span class="nav-text">1.3. 柯里化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-4-柯里化？应用场景"><span class="nav-number">1.4.</span> <span class="nav-text">1.4. 柯里化？应用场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-5-高级柯里化实现"><span class="nav-number">1.5.</span> <span class="nav-text">1.5. 高级柯里化实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-6-总结"><span class="nav-number">1.6.</span> <span class="nav-text">1.6. 总结</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Andy Ge</p>
+  <div class="site-description" itemprop="description">勇于积极进取，步入人生的世外桃源</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">728</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">134</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">315</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/andyge" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;andyge" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:geshaofei@126.com" title="E-Mail → mailto:geshaofei@126.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.ruanyifeng.com/" title="http:&#x2F;&#x2F;www.ruanyifeng.com&#x2F;" rel="noopener" target="_blank">阮一峰</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://colobu.com/" title="http:&#x2F;&#x2F;colobu.com&#x2F;" rel="noopener" target="_blank">鸟窝</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.cnblogs.com/hellokuangshen/" title="https:&#x2F;&#x2F;www.cnblogs.com&#x2F;hellokuangshen&#x2F;" rel="noopener" target="_blank">狂神</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://yelog.org/" title="https:&#x2F;&#x2F;yelog.org&#x2F;" rel="noopener" target="_blank">叶落阁</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Andy Ge</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.7.1
+  </div>
+
+        
+
+
+
+
+
+
+  <script>
+  function leancloudSelector(url) {
+    url = encodeURI(url);
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.getAttribute('id'));
+      var title = visitors.getAttribute('data-flag-title');
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .then(() => {
+                leancloudSelector(url).innerText = counter.time + 1;
+              })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              })
+          } else {
+              Counter('post', '/classes/Counter', { title: title, url: url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.getAttribute('id'));
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (let item of results) {
+            let { url, time } = item;
+            leancloudSelector(url).innerText = time;
+          }
+          for (let url of entries) {
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=2TdIb5gRlAVUw24l2W0zWnCj-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method: method,
+          headers: {
+            'X-LC-Id'     : '2TdIb5gRlAVUw24l2W0zWnCj-gzGzoHsz',
+            'X-LC-Key'    : 'cJdJrMLBXsj0ttq0WsL0aA2j',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

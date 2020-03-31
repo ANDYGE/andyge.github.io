@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"swiftist.cn","root":"/","scheme":"Pisces","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"EVBR3H53HW","apiKey":"2abd573a01143a0cc4108fa4d21ae67c","indexName":"swiftist","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="SNMP简单网络管理协议（SNMP） 是专门设计用于在 IP 网络管理网络节点（服务器、工作站、路由器、交换机及 HUBS 等）的一种标准协议，它是一种应用层协议。 SNMP 使网络管理员能够管理网络效能，发现并解决网络问题以及规划网络增长。通过 SNMP 接收随机消息（及事件报告）网络管理系统获知网络出现问题。 SNMP 是管理进程（NMS）和代理进程（Agent）之间的通信协议。它规定了在网络">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SNMP的安装配置">
+<meta property="og:url" content="https://swiftist.cn/2019/08/29/zabbix/SNMP%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE/index.html">
+<meta property="og:site_name" content="飞雪轩辕">
+<meta property="og:description" content="SNMP简单网络管理协议（SNMP） 是专门设计用于在 IP 网络管理网络节点（服务器、工作站、路由器、交换机及 HUBS 等）的一种标准协议，它是一种应用层协议。 SNMP 使网络管理员能够管理网络效能，发现并解决网络问题以及规划网络增长。通过 SNMP 接收随机消息（及事件报告）网络管理系统获知网络出现问题。 SNMP 是管理进程（NMS）和代理进程（Agent）之间的通信协议。它规定了在网络">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://swiftist.cn/images/misc/snmp.png">
+<meta property="article:published_time" content="2019-08-29T01:39:45.000Z">
+<meta property="article:modified_time" content="2020-03-31T15:07:39.469Z">
+<meta property="article:author" content="Andy Ge">
+<meta property="article:tag" content="zabbix">
+<meta property="article:tag" content="snmp">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://swiftist.cn/images/misc/snmp.png">
+
+<link rel="canonical" href="https://swiftist.cn/2019/08/29/zabbix/SNMP%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>SNMP的安装配置 | 飞雪轩辕</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="飞雪轩辕" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">飞雪轩辕</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">人生的乐趣在于把梦想变成现实</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-java">
+
+    <a href="/categories/java/" rel="section"><i class="fa fa-fw fa-th-large"></i>java</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://swiftist.cn/2019/08/29/zabbix/SNMP%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Andy Ge">
+      <meta itemprop="description" content="勇于积极进取，步入人生的世外桃源">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="飞雪轩辕">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          SNMP的安装配置
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-08-29 09:39:45" itemprop="dateCreated datePublished" datetime="2019-08-29T09:39:45+08:00">2019-08-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-31 23:07:39" itemprop="dateModified" datetime="2020-03-31T23:07:39+08:00">2020-03-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/zabbix/" itemprop="url" rel="index">
+                    <span itemprop="name">zabbix</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span id="/2019/08/29/zabbix/SNMP%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE/" class="post-meta-item leancloud_visitors" data-flag-title="SNMP的安装配置" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="SNMP"><a href="#SNMP" class="headerlink" title="SNMP"></a>SNMP</h1><p>简单网络管理协议（SNMP） 是专门设计用于在 IP 网络管理网络节点（服务器、工作站、路由器、交换机及 HUBS 等）的一种标准协议，它是一种应用层协议。 SNMP 使网络管理员能够管理网络效能，发现并解决网络问题以及规划网络增长。通过 SNMP 接收随机消息（及事件报告）网络管理系统获知网络出现问题。</p>
+<p>SNMP 是管理进程（NMS）和代理进程（Agent）之间的通信协议。它规定了在网络环境中对设备进行监视和管理的标准化管理框架、通信的公共语言、相应的安全和访问控制机制。网络管理员使用 SNMP 功能可以查询设备信息、修改设备的参数值、监控设备状态、自动发现网络故障、生成报告等。</p>
+<h2 id="客户机安装-SNMP"><a href="#客户机安装-SNMP" class="headerlink" title="客户机安装 SNMP"></a>客户机安装 SNMP</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 安装相关组件</span></span><br><span class="line">yum install -y net-snmp net-snmp-utils</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看snmp的版本</span></span><br><span class="line">snmpd -v</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看snmp安装的相关文件</span></span><br><span class="line">rpm -ql net-snmp</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建snmp v3版本用户</span></span><br><span class="line">net-snmp-create-v3-user</span><br><span class="line"></span><br><span class="line"><span class="comment"># 依次输入用户名，密码，加密短语</span></span><br><span class="line"><span class="comment"># 用户名 zabbix</span></span><br><span class="line"><span class="comment"># 密码 zabbix123</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 启动</span></span><br><span class="line">systemctl start snmpd</span><br><span class="line"></span><br><span class="line"><span class="comment"># 检查安装是否成功</span></span><br><span class="line">snmpwalk -v 3 -u zabbix -a MD5 -A <span class="string">'zabbix123'</span> -l authPriv -x DES -X <span class="string">'zabbix123'</span> localhost</span><br><span class="line"></span><br><span class="line"><span class="comment"># 监控特定项</span></span><br><span class="line">snmpwalk -v 3 -u zabbix -a MD5 -A <span class="string">'zabbix123'</span> -l authPriv -x DES -X <span class="string">'zabbix123'</span> localhost SNMPv2-MIB:system</span><br><span class="line"></span><br><span class="line"><span class="comment"># 获取特定项目</span></span><br><span class="line">snmpget -v 3 -u zabbix -a MD5 -A <span class="string">'zabbix123'</span> -l authPriv -x DES -X <span class="string">'zabbix123'</span> localhost SNMPv2-MIB::sysName.0</span><br><span class="line"></span><br><span class="line"><span class="comment"># 以OID的方式显示</span></span><br><span class="line">snmpwalk -v 3 -u zabbix -a MD5 -A <span class="string">'zabbix123'</span> -l authPriv -x DES -X <span class="string">'zabbix123'</span> localhost -O fn SNMPv2-MIB:system</span><br><span class="line"></span><br><span class="line"><span class="comment"># 通过OID来获取特定项</span></span><br><span class="line">snmpget -v 3 -u zabbix -a MD5 -A <span class="string">'zabbix123'</span> -l authPriv -x DES -X <span class="string">'zabbix123'</span> localhost .1.3.6.1.2.1.1.5.0</span><br></pre></td></tr></table></figure>
+
+<h2 id="Zabbix-Sever-上测试"><a href="#Zabbix-Sever-上测试" class="headerlink" title="Zabbix Sever 上测试"></a>Zabbix Sever 上测试</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 安装snmp工具套件</span></span><br><span class="line">yum install -y net-snmp-utils</span><br><span class="line"></span><br><span class="line"><span class="comment"># 检查是否能够获取到信息</span></span><br><span class="line">snmpwalk -v 3 -u zabbix -a MD5 -A <span class="string">'zabbix123'</span> -l authPriv -x DES -X <span class="string">'zabbix123'</span> 192.16.1.110</span><br></pre></td></tr></table></figure>
+
+<h2 id="SNMPTRAP-配置"><a href="#SNMPTRAP-配置" class="headerlink" title="SNMPTRAP 配置"></a>SNMPTRAP 配置</h2><h3 id="Zabbix-Server-配置"><a href="#Zabbix-Server-配置" class="headerlink" title="Zabbix Server 配置"></a>Zabbix Server 配置</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 安装perl执行环境</span></span><br><span class="line">yum install -y net-snmp-perl</span><br><span class="line"></span><br><span class="line"><span class="comment"># 下载 Zabbix 源码包</span></span><br><span class="line">wget https://jaist.dl.sourceforge.net/project/zabbix/ZABBIX%20Latest%20Stable/4.2.5/zabbix-4.2.5.tar.gz</span><br><span class="line"></span><br><span class="line"><span class="comment"># 解压</span></span><br><span class="line">tar -zxvf zabbix-4.2.5.tar.gz</span><br><span class="line"></span><br><span class="line"><span class="comment"># 将snmptrap处理程序拷贝到/usr/bin目录下</span></span><br><span class="line"><span class="built_in">cd</span> zabbix-4.2.5</span><br><span class="line">cp misc/snmptrap/zabbix_trap_receiver.pl  /usr/bin/</span><br><span class="line"></span><br><span class="line"><span class="comment"># 添加执行权限</span></span><br><span class="line">chmod a+x /usr/bin/zabbix_trap_receiver.pl</span><br><span class="line"></span><br><span class="line"><span class="comment"># 修改snmptrapd的配置</span></span><br><span class="line">vim /etc/snmp/snmptrapd.conf</span><br><span class="line"></span><br><span class="line"><span class="comment"># 修改后的内容如下：</span></span><br><span class="line">authCommunity   <span class="built_in">log</span>,execute,net public</span><br><span class="line">perl <span class="keyword">do</span> <span class="string">"/usr/bin/zabbix_trap_receiver.pl"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 重启snmptrapd服务</span></span><br><span class="line">systemctl restart snmptrapd</span><br><span class="line">systemctl status snmptrapd</span><br><span class="line"><span class="comment"># 设置为开机启动</span></span><br><span class="line">systemctl <span class="built_in">enable</span> snmptrapd</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查找zabbix trap临时文件</span></span><br><span class="line">vim /usr/bin/zabbix_trap_receiver.pl</span><br><span class="line"><span class="comment"># 找到$SNMPTrapperFile</span></span><br><span class="line"><span class="variable">$SNMPTrapperFile</span> = <span class="string">'/tmp/zabbix_traps.tmp'</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 修改zabbix_server的配置</span></span><br><span class="line">vim /etc/zabbix/zabbix_server.conf</span><br><span class="line"><span class="comment"># 将路径更改为上述路径</span></span><br><span class="line">SNMPTrapperFile=/tmp/zabbix_traps.tmp</span><br><span class="line"><span class="comment"># 启动snmp trap进程</span></span><br><span class="line">StartSNMPTrapper=1</span><br><span class="line"></span><br><span class="line"><span class="comment"># 重新启动zabbix_server服务</span></span><br><span class="line">systemctl restart zabbix-server</span><br><span class="line"><span class="comment"># 查看服务状态</span></span><br><span class="line">systemctl status zabbix-server</span><br></pre></td></tr></table></figure>
+
+<h3 id="客户机发送测试"><a href="#客户机发送测试" class="headerlink" title="客户机发送测试"></a>客户机发送测试</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 首先安装net_snmp_utils</span></span><br><span class="line">yum install -y net-snmp-utils</span><br><span class="line"></span><br><span class="line"><span class="comment"># 发送信息到server，注意192.16.1.107为zabbix server的地址</span></span><br><span class="line">snmptrap -v 2c -c public 192.16.1.107 <span class="string">"snmptraptest"</span> <span class="string">'1.3.6.1.4.1.67'</span> SNMPv2-MIB::sysName.0 s <span class="string">"SNMP Trap Test"</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 在zabbix server端可以在临时文件中查看发送过来的信息</span></span><br><span class="line">cat /tmp/zabbix_traps.tmp</span><br><span class="line"></span><br><span class="line">16:06:17 2019/08/25 ZBXTRAP 192.16.1.110</span><br><span class="line">PDU INFO:</span><br><span class="line">  notificationtype               TRAP</span><br><span class="line">  version                        1</span><br><span class="line">  receivedfrom                   UDP: [192.16.1.110]:54797-&gt;[192.16.1.107]:162</span><br><span class="line">  errorstatus                    0</span><br><span class="line">  messageid                      0</span><br><span class="line">  community                      public</span><br><span class="line">  transactionid                  1</span><br><span class="line">  errorindex                     0</span><br><span class="line">  requestid                      2088382950</span><br><span class="line">VARBINDS:</span><br><span class="line">  SNMPv2-MIB::snmpTrapOID.0      <span class="built_in">type</span>=6  value=OID: SNMPv2-SMI::enterprises.67</span><br><span class="line">  SNMPv2-MIB::sysName.0          <span class="built_in">type</span>=4  value=STRING: <span class="string">"SNMP Trap Test"</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="Zabbix-Web-定义模板"><a href="#Zabbix-Web-定义模板" class="headerlink" title="Zabbix Web 定义模板"></a>Zabbix Web 定义模板</h3><p>在 Zabbix Web 上添加管理模板，格式如下：</p>
+<h4 id="创建一个捕获-findsec-的模板"><a href="#创建一个捕获-findsec-的模板" class="headerlink" title="创建一个捕获 findsec 的模板"></a>创建一个捕获 findsec 的模板</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">### 添加一个特定捕获包含findsec字符的模板</span><br><span class="line"># Type</span><br><span class="line">SNMP trap</span><br><span class="line"># key</span><br><span class="line">snmptrap[&quot;findsec&quot;]</span><br><span class="line"># type of infomation</span><br><span class="line">Log</span><br><span class="line"># Log time format</span><br><span class="line">%H:%M:%S %Y&#x2F;%m&#x2F;%d</span><br><span class="line"></span><br><span class="line"># 也可以添加预处理</span><br><span class="line"># name</span><br><span class="line">Regular expression</span><br><span class="line"># Parameters</span><br><span class="line">.*(findsec).*</span><br><span class="line"># output</span><br><span class="line">\0</span><br></pre></td></tr></table></figure>
+
+<h4 id="添加一个匹配不成功的处理"><a href="#添加一个匹配不成功的处理" class="headerlink" title="添加一个匹配不成功的处理"></a>添加一个匹配不成功的处理</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># Type</span><br><span class="line">SNMP trap</span><br><span class="line"># key</span><br><span class="line">snmptrap.fallback</span><br><span class="line"># type of infomation</span><br><span class="line">Log</span><br><span class="line"># Log time format</span><br><span class="line">%H:%M:%S %Y&#x2F;%m&#x2F;%d</span><br></pre></td></tr></table></figure>
+
+<h4 id="添加一个-SNMPv3-客户端的模板"><a href="#添加一个-SNMPv3-客户端的模板" class="headerlink" title="添加一个 SNMPv3 客户端的模板"></a>添加一个 SNMPv3 客户端的模板</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"># 类型</span><br><span class="line">SNMPv3 客户端</span><br><span class="line"></span><br><span class="line"># 键值</span><br><span class="line">sysName</span><br><span class="line"></span><br><span class="line"># SNMP OID</span><br><span class="line">SNMPv2-MIB::sysName.0</span><br><span class="line"></span><br><span class="line"># 安全名称</span><br><span class="line">zabbix</span><br><span class="line"></span><br><span class="line"># 安全级别</span><br><span class="line">authPriv</span><br><span class="line"></span><br><span class="line"># 验证口令</span><br><span class="line">zabbix123</span><br><span class="line"></span><br><span class="line"># 私钥</span><br><span class="line">zabbix123</span><br><span class="line"></span><br><span class="line"># 端口</span><br><span class="line">161</span><br></pre></td></tr></table></figure>
+
+<p>参见截图<br><img src="/images/misc/snmp.png" alt=""></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/zabbix/" rel="tag"># zabbix</a>
+              <a href="/tags/snmp/" rel="tag"># snmp</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/08/28/vmware/%E6%A1%A5%E6%8E%A5%E6%A8%A1%E5%BC%8F%E9%85%8D%E7%BD%AE/" rel="prev" title="桥接模式配置">
+      <i class="fa fa-chevron-left"></i> 桥接模式配置
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/08/29/zabbix/zabbix%E9%80%9A%E8%BF%87%E8%84%9A%E6%9C%AC%E6%9D%A5%E7%9B%91%E6%8E%A7%E6%9F%90%E4%B8%AA%E5%85%B7%E4%BD%93%E5%80%BC/" rel="next" title="zabbix通过脚本来监控某个具体值">
+      zabbix通过脚本来监控某个具体值 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#SNMP"><span class="nav-number">1.</span> <span class="nav-text">SNMP</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#客户机安装-SNMP"><span class="nav-number">1.1.</span> <span class="nav-text">客户机安装 SNMP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Zabbix-Sever-上测试"><span class="nav-number">1.2.</span> <span class="nav-text">Zabbix Sever 上测试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SNMPTRAP-配置"><span class="nav-number">1.3.</span> <span class="nav-text">SNMPTRAP 配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Zabbix-Server-配置"><span class="nav-number">1.3.1.</span> <span class="nav-text">Zabbix Server 配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#客户机发送测试"><span class="nav-number">1.3.2.</span> <span class="nav-text">客户机发送测试</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Zabbix-Web-定义模板"><span class="nav-number">1.3.3.</span> <span class="nav-text">Zabbix Web 定义模板</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#创建一个捕获-findsec-的模板"><span class="nav-number">1.3.3.1.</span> <span class="nav-text">创建一个捕获 findsec 的模板</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#添加一个匹配不成功的处理"><span class="nav-number">1.3.3.2.</span> <span class="nav-text">添加一个匹配不成功的处理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#添加一个-SNMPv3-客户端的模板"><span class="nav-number">1.3.3.3.</span> <span class="nav-text">添加一个 SNMPv3 客户端的模板</span></a></li></ol></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Andy Ge</p>
+  <div class="site-description" itemprop="description">勇于积极进取，步入人生的世外桃源</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">728</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">134</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">315</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/andyge" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;andyge" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:geshaofei@126.com" title="E-Mail → mailto:geshaofei@126.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.ruanyifeng.com/" title="http:&#x2F;&#x2F;www.ruanyifeng.com&#x2F;" rel="noopener" target="_blank">阮一峰</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://colobu.com/" title="http:&#x2F;&#x2F;colobu.com&#x2F;" rel="noopener" target="_blank">鸟窝</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.cnblogs.com/hellokuangshen/" title="https:&#x2F;&#x2F;www.cnblogs.com&#x2F;hellokuangshen&#x2F;" rel="noopener" target="_blank">狂神</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://yelog.org/" title="https:&#x2F;&#x2F;yelog.org&#x2F;" rel="noopener" target="_blank">叶落阁</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Andy Ge</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.7.1
+  </div>
+
+        
+
+
+
+
+
+
+  <script>
+  function leancloudSelector(url) {
+    url = encodeURI(url);
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.getAttribute('id'));
+      var title = visitors.getAttribute('data-flag-title');
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .then(() => {
+                leancloudSelector(url).innerText = counter.time + 1;
+              })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              })
+          } else {
+              Counter('post', '/classes/Counter', { title: title, url: url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.getAttribute('id'));
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (let item of results) {
+            let { url, time } = item;
+            leancloudSelector(url).innerText = time;
+          }
+          for (let url of entries) {
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=2TdIb5gRlAVUw24l2W0zWnCj-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method: method,
+          headers: {
+            'X-LC-Id'     : '2TdIb5gRlAVUw24l2W0zWnCj-gzGzoHsz',
+            'X-LC-Key'    : 'cJdJrMLBXsj0ttq0WsL0aA2j',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

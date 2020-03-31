@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"swiftist.cn","root":"/","scheme":"Pisces","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"EVBR3H53HW","apiKey":"2abd573a01143a0cc4108fa4d21ae67c","indexName":"swiftist","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="umi-request网络请求库，基于 fetch 封装, 兼具 fetch 与 axios 的特点, 旨在为开发者提供一个统一的 api 调用方式, 简化使用, 并提供诸如缓存, 超时, 字符编码处理, 错误处理等常用功能.  支持的功能 url 参数自动序列化 post 数据提交方式简化 response 返回处理简化 api 超时支持 api 请求缓存支持 支持处理 gbk 类 axios">
+<meta property="og:type" content="article">
+<meta property="og:title" content="umi-request">
+<meta property="og:url" content="https://swiftist.cn/2020/01/15/umi/umi-request/index.html">
+<meta property="og:site_name" content="飞雪轩辕">
+<meta property="og:description" content="umi-request网络请求库，基于 fetch 封装, 兼具 fetch 与 axios 的特点, 旨在为开发者提供一个统一的 api 调用方式, 简化使用, 并提供诸如缓存, 超时, 字符编码处理, 错误处理等常用功能.  支持的功能 url 参数自动序列化 post 数据提交方式简化 response 返回处理简化 api 超时支持 api 请求缓存支持 支持处理 gbk 类 axios">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-01-15T00:19:44.000Z">
+<meta property="article:modified_time" content="2020-03-31T15:07:39.449Z">
+<meta property="article:author" content="Andy Ge">
+<meta property="article:tag" content="antd">
+<meta property="article:tag" content="umi">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://swiftist.cn/2020/01/15/umi/umi-request/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>umi-request | 飞雪轩辕</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="飞雪轩辕" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">飞雪轩辕</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">人生的乐趣在于把梦想变成现实</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-java">
+
+    <a href="/categories/java/" rel="section"><i class="fa fa-fw fa-th-large"></i>java</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://swiftist.cn/2020/01/15/umi/umi-request/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Andy Ge">
+      <meta itemprop="description" content="勇于积极进取，步入人生的世外桃源">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="飞雪轩辕">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          umi-request
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-01-15 08:19:44" itemprop="dateCreated datePublished" datetime="2020-01-15T08:19:44+08:00">2020-01-15</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-31 23:07:39" itemprop="dateModified" datetime="2020-03-31T23:07:39+08:00">2020-03-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/umi/" itemprop="url" rel="index">
+                    <span itemprop="name">umi</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/01/15/umi/umi-request/" class="post-meta-item leancloud_visitors" data-flag-title="umi-request" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="umi-request"><a href="#umi-request" class="headerlink" title="umi-request"></a>umi-request</h1><p>网络请求库，基于 fetch 封装, 兼具 fetch 与 axios 的特点, 旨在为开发者提供一个统一的 api 调用方式, 简化使用, 并提供诸如缓存, 超时, 字符编码处理, 错误处理等常用功能.</p>
+<hr>
+<h2 id="支持的功能"><a href="#支持的功能" class="headerlink" title="支持的功能"></a>支持的功能</h2><ul>
+<li>url 参数自动序列化</li>
+<li>post 数据提交方式简化</li>
+<li>response 返回处理简化</li>
+<li>api 超时支持</li>
+<li>api 请求缓存支持</li>
+<li>支持处理 gbk</li>
+<li>类 axios 的 request 和 response 拦截器(interceptors)支持</li>
+<li>统一的错误处理方式</li>
+<li>类 koa 洋葱机制的 use 中间件机制支持</li>
+<li>类 axios 的取消请求</li>
+<li>支持 node 环境发送 http 请求</li>
+</ul>
+<h2 id="与-fetch-axios-异同"><a href="#与-fetch-axios-异同" class="headerlink" title="与 fetch, axios 异同"></a>与 fetch, axios 异同</h2><table>
+<thead>
+<tr>
+<th align="left">特性</th>
+<th align="left">umi-request</th>
+<th align="left">fetch</th>
+<th align="left">axios</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">实现</td>
+<td align="left">浏览器原生支持</td>
+<td align="left">浏览器原生支持</td>
+<td align="left">XMLHttpRequest</td>
+</tr>
+<tr>
+<td align="left">大小</td>
+<td align="left">9k</td>
+<td align="left">4k (polyfill)</td>
+<td align="left">14k</td>
+</tr>
+<tr>
+<td align="left">query 简化</td>
+<td align="left">✅</td>
+<td align="left">❌</td>
+<td align="left">✅</td>
+</tr>
+<tr>
+<td align="left">post 简化</td>
+<td align="left">✅</td>
+<td align="left">❌</td>
+<td align="left">❌</td>
+</tr>
+<tr>
+<td align="left">超时</td>
+<td align="left">✅</td>
+<td align="left">❌</td>
+<td align="left">✅</td>
+</tr>
+<tr>
+<td align="left">缓存</td>
+<td align="left">✅</td>
+<td align="left">❌</td>
+<td align="left">❌</td>
+</tr>
+<tr>
+<td align="left">错误检查</td>
+<td align="left">✅</td>
+<td align="left">❌</td>
+<td align="left">❌</td>
+</tr>
+<tr>
+<td align="left">错误处理</td>
+<td align="left">✅</td>
+<td align="left">❌</td>
+<td align="left">✅</td>
+</tr>
+<tr>
+<td align="left">拦截器</td>
+<td align="left">✅</td>
+<td align="left">❌</td>
+<td align="left">✅</td>
+</tr>
+<tr>
+<td align="left">前缀</td>
+<td align="left">✅</td>
+<td align="left">❌</td>
+<td align="left">❌</td>
+</tr>
+<tr>
+<td align="left">后缀</td>
+<td align="left">✅</td>
+<td align="left">❌</td>
+<td align="left">❌</td>
+</tr>
+<tr>
+<td align="left">处理 gbk</td>
+<td align="left">✅</td>
+<td align="left">❌</td>
+<td align="left">❌</td>
+</tr>
+<tr>
+<td align="left">中间件</td>
+<td align="left">✅</td>
+<td align="left">❌</td>
+<td align="left">❌</td>
+</tr>
+<tr>
+<td align="left">取消请求</td>
+<td align="left">✅</td>
+<td align="left">❌</td>
+<td align="left">✅</td>
+</tr>
+</tbody></table>
+<p>更多讨论参考<a href="https://github.com/camsong/blog/issues/2" target="_blank" rel="noopener">传统 Ajax 已死，Fetch 永生</a>, 如果你有好的建议和需求, 请提 <a href="https://github.com/umijs/umi/issues" target="_blank" rel="noopener">issue</a></p>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install --save umi-request</span><br></pre></td></tr></table></figure>
+
+<h2 id="快速上手"><a href="#快速上手" class="headerlink" title="快速上手"></a>快速上手</h2><p>执行 <strong>GET</strong> 请求</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> request <span class="keyword">from</span> <span class="string">'umi-request'</span></span><br><span class="line"></span><br><span class="line">request</span><br><span class="line">    .get(<span class="string">'/api/v1/xxx?id=1'</span>)</span><br><span class="line">    .then(<span class="function"><span class="keyword">function</span>(<span class="params">response</span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(response)</span><br><span class="line">    &#125;)</span><br><span class="line">    .catch(<span class="function"><span class="keyword">function</span>(<span class="params">error</span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(error)</span><br><span class="line">    &#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 也可将 URL 的参数放到 options.params 里</span></span><br><span class="line">request</span><br><span class="line">    .get(<span class="string">'/api/v1/xxx'</span>, &#123;</span><br><span class="line">        params: &#123;</span><br><span class="line">            id: <span class="number">1</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">    .then(<span class="function"><span class="keyword">function</span>(<span class="params">response</span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(response)</span><br><span class="line">    &#125;)</span><br><span class="line">    .catch(<span class="function"><span class="keyword">function</span>(<span class="params">error</span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(error)</span><br><span class="line">    &#125;)</span><br></pre></td></tr></table></figure>
+
+<p>执行 <strong>POST</strong> 请求</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">request</span><br><span class="line">    .post(<span class="string">'/api/v1/user'</span>, &#123;</span><br><span class="line">        data: &#123;</span><br><span class="line">            name: <span class="string">'Mike'</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">    .then(<span class="function"><span class="keyword">function</span>(<span class="params">response</span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(response)</span><br><span class="line">    &#125;)</span><br><span class="line">    .catch(<span class="function"><span class="keyword">function</span>(<span class="params">error</span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(error)</span><br><span class="line">    &#125;)</span><br></pre></td></tr></table></figure>
+
+<h2 id="umi-request-API"><a href="#umi-request-API" class="headerlink" title="umi-request API"></a>umi-request API</h2><p>可以通过向 <strong>umi-request</strong> 传参来发起请求</p>
+<p><strong>umi-request(url[, options])</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> request <span class="keyword">from</span> <span class="string">'umi-request'</span></span><br><span class="line"></span><br><span class="line">request(<span class="string">'/api/v1/xxx'</span>, &#123;</span><br><span class="line">    method: <span class="string">'get'</span>,</span><br><span class="line">    params: &#123; <span class="attr">id</span>: <span class="number">1</span> &#125;</span><br><span class="line">&#125;)</span><br><span class="line">    .then(<span class="function"><span class="keyword">function</span>(<span class="params">response</span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(response)</span><br><span class="line">    &#125;)</span><br><span class="line">    .catch(<span class="function"><span class="keyword">function</span>(<span class="params">error</span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(error)</span><br><span class="line">    &#125;)</span><br><span class="line"></span><br><span class="line">request(<span class="string">'/api/v1/user'</span>, &#123;</span><br><span class="line">    method: <span class="string">'post'</span>,</span><br><span class="line">    data: &#123;</span><br><span class="line">        name: <span class="string">'Mike'</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br><span class="line">    .then(<span class="function"><span class="keyword">function</span>(<span class="params">response</span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(response)</span><br><span class="line">    &#125;)</span><br><span class="line">    .catch(<span class="function"><span class="keyword">function</span>(<span class="params">error</span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(error)</span><br><span class="line">    &#125;)</span><br></pre></td></tr></table></figure>
+
+<h2 id="请求方法的别名"><a href="#请求方法的别名" class="headerlink" title="请求方法的别名"></a>请求方法的别名</h2><p>为了方便起见，为所有支持的请求方法提供了别名, <code>method</code> 属性不必在配置中指定</p>
+<p><strong>request.get(url[, options])</strong></p>
+<p><strong>request.post(url[, options])</strong></p>
+<p><strong>request.delete(url[, options])</strong></p>
+<p><strong>request.put(url[, options])</strong></p>
+<p><strong>request.patch(url[, options])</strong></p>
+<p><strong>request.head(url[, options])</strong></p>
+<p><strong>request.options(url[, options])</strong></p>
+<h2 id="创建实例"><a href="#创建实例" class="headerlink" title="创建实例"></a>创建实例</h2><p>有些通用的配置我们不想每个请求里都去添加，那么可以通过 <code>extend</code> 新建一个 umi-request 实例</p>
+<p><strong>extend([options])</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; extend &#125; <span class="keyword">from</span> <span class="string">'umi-request'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> request = extend(&#123;</span><br><span class="line">    prefix: <span class="string">'/api/v1'</span>,</span><br><span class="line">    timeout: <span class="number">1000</span>,</span><br><span class="line">    headers: &#123;</span><br><span class="line">        <span class="string">'Content-Type'</span>: <span class="string">'multipart/form-data'</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">request</span><br><span class="line">    .get(<span class="string">'/user'</span>)</span><br><span class="line">    .then(<span class="function"><span class="keyword">function</span>(<span class="params">response</span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(response)</span><br><span class="line">    &#125;)</span><br><span class="line">    .catch(<span class="function"><span class="keyword">function</span>(<span class="params">error</span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(error)</span><br><span class="line">    &#125;)</span><br></pre></td></tr></table></figure>
+
+<p>NodeJS 环境创建实例</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> umi = <span class="built_in">require</span>(<span class="string">'umi-request'</span>)</span><br><span class="line"><span class="keyword">const</span> extendRequest = umi.extend(&#123; <span class="attr">timeout</span>: <span class="number">10000</span> &#125;)</span><br><span class="line"></span><br><span class="line">extendRequest(<span class="string">'/api/user'</span>)</span><br><span class="line">    .then(<span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(res)</span><br><span class="line">    &#125;)</span><br><span class="line">    .catch(<span class="function"><span class="params">err</span> =&gt;</span> &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(err)</span><br><span class="line">    &#125;)</span><br></pre></td></tr></table></figure>
+
+<p>以下是可用的实例方法，指定的配置将与实例的配置合并。</p>
+<p><strong>request.get(url[, options])</strong></p>
+<p><strong>request.post(url[, options])</strong></p>
+<p><strong>request.delete(url[, options])</strong></p>
+<p><strong>request.put(url[, options])</strong></p>
+<p><strong>request.patch(url[, options])</strong></p>
+<p><strong>request.head(url[, options])</strong></p>
+<p><strong>request.options(url[, options])</strong></p>
+<p>umi-request 可以进行一层简单封装后再使用, 可参考 <a href="https://github.com/umijs/ant-design-pro/blob/master/src/utils/request.js" target="_blank" rel="noopener">antd-pro</a></p>
+<h2 id="请求配置"><a href="#请求配置" class="headerlink" title="请求配置"></a>请求配置</h2><h3 id="request-options-参数"><a href="#request-options-参数" class="headerlink" title="request options 参数"></a>request options 参数</h3><table>
+<thead>
+<tr>
+<th align="left">参数</th>
+<th align="left">说明</th>
+<th align="left">类型</th>
+<th align="left">可选值</th>
+<th align="left">默认值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">method</td>
+<td align="left">请求方式</td>
+<td align="left">string</td>
+<td align="left">get , post , put …</td>
+<td align="left">get</td>
+</tr>
+<tr>
+<td align="left">params</td>
+<td align="left">url 请求参数</td>
+<td align="left">object 或 URLSearchParams 对象</td>
+<td align="left">–</td>
+<td align="left">–</td>
+</tr>
+<tr>
+<td align="left">data</td>
+<td align="left">提交的数据</td>
+<td align="left">any</td>
+<td align="left">–</td>
+<td align="left">–</td>
+</tr>
+<tr>
+<td align="left">headers</td>
+<td align="left">fetch 原有参数</td>
+<td align="left">object</td>
+<td align="left">–</td>
+<td align="left">{}</td>
+</tr>
+<tr>
+<td align="left">timeout</td>
+<td align="left">超时时长, 默认毫秒, 写操作慎用</td>
+<td align="left">number</td>
+<td align="left">–</td>
+<td align="left">–</td>
+</tr>
+<tr>
+<td align="left">prefix</td>
+<td align="left">前缀, 一般用于覆盖统一设置的 prefix</td>
+<td align="left">string</td>
+<td align="left">–</td>
+<td align="left">–</td>
+</tr>
+<tr>
+<td align="left">suffix</td>
+<td align="left">后缀, 比如某些场景 api 需要统一加 .json</td>
+<td align="left">string</td>
+<td align="left">–</td>
+<td align="left">–</td>
+</tr>
+<tr>
+<td align="left">credentials</td>
+<td align="left">fetch 请求包含 cookies 信息</td>
+<td align="left">string</td>
+<td align="left">–</td>
+<td align="left">credentials: ‘same-origin’</td>
+</tr>
+<tr>
+<td align="left">useCache</td>
+<td align="left">是否使用缓存（仅支持浏览器客户端）</td>
+<td align="left">boolean</td>
+<td align="left">–</td>
+<td align="left">false</td>
+</tr>
+<tr>
+<td align="left">validateCache</td>
+<td align="left">缓存策略函数</td>
+<td align="left">(url, options) =&gt; boolean</td>
+<td align="left">–</td>
+<td align="left">默认 get 请求做缓存</td>
+</tr>
+<tr>
+<td align="left">ttl</td>
+<td align="left">缓存时长, 0 为不过期</td>
+<td align="left">number</td>
+<td align="left">–</td>
+<td align="left">60000</td>
+</tr>
+<tr>
+<td align="left">maxCache</td>
+<td align="left">最大缓存数</td>
+<td align="left">number</td>
+<td align="left">–</td>
+<td align="left">无限</td>
+</tr>
+<tr>
+<td align="left">requestType</td>
+<td align="left">post 请求时数据类型</td>
+<td align="left">string</td>
+<td align="left">json , form</td>
+<td align="left">json</td>
+</tr>
+<tr>
+<td align="left">parseResponse</td>
+<td align="left">是否对 response 做处理简化</td>
+<td align="left">boolean</td>
+<td align="left">–</td>
+<td align="left">true</td>
+</tr>
+<tr>
+<td align="left">charset</td>
+<td align="left">字符集</td>
+<td align="left">string</td>
+<td align="left">utf8 , gbk</td>
+<td align="left">utf8</td>
+</tr>
+<tr>
+<td align="left">responseType</td>
+<td align="left">如何解析返回的数据</td>
+<td align="left">string</td>
+<td align="left">json , text , blob , formData …</td>
+<td align="left">json , text</td>
+</tr>
+<tr>
+<td align="left">throwErrIfParseFail</td>
+<td align="left">当 responseType 为 ‘json’, 对请求结果做 JSON.parse 出错时是否抛出异常</td>
+<td align="left">boolean</td>
+<td align="left">–</td>
+<td align="left">false</td>
+</tr>
+<tr>
+<td align="left">getResponse</td>
+<td align="left">是否获取源 response, 返回结果将包裹一层</td>
+<td align="left">boolean</td>
+<td align="left">–</td>
+<td align="left">fasle</td>
+</tr>
+<tr>
+<td align="left">errorHandler</td>
+<td align="left">异常处理, 或者覆盖统一的异常处理</td>
+<td align="left">function(error)</td>
+<td align="left">–</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">cancelToken</td>
+<td align="left">取消请求的 Token</td>
+<td align="left">CancelToken.token</td>
+<td align="left">–</td>
+<td align="left">–</td>
+</tr>
+</tbody></table>
+<p>fetch 原其他参数有效, 详见<a href="https://github.github.io/fetch/" target="_blank" rel="noopener">fetch 文档</a></p>
+<h3 id="extend-options-初始化默认参数-支持以上所有"><a href="#extend-options-初始化默认参数-支持以上所有" class="headerlink" title="extend options 初始化默认参数, 支持以上所有"></a>extend options 初始化默认参数, 支持以上所有</h3><table>
+<thead>
+<tr>
+<th align="left">参数</th>
+<th align="left">说明</th>
+<th align="left">类型</th>
+<th align="left">可选值</th>
+<th align="left">默认值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">method</td>
+<td align="left">请求方式</td>
+<td align="left">string</td>
+<td align="left">get , post , put …</td>
+<td align="left">get</td>
+</tr>
+<tr>
+<td align="left">params</td>
+<td align="left">url 请求参数</td>
+<td align="left">object</td>
+<td align="left">–</td>
+<td align="left">–</td>
+</tr>
+<tr>
+<td align="left">data</td>
+<td align="left">提交的数据</td>
+<td align="left">any</td>
+<td align="left">–</td>
+<td align="left">–</td>
+</tr>
+</tbody></table>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="comment">// 'method' 是创建请求时使用的方法</span></span><br><span class="line">  method: <span class="string">'get'</span>, <span class="comment">// default</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// 'params' 是即将于请求一起发送的 URL 参数，参数会自动 encode 后添加到 URL 中</span></span><br><span class="line">  <span class="comment">// 类型需为 Object 对象或者 URLSearchParams 对象</span></span><br><span class="line">  params: &#123; <span class="attr">id</span>: <span class="number">1</span> &#125;,</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 'paramsSerializer' 开发者可通过该函数对 params 做序列化（注意：此时传入的 params 为合并了 extends 中 params 参数的对象，如果传入的是 URLSearchParams 对象会转化为 Object 对象</span></span><br><span class="line">  paramsSerializer: <span class="function"><span class="keyword">function</span> (<span class="params">params</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> Qs.stringify(params, &#123; <span class="attr">arrayFormat</span>: <span class="string">'brackets'</span> &#125;)</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 'data' 作为请求主体被发送的数据</span></span><br><span class="line">  <span class="comment">// 适用于这些请求方法 'PUT', 'POST', 和 'PATCH'</span></span><br><span class="line">  <span class="comment">// 必须是以下类型之一：</span></span><br><span class="line">  <span class="comment">// - string, plain object, ArrayBuffer, ArrayBufferView, URLSearchParams</span></span><br><span class="line">  <span class="comment">// - 浏览器专属：FormData, File, Blob</span></span><br><span class="line">  <span class="comment">// - Node 专属： Stream</span></span><br><span class="line">  data: &#123; <span class="attr">name</span>: <span class="string">'Mike'</span> &#125;,</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 'headers' 请求头</span></span><br><span class="line">  headers: &#123; <span class="string">'Content-Type'</span>: <span class="string">'multipart/form-data'</span> &#125;,</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 'timeout' 指定请求超时的毫秒数（0 表示无超时时间）</span></span><br><span class="line">  <span class="comment">// 如果请求超过了 'timeout' 时间，请求将被中断并抛出请求异常</span></span><br><span class="line">  timeout: <span class="number">1000</span>,</span><br><span class="line"></span><br><span class="line">  <span class="comment">// ’prefix‘ 前缀，统一设置 url 前缀</span></span><br><span class="line">  <span class="comment">// ( e.g. request('/user/save', &#123; prefix: '/api/v1' &#125;) =&gt; request('/api/v1/user/save') )</span></span><br><span class="line">  prefix: <span class="string">''</span>,</span><br><span class="line"></span><br><span class="line">  <span class="comment">// ’suffix‘ 后缀，统一设置 url 后缀</span></span><br><span class="line">  <span class="comment">// ( e.g. request('/api/v1/user/save', &#123; suffix: '.json'&#125;) =&gt; request('/api/v1/user/save.json') )</span></span><br><span class="line">  suffix: <span class="string">''</span>,</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 'credentials' 发送带凭据的请求</span></span><br><span class="line">  <span class="comment">// 为了让浏览器发送包含凭据的请求（即使是跨域源），需要设置 credentials: 'include'</span></span><br><span class="line">  <span class="comment">// 如果只想在请求URL与调用脚本位于同一起源处时发送凭据，请添加credentials: 'same-origin'</span></span><br><span class="line">  <span class="comment">// 要改为确保浏览器不在请求中包含凭据，请使用credentials: 'omit'</span></span><br><span class="line">  credentials: <span class="string">'same-origin'</span>, <span class="comment">// default</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// ’useCache‘ 是否使用缓存，当值为 true 时，GET 请求在 ttl 毫秒内将被缓存，缓存策略唯一 key 为 url + params + method 组合</span></span><br><span class="line">  useCache: <span class="literal">false</span>, <span class="comment">// default</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// ’ttl‘ 缓存时长（毫秒）， 0 为不过期</span></span><br><span class="line">  ttl: <span class="number">60000</span>,</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 'maxCache' 最大缓存数， 0 为无限制</span></span><br><span class="line">  maxCache: <span class="number">0</span>,</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 根据协议规范， GET 请求用于获取、查询服务端数据，在数据更新频率不频繁的情况下做必要的缓存能减少服务端的压力，因为缓存策略是默认对 GET 请求做缓存，但对于一些特殊场景需要缓存其他类型请求的响应数据时，我们提供 validateCache 供用户自定义何时需要进行缓存， key 依旧为 url + params + method</span></span><br><span class="line">  validateCache: <span class="function">(<span class="params">url, options</span>) =&gt;</span> &#123; <span class="keyword">return</span> options.method.toLowerCase() === <span class="string">'get'</span> &#125;,</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 'requestType' 当 data 为对象或者数组时， umi-request 会根据 requestType 动态添加 headers 和设置 body（可传入 headers 覆盖 Accept 和 Content-Type 头部属性）:</span></span><br><span class="line">  <span class="comment">// 1. requestType === 'json' 时, (默认为 json )</span></span><br><span class="line">  <span class="comment">// options.headers = &#123;</span></span><br><span class="line">  <span class="comment">//   Accept: 'application/json',</span></span><br><span class="line">  <span class="comment">//   'Content-Type': 'application/json;charset=UTF-8',</span></span><br><span class="line">  <span class="comment">//   ...options.headers,</span></span><br><span class="line">  <span class="comment">// &#125;</span></span><br><span class="line">  <span class="comment">// options.body = JSON.stringify(data)</span></span><br><span class="line">  <span class="comment">// 2. requestType === 'form' 时，</span></span><br><span class="line">  <span class="comment">// options.headers = &#123;</span></span><br><span class="line">  <span class="comment">//   Accept: 'application/json',</span></span><br><span class="line">  <span class="comment">//   'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',</span></span><br><span class="line">  <span class="comment">//   ...options.headers,</span></span><br><span class="line">  <span class="comment">// &#125;;</span></span><br><span class="line">  <span class="comment">// options.body = query-string.stringify(data);</span></span><br><span class="line">  <span class="comment">// 3. 其他 requestType</span></span><br><span class="line">  <span class="comment">// options.headers = &#123;</span></span><br><span class="line">  <span class="comment">//   Accept: 'application/json',</span></span><br><span class="line">  <span class="comment">//   ...options.headers,</span></span><br><span class="line">  <span class="comment">// &#125;;</span></span><br><span class="line">  <span class="comment">// options.body = data;</span></span><br><span class="line">  requestType: <span class="string">'json'</span>, <span class="comment">// default</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// ’parseResponse‘ 是否对请求返回的 Response 对象做格式、状态码解析</span></span><br><span class="line">  parseResponse: <span class="literal">true</span>, <span class="comment">// default</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// ’charset‘ 当服务端返回的数据编码类型为 gbk 时可使用该参数，umi-request 会按 gbk 编码做解析，避免得到乱码, 默认为 utf8</span></span><br><span class="line">  <span class="comment">// 当 parseResponse 值为 false 时该参数无效</span></span><br><span class="line">  charset: <span class="string">'gbk'</span>,</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 'responseType': 如何解析返回的数据，当 parseResponse 值为 false 时该参数无效</span></span><br><span class="line">  <span class="comment">// 默认为 'json', 对返回结果进行 Response.text().then( d =&gt; JSON.parse(d) ) 解析</span></span><br><span class="line">  <span class="comment">// 其他(text, blob, arrayBuffer, formData), 做 Response[responseType]() 解析</span></span><br><span class="line">  responseType: <span class="string">'json'</span>, <span class="comment">// default</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// 'throwErrIfParseFail': 当 responseType 为 json 但 JSON.parse(data) fail 时，是否抛出异常。默认不抛出异常而返回 Response.text() 后的结果，如需要抛出异常，可设置 throwErrIfParseFail 为 true</span></span><br><span class="line">  throwErrIfParseFail: <span class="literal">false</span>, <span class="comment">// default</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// 'getResponse': 是否获取源 Response， 返回结果将包含一层： &#123; data, response &#125;</span></span><br><span class="line">  getResponse: <span class="literal">false</span>,<span class="comment">// default</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// 'errorHandler' 统一的异常处理，供开发者对请求发生的异常做统一处理，详细使用请参考下方的错误处理文档</span></span><br><span class="line">  errorHandler: <span class="function"><span class="keyword">function</span>(<span class="params">error</span>) </span>&#123; <span class="comment">/* 异常处理 */</span> &#125;,</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 'cancelToken' 取消请求的 Token，详细使用请参考下方取消请求文档</span></span><br><span class="line">  cancelToken: <span class="literal">null</span>,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="更新拓展实例默认参数"><a href="#更新拓展实例默认参数" class="headerlink" title="更新拓展实例默认参数"></a>更新拓展实例默认参数</h3><p>实例化一个请求实例后，有时还需要动态更新默认参数，umi-request 提供 <strong>extendOptions</strong> 方法供用户进行更新：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> request = extend(&#123; <span class="attr">timeout</span>: <span class="number">1000</span>, <span class="attr">params</span>: &#123; <span class="attr">a</span>: <span class="string">'1'</span> &#125; &#125;)</span><br><span class="line"><span class="comment">// 默认参数是 &#123; timeout: 1000, params: &#123; a: '1' &#125;&#125;</span></span><br><span class="line"></span><br><span class="line">request.extendOptions(&#123; <span class="attr">timeout</span>: <span class="number">3000</span>, <span class="attr">params</span>: &#123; <span class="attr">b</span>: <span class="string">'2'</span> &#125; &#125;)</span><br><span class="line"><span class="comment">// 此时默认参数是 &#123; timeout: 3000, params: &#123; a: '1', b: '2' &#125;&#125;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="响应结构"><a href="#响应结构" class="headerlink" title="响应结构"></a>响应结构</h2><p>某个请求的响应返回的响应对象 Response 如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="comment">// `data` 由服务器提供的响应, 需要进行解析才能获取</span></span><br><span class="line">  data: &#123;&#125;,</span><br><span class="line"></span><br><span class="line">  <span class="comment">// `status` 来自服务器响应的 HTTP 状态码</span></span><br><span class="line">  status: <span class="number">200</span>,</span><br><span class="line"></span><br><span class="line">  <span class="comment">// `statusText` 来自服务器响应的 HTTP 状态信息</span></span><br><span class="line">  statusText: <span class="string">'OK'</span>,</span><br><span class="line"></span><br><span class="line">  <span class="comment">// `headers` 服务器响应的头</span></span><br><span class="line">  headers: &#123;&#125;,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>当 options.getResponse === false 时, 响应结构为解析后的 data</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">request.get(<span class="string">'/api/v1/xxx'</span>, &#123; <span class="attr">getResponse</span>: <span class="literal">false</span> &#125;).then(<span class="function"><span class="keyword">function</span>(<span class="params">data</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(data)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>当 options.getResponse === true 时，响应结构为包含 data 和 Response 的对象</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">request</span><br><span class="line">    .get(<span class="string">'/api/v1/xxx'</span>, &#123; <span class="attr">getResponse</span>: <span class="literal">true</span> &#125;)</span><br><span class="line">    .then(<span class="function"><span class="keyword">function</span>(<span class="params">&#123; data, response &#125;</span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(data)</span><br><span class="line">        <span class="built_in">console</span>.log(response.status)</span><br><span class="line">        <span class="built_in">console</span>.log(response.statusText)</span><br><span class="line">        <span class="built_in">console</span>.log(response.headers)</span><br><span class="line">    &#125;)</span><br></pre></td></tr></table></figure>
+
+<p>在使用 catch 或者 errorHandler, 响应对象可以通过 <code>error</code> 对象获取使用，参考<strong>错误处理</strong>这一节文档。</p>
+<h2 id="错误处理"><a href="#错误处理" class="headerlink" title="错误处理"></a>错误处理</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> request, &#123; extend &#125; <span class="keyword">from</span> <span class="string">'umi-request'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> errorHandler = <span class="function"><span class="keyword">function</span>(<span class="params">error</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> codeMap = &#123;</span><br><span class="line">        <span class="string">'021'</span>: <span class="string">'发生错误啦'</span>,</span><br><span class="line">        <span class="string">'022'</span>: <span class="string">'发生大大大大错误啦'</span></span><br><span class="line">        <span class="comment">// ....</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (error.response) &#123;</span><br><span class="line">        <span class="comment">// 请求已发送但服务端返回状态码非 2xx 的响应</span></span><br><span class="line">        <span class="built_in">console</span>.log(error.response.status)</span><br><span class="line">        <span class="built_in">console</span>.log(error.response.headers)</span><br><span class="line">        <span class="built_in">console</span>.log(error.data)</span><br><span class="line">        <span class="built_in">console</span>.log(error.request)</span><br><span class="line">        <span class="built_in">console</span>.log(codeMap[error.data.status])</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// 请求初始化时出错或者没有响应返回的异常</span></span><br><span class="line">        <span class="built_in">console</span>.log(error.message)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">throw</span> error <span class="comment">// 如果throw. 错误将继续抛出.</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 如果return, 则将值作为返回. 'return;' 相当于return undefined, 在处理结果时判断response是否有值即可.</span></span><br><span class="line">    <span class="comment">// return &#123;some: 'data'&#125;;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 1. 作为统一错误处理</span></span><br><span class="line"><span class="keyword">const</span> extendRequest = extend(&#123; errorHandler &#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 2. 单独特殊处理, 如果配置了统一处理, 但某个api需要特殊处理. 则在请求时, 将errorHandler作为参数传入.</span></span><br><span class="line">request(<span class="string">'/api/v1/xxx'</span>, &#123; errorHandler &#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 3. 通过 Promise.catch 做错误处理</span></span><br><span class="line">request(<span class="string">'/api/v1/xxx'</span>)</span><br><span class="line">    .then(<span class="function"><span class="keyword">function</span>(<span class="params">response</span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(response)</span><br><span class="line">    &#125;)</span><br><span class="line">    .catch(<span class="function"><span class="keyword">function</span>(<span class="params">error</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> errorHandler(error)</span><br><span class="line">    &#125;)</span><br></pre></td></tr></table></figure>
+
+<h2 id="中间件"><a href="#中间件" class="headerlink" title="中间件"></a>中间件</h2><p>类 koa 的洋葱机制，让开发者优雅地做请求前后的增强处理，支持创建实例、全局、内核中间件。</p>
+<p><strong>实例中间件（默认）</strong> ：request.use(fn) 不同实例创建的中间件相互独立不影响;</p>
+<p><strong>全局中间件</strong> : request.use(fn, { global: true }) 全局中间件，不同实例共享全局中间件；</p>
+<p><strong>内核中间件</strong> ：request.use(fn, { core: true }) 内核中间件， 方便开发者拓展请求内核；</p>
+<p>request.use(fn[, options])</p>
+<h3 id="参数"><a href="#参数" class="headerlink" title="参数"></a>参数</h3><p>fn 入参</p>
+<ul>
+<li>ctx(Object)：上下文对象，包括 req 和 res 对象</li>
+<li>next(Function)：调用下一个中间件的函数</li>
+</ul>
+<p>options 参数</p>
+<ul>
+<li>global(boolean): 是否为全局中间件，优先级比 core 高</li>
+<li>core(boolean): 是否为内核中间件</li>
+</ul>
+<h3 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h3><ol>
+<li>同类型中间件执行顺序</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> request, &#123; extend &#125; <span class="keyword">from</span> <span class="string">'umi-request'</span></span><br><span class="line">request.use(<span class="keyword">async</span> (ctx, next) =&gt; &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'a1'</span>)</span><br><span class="line">    <span class="keyword">await</span> next()</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'a2'</span>)</span><br><span class="line">&#125;)</span><br><span class="line">request.use(<span class="keyword">async</span> (ctx, next) =&gt; &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'b1'</span>)</span><br><span class="line">    <span class="keyword">await</span> next()</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'b2'</span>)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> data = <span class="keyword">await</span> request(<span class="string">'/api/v1/a'</span>)</span><br></pre></td></tr></table></figure>
+
+<p>执行顺序如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">a1 -&gt; b1 -&gt; response -&gt; b2 -&gt; a2</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>不同类型中间件执行顺序</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">request.use(<span class="keyword">async</span> (ctx, next) =&gt; &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'instanceA1'</span>)</span><br><span class="line">    <span class="keyword">await</span> next()</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'instanceA2'</span>)</span><br><span class="line">&#125;)</span><br><span class="line">request.use(<span class="keyword">async</span> (ctx, next) =&gt; &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'instanceB1'</span>)</span><br><span class="line">    <span class="keyword">await</span> next()</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'instanceB2'</span>)</span><br><span class="line">&#125;)</span><br><span class="line">request.use(</span><br><span class="line">    <span class="keyword">async</span> (ctx, next) =&gt; &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">'globalA1'</span>)</span><br><span class="line">        <span class="keyword">await</span> next()</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">'globalA2'</span>)</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123; <span class="attr">global</span>: <span class="literal">true</span> &#125;</span><br><span class="line">)</span><br><span class="line">request.use(</span><br><span class="line">    <span class="keyword">async</span> (ctx, next) =&gt; &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">'coreA1'</span>)</span><br><span class="line">        <span class="keyword">await</span> next()</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">'coreA2'</span>)</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123; <span class="attr">core</span>: <span class="literal">true</span> &#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>执行顺序如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">instanceA1 -&gt; instanceB1 -&gt; globalA1 -&gt; coreA1 -&gt; coreA2 -&gt; globalA2 -&gt; instanceB2 -&gt; instanceA2</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>使用中间件对请求前后做处理</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">request.use(<span class="keyword">async</span> (ctx, next) =&gt; &#123;</span><br><span class="line">    <span class="keyword">const</span> &#123; req &#125; = ctx</span><br><span class="line">    <span class="keyword">const</span> &#123; url, options &#125; = req</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 判断是否需要添加前缀，如果是统一添加可通过 prefix、suffix 参数配置</span></span><br><span class="line">    <span class="keyword">if</span> (url.indexOf(<span class="string">'/api'</span>) !== <span class="number">0</span>) &#123;</span><br><span class="line">        ctx.req.url = <span class="string">`/api/v1/<span class="subst">$&#123;url&#125;</span>`</span></span><br><span class="line">    &#125;</span><br><span class="line">    ctx.req.options = &#123;</span><br><span class="line">        ...options,</span><br><span class="line">        foo: <span class="string">'foo'</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">await</span> next()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> &#123; res &#125; = ctx</span><br><span class="line">    <span class="keyword">const</span> &#123; success = <span class="literal">false</span> &#125; = res <span class="comment">// 假设返回结果为 : &#123; success: false, errorCode: 'B001' &#125;</span></span><br><span class="line">    <span class="keyword">if</span> (!success) &#123;</span><br><span class="line">        <span class="comment">// 对异常情况做对应处理</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>使用内核中间件拓展请求能力</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">request.use(</span><br><span class="line">    <span class="keyword">async</span> (ctx, next) =&gt; &#123;</span><br><span class="line">        <span class="keyword">const</span> &#123; req &#125; = ctx</span><br><span class="line">        <span class="keyword">const</span> &#123; url, options &#125; = req</span><br><span class="line">        <span class="keyword">const</span> &#123; __umiRequestCoreType__ = <span class="string">'normal'</span> &#125; = options</span><br><span class="line"></span><br><span class="line">        <span class="comment">// __umiRequestCoreType__ 用于区分请求内核类型</span></span><br><span class="line">        <span class="comment">// 值为 'normal' 使用 umi-request 内置的请求内核</span></span><br><span class="line">        <span class="keyword">if</span> (__umiRequestCoreType__ === <span class="string">'normal'</span>) &#123;</span><br><span class="line">            <span class="keyword">await</span> next()</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 非 normal 使用自定义请求内核获取响应数据</span></span><br><span class="line">        <span class="keyword">const</span> response = getResponseByOtherWay()</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 将响应数据写入 ctx 中</span></span><br><span class="line">        ctx.res = response</span><br><span class="line"></span><br><span class="line">        <span class="keyword">await</span> next()</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;,</span><br><span class="line">    &#123; <span class="attr">core</span>: <span class="literal">true</span> &#125;</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 使用自定义请求内核</span></span><br><span class="line">request(<span class="string">'/api/v1/rpc'</span>, &#123;</span><br><span class="line">    __umiRequestCoreType__: <span class="string">'rpc'</span>,</span><br><span class="line">    parseResponse: <span class="literal">false</span></span><br><span class="line">&#125;)</span><br><span class="line">    .then(<span class="function"><span class="keyword">function</span>(<span class="params">response</span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(response)</span><br><span class="line">    &#125;)</span><br><span class="line">    .catch(<span class="function"><span class="keyword">function</span>(<span class="params">error</span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(error)</span><br><span class="line">    &#125;)</span><br></pre></td></tr></table></figure>
+
+<h2 id="拦截器"><a href="#拦截器" class="headerlink" title="拦截器"></a>拦截器</h2><p>在请求或响应被 <code>then</code> 或 <code>catch</code> 处理前拦截它们。</p>
+<ol>
+<li>全局拦截器</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// request拦截器, 改变url 或 options.</span></span><br><span class="line">request.interceptors.request.use(<span class="function">(<span class="params">url, options</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">        url: <span class="string">`<span class="subst">$&#123;url&#125;</span>&amp;interceptors=yes`</span>,</span><br><span class="line">        options: &#123; ...options, <span class="attr">interceptors</span>: <span class="literal">true</span> &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 和上一个相同</span></span><br><span class="line">request.interceptors.request.use(</span><br><span class="line">    (url, options) =&gt; &#123;</span><br><span class="line">        <span class="keyword">return</span> &#123;</span><br><span class="line">            url: <span class="string">`<span class="subst">$&#123;url&#125;</span>&amp;interceptors=yes`</span>,</span><br><span class="line">            options: &#123; ...options, <span class="attr">interceptors</span>: <span class="literal">true</span> &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123; <span class="attr">global</span>: <span class="literal">true</span> &#125;</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment">// response拦截器, 处理response</span></span><br><span class="line">request.interceptors.response.use(<span class="function">(<span class="params">response, options</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> contentType = response.headers.get(<span class="string">'Content-Type'</span>)</span><br><span class="line">    <span class="keyword">return</span> response</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 提前对响应做异常处理</span></span><br><span class="line">request.interceptors.response.use(<span class="function"><span class="params">response</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> codeMaps = &#123;</span><br><span class="line">        <span class="number">502</span>: <span class="string">'网关错误。'</span>,</span><br><span class="line">        <span class="number">503</span>: <span class="string">'服务不可用，服务器暂时过载或维护。'</span>,</span><br><span class="line">        <span class="number">504</span>: <span class="string">'网关超时。'</span></span><br><span class="line">    &#125;</span><br><span class="line">    message.error(codeMaps[response.status])</span><br><span class="line">    <span class="keyword">return</span> response</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 克隆响应对象做解析处理</span></span><br><span class="line">request.interceptors.response.use(<span class="keyword">async</span> response =&gt; &#123;</span><br><span class="line">    <span class="keyword">const</span> data = <span class="keyword">await</span> response.clone().json()</span><br><span class="line">    <span class="keyword">if</span> (data &amp;&amp; data.NOT_LOGIN) &#123;</span><br><span class="line">        location.href = <span class="string">'登录url'</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> response</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>实例内部拦截器</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 全局拦截器直接使用 request 实例中的方法</span></span><br><span class="line">request.interceptors.request.use(</span><br><span class="line">    (url, options) =&gt; &#123;</span><br><span class="line">        <span class="keyword">return</span> &#123;</span><br><span class="line">            url: <span class="string">`<span class="subst">$&#123;url&#125;</span>&amp;interceptors=yes`</span>,</span><br><span class="line">            options: &#123; ...options, <span class="attr">interceptors</span>: <span class="literal">true</span> &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123; <span class="attr">global</span>: <span class="literal">false</span> &#125;</span><br><span class="line">) <span class="comment">// 第二个参数不传默认为 &#123; global: true &#125;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">createClient</span>(<span class="params">baseUrl</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> request = extend(&#123;</span><br><span class="line">        prefix: baseUrl</span><br><span class="line">    &#125;)</span><br><span class="line">    <span class="keyword">return</span> request</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> clientA = createClient(<span class="string">'/api'</span>)</span><br><span class="line"><span class="keyword">const</span> clientB = createClient(<span class="string">'/api'</span>)</span><br><span class="line"><span class="comment">// 局部拦截器使用</span></span><br><span class="line">clientA.interceptors.request.use(</span><br><span class="line">    (url, options) =&gt; &#123;</span><br><span class="line">        <span class="keyword">return</span> &#123;</span><br><span class="line">            url: <span class="string">`<span class="subst">$&#123;url&#125;</span>&amp;interceptors=clientA`</span>,</span><br><span class="line">            options</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123; <span class="attr">global</span>: <span class="literal">false</span> &#125;</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">clientB.interceptors.request.use(</span><br><span class="line">    (url, options) =&gt; &#123;</span><br><span class="line">        <span class="keyword">return</span> &#123;</span><br><span class="line">            url: <span class="string">`<span class="subst">$&#123;url&#125;</span>&amp;interceptors=clientB`</span>,</span><br><span class="line">            options</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123; <span class="attr">global</span>: <span class="literal">false</span> &#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<h2 id="取消请求"><a href="#取消请求" class="headerlink" title="取消请求"></a>取消请求</h2><p>你可以通过 <strong>cancel token</strong> 来取消一个请求</p>
+<blockquote>
+<p>cancel token API 是基于已被撤销的 <a href="https://github.com/tc39/proposal-cancelable-promises" target="_blank" rel="noopener">cancelable-promises 方案</a></p>
+</blockquote>
+<ol>
+<li>你可以通过 <strong>CancelToken.source</strong> 来创建一个 cancel token，如下所示:</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> Request <span class="keyword">from</span> <span class="string">'umi-request'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> CancelToken = Request.CancelToken</span><br><span class="line"><span class="keyword">const</span> &#123; token, cancel &#125; = CancelToken.source()</span><br><span class="line"></span><br><span class="line">Request.get(<span class="string">'/api/cancel'</span>, &#123;</span><br><span class="line">    cancelToken: token</span><br><span class="line">&#125;).catch(<span class="function"><span class="keyword">function</span>(<span class="params">thrown</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (Request.isCancel(thrown)) &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">'Request canceled'</span>, thrown.message)</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// 处理异常</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">Request.post(</span><br><span class="line">    <span class="string">'/api/cancel'</span>,</span><br><span class="line">    &#123;</span><br><span class="line">        name: <span class="string">'hello world'</span></span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">        cancelToken: token</span><br><span class="line">    &#125;</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 取消请求(参数为非必填)</span></span><br><span class="line">cancel(<span class="string">'Operation canceled by the user.'</span>)</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>你也可以通过实例化 CancelToken 来创建一个 token，同时通过传入函数来获取取消方法：</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> Request <span class="keyword">from</span> <span class="string">'umi-request'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> CancelToken = Request.CancelToken</span><br><span class="line"><span class="keyword">let</span> cancel</span><br><span class="line"></span><br><span class="line">Request.get(<span class="string">'/api/cancel'</span>, &#123;</span><br><span class="line">    cancelToken: <span class="keyword">new</span> CancelToken(<span class="function"><span class="keyword">function</span> <span class="title">executor</span>(<span class="params">c</span>) </span>&#123;</span><br><span class="line">        cancel = c</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;)</span><br><span class="line"><span class="comment">// 取消请求</span></span><br><span class="line">cancel()</span><br></pre></td></tr></table></figure>
+
+<h2 id="案例"><a href="#案例" class="headerlink" title="案例"></a>案例</h2><h3 id="如何获取响应头信息"><a href="#如何获取响应头信息" class="headerlink" title="如何获取响应头信息"></a>如何获取响应头信息</h3><p>通过 <strong>Headers.get()</strong> 获取响应头信息。(可参考 <a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Headers/get" target="_blank" rel="noopener">MDN 文档</a>)</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">request(<span class="string">'/api/v1/some/api'</span>, &#123; <span class="attr">getResponse</span>: <span class="literal">true</span> &#125;).then(</span><br><span class="line">    (&#123; data, response &#125;) =&gt; &#123;</span><br><span class="line">        response.headers.get(<span class="string">'Content-Type'</span>)</span><br><span class="line">    &#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<h3 id="文件上传"><a href="#文件上传" class="headerlink" title="文件上传"></a>文件上传</h3><p>使用 FormData() 构造函数时，浏览器会自动识别并添加请求头 <code>&quot;Content-Type: multipart/form-data&quot;</code>, 且参数依旧是表单提交时那种键值对，因此不需要开发者手动设置 <strong>Content-Type</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> formData = <span class="keyword">new</span> FormData()</span><br><span class="line">formData.append(<span class="string">'file'</span>, file)</span><br><span class="line">request(<span class="string">'/api/v1/some/api'</span>, &#123; <span class="attr">method</span>: <span class="string">'post'</span>, <span class="attr">data</span>: formData &#125;)</span><br></pre></td></tr></table></figure>
+
+<p>如果希望获取自定义头部信息，需要在服务器设置 <a href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Access-Control-Expose-Headers" target="_blank" rel="noopener">Access-Control-Expose-Headers</a>,然后可按照上述方式获取自定义头部信息。</p>
+<h2 id="开发和调试"><a href="#开发和调试" class="headerlink" title="开发和调试"></a>开发和调试</h2><ul>
+<li>npm install</li>
+<li>npm run dev</li>
+<li>npm link</li>
+<li>然后到你测试的项目中执行 npm link umi-request</li>
+<li>引入并使用</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/antd/" rel="tag"># antd</a>
+              <a href="/tags/umi/" rel="tag"># umi</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/01/15/umi/umi-request-%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82%E4%B9%8B%E8%B7%AF/" rel="prev" title="umi-request 网络请求之路">
+      <i class="fa fa-chevron-left"></i> umi-request 网络请求之路
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/01/15/umi/%E4%BC%A0%E7%BB%9F-Ajax-%E5%B7%B2%E6%AD%BB%EF%BC%8CFetch-%E6%B0%B8%E7%94%9F/" rel="next" title="传统 Ajax 已死，Fetch 永生">
+      传统 Ajax 已死，Fetch 永生 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#umi-request"><span class="nav-number">1.</span> <span class="nav-text">umi-request</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#支持的功能"><span class="nav-number">1.1.</span> <span class="nav-text">支持的功能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#与-fetch-axios-异同"><span class="nav-number">1.2.</span> <span class="nav-text">与 fetch, axios 异同</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装"><span class="nav-number">1.3.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#快速上手"><span class="nav-number">1.4.</span> <span class="nav-text">快速上手</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#umi-request-API"><span class="nav-number">1.5.</span> <span class="nav-text">umi-request API</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#请求方法的别名"><span class="nav-number">1.6.</span> <span class="nav-text">请求方法的别名</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#创建实例"><span class="nav-number">1.7.</span> <span class="nav-text">创建实例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#请求配置"><span class="nav-number">1.8.</span> <span class="nav-text">请求配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#request-options-参数"><span class="nav-number">1.8.1.</span> <span class="nav-text">request options 参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#extend-options-初始化默认参数-支持以上所有"><span class="nav-number">1.8.2.</span> <span class="nav-text">extend options 初始化默认参数, 支持以上所有</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#更新拓展实例默认参数"><span class="nav-number">1.8.3.</span> <span class="nav-text">更新拓展实例默认参数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#响应结构"><span class="nav-number">1.9.</span> <span class="nav-text">响应结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#错误处理"><span class="nav-number">1.10.</span> <span class="nav-text">错误处理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#中间件"><span class="nav-number">1.11.</span> <span class="nav-text">中间件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#参数"><span class="nav-number">1.11.1.</span> <span class="nav-text">参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#例子"><span class="nav-number">1.11.2.</span> <span class="nav-text">例子</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#拦截器"><span class="nav-number">1.12.</span> <span class="nav-text">拦截器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#取消请求"><span class="nav-number">1.13.</span> <span class="nav-text">取消请求</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#案例"><span class="nav-number">1.14.</span> <span class="nav-text">案例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#如何获取响应头信息"><span class="nav-number">1.14.1.</span> <span class="nav-text">如何获取响应头信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#文件上传"><span class="nav-number">1.14.2.</span> <span class="nav-text">文件上传</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#开发和调试"><span class="nav-number">1.15.</span> <span class="nav-text">开发和调试</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Andy Ge</p>
+  <div class="site-description" itemprop="description">勇于积极进取，步入人生的世外桃源</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">728</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">134</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">315</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/andyge" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;andyge" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:geshaofei@126.com" title="E-Mail → mailto:geshaofei@126.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.ruanyifeng.com/" title="http:&#x2F;&#x2F;www.ruanyifeng.com&#x2F;" rel="noopener" target="_blank">阮一峰</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://colobu.com/" title="http:&#x2F;&#x2F;colobu.com&#x2F;" rel="noopener" target="_blank">鸟窝</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.cnblogs.com/hellokuangshen/" title="https:&#x2F;&#x2F;www.cnblogs.com&#x2F;hellokuangshen&#x2F;" rel="noopener" target="_blank">狂神</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://yelog.org/" title="https:&#x2F;&#x2F;yelog.org&#x2F;" rel="noopener" target="_blank">叶落阁</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Andy Ge</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.7.1
+  </div>
+
+        
+
+
+
+
+
+
+  <script>
+  function leancloudSelector(url) {
+    url = encodeURI(url);
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.getAttribute('id'));
+      var title = visitors.getAttribute('data-flag-title');
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .then(() => {
+                leancloudSelector(url).innerText = counter.time + 1;
+              })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              })
+          } else {
+              Counter('post', '/classes/Counter', { title: title, url: url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.getAttribute('id'));
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (let item of results) {
+            let { url, time } = item;
+            leancloudSelector(url).innerText = time;
+          }
+          for (let url of entries) {
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=2TdIb5gRlAVUw24l2W0zWnCj-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method: method,
+          headers: {
+            'X-LC-Id'     : '2TdIb5gRlAVUw24l2W0zWnCj-gzGzoHsz',
+            'X-LC-Key'    : 'cJdJrMLBXsj0ttq0WsL0aA2j',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
